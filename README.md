@@ -1,7 +1,7 @@
 # ARM-emulator
 Projet de cours en filière SICOM (Grenoble INP)
 
-1er livrable :
+<bold>1er livrable :</bold>
 
 - Jeux de tests
 - Mise en place de l'interpréteur
