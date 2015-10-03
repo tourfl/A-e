@@ -16,6 +16,7 @@ CFLAGS_RLS=$(CFLAGS)
 # definition des repertoires de source/destination
 SRCDIR=src
 INCDIR=inc
+DOCDIR=doc
 
 # les fichiers dont on peut se débarasser
 GARBAGE=*~ $(SRCDIR)/*~ $(INCDIR)/*~ $(TESTDIR)/*~ $(SRCDIR)/*.orig $(INCDIR)/*.orig

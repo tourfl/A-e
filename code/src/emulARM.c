@@ -18,7 +18,7 @@
 
 
 /* prompt du mode shell interactif */
-#define PROMPT_STRING "ARMShell : > "
+#define PROMPT_STRING "ARMShell> "
 
 /* taille max pour nos chaines de char */
 #define MAX_STR 1024

@@ -38,13 +38,13 @@ extern "C" {
 #define COLOR_CYAN        36
 #define COLOR_WHITE       37
 
-#define STYLE_ERROR       STYLE_BLINK
-#define STYLE_WARNING     STYLE_BOLD
-#define STYLE_INFO        STYLE_BOLD
+#define STYLE_ERROR       STYLE_BOLD
+#define STYLE_WARNING     STYLE_OFF
+#define STYLE_INFO        STYLE_OFF
 
-#define COLOR_ERROR       COLOR_RED
-#define COLOR_WARNING     COLOR_YELLOW
-#define COLOR_INFO        COLOR_GREEN
+#define COLOR_ERROR       COLOR_WHITE
+#define COLOR_WARNING     COLOR_WHITE
+#define COLOR_INFO        COLOR_WHITE
 
 #define STYLE(purpose)						\
   (purpose == FOR_ERRORS ? STYLE_ERROR :			\
@@ -62,7 +62,7 @@ extern "C" {
 	   STYLE(purpose), COLOR(purpose) )
 
 #define ERROR_MSG(...) do {							\
-    fprintf( stderr, "%c[%d;%dm", 0x1B, STYLE_BOLD, COLOR_BLUE );	\
+    fprintf( stderr, "%c[%d;%dm", 0x1B, STYLE_OFF, COLOR_RED );	\
     fprintf( stderr, "[ ERROR :: %s:%s:%d] ",				\
 	     __FILE__, __FUNCTION__, __LINE__ );			\
     SET_COLORS(FOR_ERRORS, ON(stderr));					\
@@ -73,7 +73,7 @@ extern "C" {
 } while( 0 )
 
 #define WARNING_MSG(...) do {						\
-    fprintf( stderr, "%c[%d;%dm", 0x1B, STYLE_BOLD, COLOR_BLUE );	\
+    fprintf( stderr, "%c[%d;%dm", 0x1B, STYLE_OFF, COLOR_MAGENTA );	\
     fprintf( stderr, "[WARNING:: %s:%s:%d] ",				\
 	     __FILE__, __FUNCTION__, __LINE__ );			\
     SET_COLORS(FOR_WARNINGS, ON(stderr));				\
@@ -84,7 +84,7 @@ extern "C" {
 
 #ifdef VERBOSE
 #define INFO_MSG(...) do {							\
-    fprintf( stderr, "%c[%d;%dm", 0x1B, STYLE_BOLD, COLOR_BLUE );	\
+    fprintf( stderr, "%c[%d;%dm", 0x1B, STYLE_OFF, COLOR_GREEN );	\
     fprintf( stderr, "[ INFO  :: %s:%s:%d] ",				\
 	     __FILE__, __FUNCTION__, __LINE__ );			\
     SET_COLORS(FOR_INFOS, ON(stderr));					\
@@ -98,7 +98,7 @@ extern "C" {
 
 #ifdef DEBUG
 #define DEBUG_MSG(...) do {							\
-    fprintf( stderr, "%c[%d;%dm", 0x1B, STYLE_BOLD, COLOR_BLUE );	\
+    fprintf( stderr, "%c[%d;%dm", 0x1B, STYLE_OFF, COLOR_BLUE );	\
     fprintf( stderr, "[ DEBUG :: %s:%s:%d] ",				\
 	     __FILE__, __FUNCTION__, __LINE__ );			\
     SET_COLORS(FOR_INFOS, ON(stderr));					\
