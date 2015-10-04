@@ -4,22 +4,19 @@
 
 typedef struct mem_seg
 {
-	long virtual_adress;
+	long va; // Toutes les adresses virtuelles seront précédées d'un va_
 	int size;
+	char *content;
 
 
 } Mem_seg;
 
-typedef struct mem_map
-{
-	Mem_seg *rodata;
-	Mem_seg *text;
-	Mem_seg *data;
-	Mem_seg *bss;
-	Mem_seg *lib;
-	Mem_seg *stack;
-} Mem_map;
+// Mem_map est un tableau de Mem_seg
 
+typedef struct *mem_seg Mem_map;
 
+int add_first_segment(char *name, long va, int size);
+
+int add_segment(char* name, int size);
 
 #endif
