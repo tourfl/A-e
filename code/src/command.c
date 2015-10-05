@@ -125,7 +125,9 @@ int setcmd (interpreteur inter){
 
 
 
-
+int set_reg (interpreteur inter, char* registre, char* valeur) {
+	
+}
 
 
 int set_mem (interpreteur inter,char* type,char* adresse,char* valeur) {
@@ -139,7 +141,7 @@ int set_mem (interpreteur inter,char* type,char* adresse,char* valeur) {
 	
 			
 		if(is_hexa(valeur) == 1 || is_dec(valeur) == 1 || is_oct(valeur) == 1) {
-			//Inscrire cette valeur à l'adresse adresse;
+			//Inscrire cette valeur à l'adresse "adresse";
 			return 0;
 		}
 			
