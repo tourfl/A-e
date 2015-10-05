@@ -129,6 +129,8 @@ int dispcmd (interpreteur inter) {
 	}
 }
 
+
+//Pour la fonction discmd;
 int set_mem (interpreteur inter, char* token, char* adresse) {
 	
 	if (strcmp(token, "map") == 0) {
