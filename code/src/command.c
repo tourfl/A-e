@@ -58,17 +58,6 @@ int loadcmd(interpreteur inter) {
     // On récupère le contenu du fichier ELF ici en utilisant le programme de lecture des fichiers ELF fourni
     load_elf(fo, va); // fonction que l'on trouve dans memory.c
 
-    fclose(fo);
-	switch(get_type(token)) {
-        case HEXA:
-            //sscanf(token,"%x", &hexValue);
-	   /* charger le fichier Ã  l'adresse saisi */ 	//?????????? _loadcmd
-            break;
-        default :
-            WARNING_MSG("value %s is not a valid argument of load command\n",token);
-            return 1;
-        }
-
     return 0;
 }
 

@@ -53,11 +53,11 @@ int load_elf(FILE *fo, char *va);
 int init_mem_map(char mem_size);
 
 /* Fonction qui crée le 1er segment, soit .rodata, soit .text */
-int add_first_segment(char *name, long va, int size, Mem_map *map);
+int add_first_segment(char *name, long va, int size, Mem_map *map, char *content);
 
 
 /* Fonction qui crée un segment, à partir de l'adresse va */
-int add_segment(char* name, long *va, Mem_map *map);
+int add_segment(char* name, long *va, Mem_map *map, char *content);
 
 /* Fonction qui met à jour l'adresse virtuelle disponible à partir de la taille (en héxa) et de l'adresse du segment précédent */
 int update_va(long **va, int size);

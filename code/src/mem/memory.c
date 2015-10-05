@@ -5,10 +5,32 @@
  #include <stdlib.h>
 
  #include "mem/memory.h"
+ #include "elf/elf.h"
 
  int load_elf(FILE *fo, long va)
  {
- 	// On va réutiliser les fonctions fournies
+ 	if (!assert_elf_file(fo))
+ 		return 1;
+
+ 	byte *ehdr = NULL;
+
+ 	uint *mem_size = NULL;
+ 	byte *section_names = NULL;
+
+ 	uint **secsz = NULL;
+ 	byte **scn = NULL;
+
+ 	ehdr = __elf_get_ehdr(fo);
+
+ 	section_names = elf_extract_section_names(fo, mem_size);
+
+ 	for(i = 0; i < *mem_size; i++)
+ 	{
+ 		scn[i] = elf_extract_scn_by_name(ehdr, fo, section_names[i], secsz[i], NULL);
+ 		printf("%s \n", section_names[i]);
+ 		print_string_table(scn[i], secsz[i]);
+ 	}
+
  }
 
 int init_mem_map(char mem_size)
@@ -21,7 +43,7 @@ int init_mem_map(char mem_size)
  	return malloc(mem_size * sizeof(*Mem_seg)); // retourne évidemment NULL si cela n'a pas fonctionné
  }
 
-int add_first_segment(char *name, long va, int size, Mem_map *map)
+int add_first_segment(char *name, long va, int size, Mem_map *map, char *content)
 {
 	return(add_segment(name, 0, &va, size, map))
 }
@@ -38,7 +60,7 @@ void allocation_reg(){
 }
 
 
-int add_segment(char *name, char map_cursor, long *va, int size, Mem_map *map)
+int add_segment(char *name, char map_cursor, long *va, int size, Mem_map *map, char *content)
 {
 	Mem_seg *seg = NULL;
 
