@@ -12,10 +12,6 @@
 /* macros de DEBUG_MSG fournies , etc */
 #include "common/notify.h"
 
- /* commandes */
-
- #include "common/command.h"
-
 
 /* prompt du mode shell interactif */
 #define PROMPT_STRING "ARMShell> "
@@ -57,5 +53,9 @@ typedef struct {
  char* get_next_token(interpreteur inter);
 
  int get_type(char* chaine);
+
+ /* Commandes */
+
+ int loadcmd(interpreteur inter);
 
 #endif
