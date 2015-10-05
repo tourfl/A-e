@@ -1,6 +1,7 @@
 #include "common/interpreteur.h"
 #include "mem/memory.h"
 #include "common/command.h"
+#include "common/notify.h"
 
 
 
