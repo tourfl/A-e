@@ -36,3 +36,49 @@ int loadcmd(interpreteur inter) {
 
 
 }
+
+
+
+int dispcmd (interpreteur inter) {
+	
+	
+	char* token= NULL;
+	token = get_next_token (inter);
+	
+	
+	if (token == NULL ){
+		WARNING_MSG("Spécifiez la mémoire à afficher");
+	}
+	
+	else if (strcmp(token, "mem") == 0){
+		token = get_next_token (inter);
+		if (strcmp(token, "map") == 0) {
+			//AFFICHER LA CARTE MEMOIRE;
+			// fonction disp_mem_map;
+			return 0;
+		}
+		else if (is_hexa(token) == 1) {
+			//Afficher la plage de memoire;
+			// fonction disp_mem_plage;
+			return 0;
+		}
+		else {
+			WARNING_MSG("%s n'est pas un bon argument pour disp mem \n",token);
+			return 1;
+		}
+	}
+	
+	else if (strcmp(token, "reg") == 0) {
+		token = get_next_token (inter);
+		//Afficher les valeur du/des registre(s) mentionné(s);
+		// fonction disp_reg
+	}
+	
+	else {
+		WARNING_MSG("Mauvaise utilisation de la fonction disp\n");
+		return 1;
+	}
+}
+
+
+
