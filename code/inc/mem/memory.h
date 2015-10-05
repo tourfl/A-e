@@ -39,7 +39,6 @@ typedef struct {
 typedef segment* memoire_virtuelle;
 
 typedef struct {
-	char* name_reg;
 	unsigned int adr_virt;
 	char* valeur;
 } registre;
