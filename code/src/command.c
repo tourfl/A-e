@@ -68,6 +68,14 @@ int loadcmd(interpreteur inter) {
 }
 
 
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+
 
 int dispcmd (interpreteur inter) {
 	
@@ -81,28 +89,13 @@ int dispcmd (interpreteur inter) {
 	}
 	
 	else if (strcmp(token, "mem") == 0){
+		int a;
+		char* adresse = NULL;
 		token = get_next_token (inter);
-		if (strcmp(token, "map") == 0) {
-			//AFFICHER LA CARTE MEMOIRE;
-			// fonction disp_mem_map;
-			return 0;
-		}
-		else if (is_hexa(token) == 1) {
-			char* adresse =NULL;
-			adresse = get_next_token(inter);
-			adresse = get_next_token(inter);
-			//Afficher la plage de memoire des adresses "token" à "adresse";
-			// fonction disp_mem_plage;
-			return 0;
-		}
-		else if (token == NULL){
-			WARNING_MSG("Spécifiez la mémoire à afficher");
-			return 1;
-		}
-		else {
-			WARNING_MSG("%s n'est pas un bon argument pour disp mem \n",token);
-			return 1;
-		}
+		adresse = get_next_token (inter);
+		adresse = get_next_token (inter);
+		a = disp_mem (inter, token);
+		return a;
 	}
 	
 	else if (strcmp(token, "reg") == 0) {
@@ -117,8 +110,7 @@ int dispcmd (interpreteur inter) {
 			while (registre != NULL){
 				
 				if (is_reg(registre) == 1 ) { /*Vérification de la bonne saisie du nom du registre*/
-				//Afficher la valeur de "registre";
-				// fonction disp_reg
+				//Afficher la valeur contenue dans "registre";
 				registre = get_next_token(inter);
 				}
 				
@@ -126,7 +118,6 @@ int dispcmd (interpreteur inter) {
 					WARNING_MSG ("Maivais format de la valeur à écrire\n");
 					return 1;
 				}
-		
 			}
 			return 0;
 		}
@@ -137,6 +128,44 @@ int dispcmd (interpreteur inter) {
 		return 1;
 	}
 }
+
+int set_mem (interpreteur inter, char* token, char* adresse) {
+	
+	if (strcmp(token, "map") == 0) {
+		//Afficher la carte mémoire;
+		return 0;
+	}
+	else if (is_hexa(token) == 1) {
+			if (is_hexa(adresse) == 1) {
+				//Afficher la plage de memoire des adresses "token" à "adresse";
+				return 0;
+			}
+			else {
+				WARNING_MSG ("Erreur dand la saisie des adresses\n");
+				return 1;
+			}
+		}
+	else if (token == NULL){
+			WARNING_MSG("Spécifiez la mémoire à afficher");
+			return 1;
+		}
+	else {
+			WARNING_MSG("%s n'est pas un bon argument pour disp mem \n",token);
+			return 1;
+		}
+}
+
+
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+
 
 
 int setcmd (interpreteur inter){
