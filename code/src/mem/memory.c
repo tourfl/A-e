@@ -7,8 +7,13 @@
  #include "mem/memory.h"
  #include "elf/elf.h"
 
- int load_elf(FILE *fo, long va)
+ int load_elf(FILE *fo, long va, Memory *mem)
  {
+ 	/*
+ 	 * Cela va sans doute être le zbeul avec les **
+ 	 */
+
+
  	if (!assert_elf_file(fo))
  		return 1;
 
@@ -22,28 +27,40 @@
 
  	ehdr = __elf_get_ehdr(fo);
 
+ 	[ehdr == NULL] ? return 2;
+
  	section_names = elf_extract_section_names(fo, mem_size);
+
+ 	[section_names == NULL] ? return 3;
+
+ 	// On alloue le nombre de segments mem_size
+
+ 	mem->map = malloc(mem_size * sizeof(*Segment));
 
  	for(i = 0; i < *mem_size; i++)
  	{
- 		scn[i] = elf_extract_scn_by_name(ehdr, fo, section_names[i], secsz[i], NULL);
- 		printf("%s \n", section_names[i]);
- 		print_string_table(scn[i], secsz[i]);
+ 		mem->map[i]->name = section_names[i]; // On donne son nom au segment
+
+ 		mem->map[i]->content = elf_extract_scn_by_name(ehdr, fo, section_names[i], secsz[i], NULL); // On récupère le contenu du segment
+
+ 		mem->map[i]->size = secsz[i]; // on récupère la taille du segment
+
  	}
 
+ 	return 0;
  }
 
-int init_mem_map(char mem_size)
+int init_Map(char mem_size)
  {
 
  	/*
  	* On crée mem_size cases pour (.rodata), .text, .data, .bss, [lib], [stack]
  	*/
 
- 	return malloc(mem_size * sizeof(*Mem_seg)); // retourne évidemment NULL si cela n'a pas fonctionné
+ 	return malloc(mem_size * sizeof(*Segment)); // retourne évidemment NULL si cela n'a pas fonctionné
  }
 
-int add_first_segment(char *name, long va, int size, Mem_map *map, char *content)
+int add_first_segment(char *name, long va, int size, Map *map, char *content)
 {
 	return(add_segment(name, 0, &va, size, map))
 }
@@ -60,11 +77,11 @@ void allocation_reg(){
 }
 
 
-int add_segment(char *name, char map_cursor, long *va, int size, Mem_map *map, char *content)
+int add_segment(char *name, char map_cursor, long *va, int size, Map *map, char *content)
 {
-	Mem_seg *seg = NULL;
+	Segment *seg = NULL;
 
-	seg = malloc(sizeof(Mem_seg));
+	seg = malloc(sizeof(Segment));
 
 	(seg == NULL) ? return 1; // La mémoire n'a pas été réservée
 
