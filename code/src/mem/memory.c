@@ -6,6 +6,11 @@
 
  #include "mem/memory.h"
 
+ int load_elf(FILE *fo, long va)
+ {
+ 	// On va réutiliser les fonctions fournies
+ }
+
 int init_mem_map(char mem_size)
  {
 

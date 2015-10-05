@@ -1,11 +1,12 @@
 
 #include "common/interpreteur.h"
+#include "mem/memory.h"
 
 int loadcmd(interpreteur inter) {
 
 	char * token=NULL;
     FILE *fo = NULL;
-    char caractereActuel = 0;
+    char *va = "0x00001000";
 	
 	token = get_next_token(inter);
 
@@ -25,29 +26,25 @@ int loadcmd(interpreteur inter) {
         return 1;
     }
 
-    do
-        {
-            caractereActuel = fgetc(fo); // On lit le caractère
-            printf("%c", caractereActuel); // On l'affiche
-        } while (caractereActuel != EOF); // On continue tant que fgetc n'a pas retourné EOF (fin de fichier)
-
     token = get_next_token(inter);
 
-	switch(get_type(token)) {
-        case HEXA:
-            //sscanf(token,"%x", &hexValue);
-	   /* charger le fichier Ã  l'adresse saisi */ 	//?????????? _loadcmd
-            break;
-        default :
-            WARNING_MSG("value %s is not a valid argument of load command\n",token);
-            return 1;
-        }
+    if(token != NULL && get_type(token) != HEXA)
+    {
+        WARNING_MSG("value %s is not a valid address for load command\n",token);
+        return 1;
+    }
 
-<<<<<<< HEAD
+    else if(get_type(token) == HEXA)
+        va = token; // On affecte la valeur spécifiée
+
+    // Pas de valeur spécifiée, la mémoire sera implantée à partir de l'adresse 0x00001000
+
+    // On récupère le contenu du fichier ELF ici en utilisant le programme de lecture des fichiers ELF fourni
+    load_elf(fo, va); // fonction que l'on trouve dans memory.c
+
     fclose(fo);
-}
-=======
 
+    return 0;
 }
 
 
@@ -92,7 +89,3 @@ int dispcmd (interpreteur inter) {
 		return 1;
 	}
 }
-
-
-
->>>>>>> refs/remotes/origin/master
