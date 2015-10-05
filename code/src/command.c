@@ -1,6 +1,7 @@
 #include "common/interpreteur.h"
 #include "mem/memory.h"
 #include "common/command.h"
+#include "common/notify.h"
 
 
 
@@ -138,20 +139,20 @@ registre wich_reg (char*nom) {
 			return r[i];
 		}
 	}
-	if (strcmp(r.name, sp) == 1) {
+	if (strcmp(r.name, sp) == 0) {
 		return sp;
 	}
-	else if (strcmp(r.name, lr) == 1){
+	else if (strcmp(r.name, lr) == 0){
 		return lr;
 	}
-	else if (strcmp(r.name, pc) == 1) {
+	else if (strcmp(r.name, pc) == 0) {
 		return pc;
 	}
-	else if (strcmp(r.name, aspr) == 1) {
+	else if (strcmp(r.name, aspr) == 0) {
 		return aspr;
 	}
 
-	else return 0;
+	else return NULL;
 	
 }
 
@@ -239,7 +240,7 @@ int setcmd (interpreteur inter){
 		char* reg = NULL;
 		reg = get_netxt_token (inter);
 		valeur = get_next_token(inter);
-		a = set_reg(inter,reg,valeur); //fonction qui copie "valeur" dans le registre "registre"; 
+		a = set_reg(inter,reg,valeur); //fonction qui copie "valeur" dans le registre "reg"; 
 		return (a); 
 		
 	}
