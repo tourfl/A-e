@@ -105,22 +105,26 @@ int dispcmd (interpreteur inter) {
 	
 	else if (strcmp(token, "reg") == 0) {
 		
-		char* registre = NULL;
-		registre = get_next_token(inter);
-		if(strcmp (registre, "all")==0){
-			//Afficher le contenu de tous les registres;
+		char* reg = NULL;
+		reg = get_next_token(inter);
+		if(strcmp (reg, "all")==0){
+			int i = 0;
+			for (i=0; i<=12 ; i++) {
+				printf ("r[ %d ] : %s\n", i , r[i].valeur);
+			}
+			printf ("sp : %s\n lr : %s\n pc : %s\n aspr : %s\n",sp.valeur,lr.valeur,pc.valeur,aspr.valeur);
 			return 0;
 		}
 		else {
-			while (registre != NULL){
+			while (reg != NULL){
 				
-				if (is_reg(registre) == 1 ) { /*Vérification de la bonne saisie du nom du registre*/
-				//Afficher la valeur contenue dans le registre "registre";
-				registre = get_next_token(inter);
+				if (is_reg(reg) == 1 ) { /*Vérification de la bonne saisie du nom du registre*/
+				printf ("%s : %s\n", reg.name , reg.valeur);
+				reg = get_next_token(inter);
 				}
 				
 				else {
-					WARNING_MSG ("Maivais format de la valeur à écrire\n");
+					WARNING_MSG ("Erreur lors de la saisie des registres\n");
 					return 1;
 				}
 			}
@@ -132,6 +136,23 @@ int dispcmd (interpreteur inter) {
 		WARNING_MSG("Mauvaise utilisation de la fonction disp\n");
 		return 1;
 	}
+}
+
+
+int is_reg (char* nom) {
+	registre r;
+	strcpy(r.name, nom);
+	int i;
+	for (i=0; i<=12; i++){
+		if (strcmp(r.name, r[i]) == 0 ){
+			return 1;
+		}
+	}
+	if (strcmp(r.name, sp) == 1 ||strcmp(r.name, sp) == 1 || strcmp(r.name, sp) == 1 || strcmp(r.name, sp) == 1 ){
+			return 1;
+		}
+	else return 0;
+	
 }
 
 
@@ -198,10 +219,10 @@ int setcmd (interpreteur inter){
 	
 	else if (strcmp (token, "reg") == 0){
 		char* valeur = NULL;
-		char* registre = NULL;
-		registre = get_netxt_token (inter);
+		char* reg = NULL;
+		reg = get_netxt_token (inter);
 		valeur = get_next_token(inter);
-		a = set_reg(inter,registre,valeur); //fonction qui copie "valeur" dans le registre "registre"; 
+		a = set_reg(inter,reg,valeur); //fonction qui copie "valeur" dans le registre "registre"; 
 		return (a); 
 		
 	}
@@ -218,13 +239,13 @@ int setcmd (interpreteur inter){
 
 
 //Pour la fonction setcmd
-int set_reg (interpreteur inter, char* registre, char* valeur) {
+int set_reg (interpreteur inter, char* reg, char* valeur) {
 	
 	
 	if(is_hexa(valeur) == 1 || is_dec(valeur) == 1 || is_oct(valeur) == 1) {
 		
-		if (is_reg(registre) == 1 ) { /*Vérification de la bonne saisie du nom du registre*/
-			//Ecrire valeur dans le registre;
+		if (is_reg(reg) == 1 ) { /*Vérification de la bonne saisie du nom du registre*/
+			strcpy(reg.name,valeur);
 			return 0;
 		}
 		
