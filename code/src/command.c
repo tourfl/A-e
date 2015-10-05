@@ -1,19 +1,27 @@
-
-<<<<<<< HEAD
 #include "common/interpreteur.h"
 #include "mem/memory.h"
-=======
 #include "common/command.h"
->>>>>>> 516787a1270875b0fab388670284695d17e7b11a
+
+
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+
+
 
 int loadcmd(interpreteur inter) {
 
 	char * token=NULL;
     FILE *fo = NULL;
-<<<<<<< HEAD
+
     char *va = "0x00001000";
-=======
->>>>>>> 516787a1270875b0fab388670284695d17e7b11a
+
 	
 	token = get_next_token(inter);
 
@@ -33,7 +41,7 @@ int loadcmd(interpreteur inter) {
         return 1;
     }
 
-<<<<<<< HEAD
+
     token = get_next_token(inter);
 
     if(token != NULL && get_type(token) != HEXA)
@@ -51,7 +59,6 @@ int loadcmd(interpreteur inter) {
     load_elf(fo, va); // fonction que l'on trouve dans memory.c
 
     fclose(fo);
-=======
 	switch(get_type(token)) {
         case HEXA:
             //sscanf(token,"%x", &hexValue);
@@ -61,8 +68,6 @@ int loadcmd(interpreteur inter) {
             WARNING_MSG("value %s is not a valid argument of load command\n",token);
             return 1;
         }
-
->>>>>>> 516787a1270875b0fab388670284695d17e7b11a
 
     return 0;
 }
@@ -85,7 +90,7 @@ int dispcmd (interpreteur inter) {
 	
 	
 	if (token == NULL ){
-		WARNING_MSG("Spécifiez la mémoire à afficher");
+		WARNING_MSG("Spécifiez la mémoire à afficher\n");
 	}
 	
 	else if (strcmp(token, "mem") == 0){
@@ -94,7 +99,7 @@ int dispcmd (interpreteur inter) {
 		token = get_next_token (inter);
 		adresse = get_next_token (inter);
 		adresse = get_next_token (inter);
-		a = disp_mem (inter, token);
+		a = disp_mem (inter, token, adresse);
 		return a;
 	}
 	
@@ -110,7 +115,7 @@ int dispcmd (interpreteur inter) {
 			while (registre != NULL){
 				
 				if (is_reg(registre) == 1 ) { /*Vérification de la bonne saisie du nom du registre*/
-				//Afficher la valeur contenue dans "registre";
+				//Afficher la valeur contenue dans le registre "registre";
 				registre = get_next_token(inter);
 				}
 				
@@ -148,7 +153,7 @@ int set_mem (interpreteur inter, char* token, char* adresse) {
 			}
 		}
 	else if (token == NULL){
-			WARNING_MSG("Spécifiez la mémoire à afficher");
+			WARNING_MSG("Spécifiez la mémoire à afficher\n");
 			return 1;
 		}
 	else {
@@ -207,8 +212,8 @@ int setcmd (interpreteur inter){
 	}
 	
 }
-<<<<<<< HEAD
-=======
+
+
 
 
 
@@ -237,7 +242,7 @@ int set_reg (interpreteur inter, char* registre, char* valeur) {
 	
 }
 
-//Pour la Fonction setcmd;
+//Pour la fonction setcmd;
 int set_mem (interpreteur inter,char* type,char* adresse,char* valeur) {
 
 	if (token == NULL ){
@@ -267,4 +272,4 @@ int set_mem (interpreteur inter,char* type,char* adresse,char* valeur) {
 }	
 
 
->>>>>>> 516787a1270875b0fab388670284695d17e7b11a
+
