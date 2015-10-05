@@ -110,16 +110,18 @@ int dispcmd (interpreteur inter) {
 		if(strcmp (reg, "all")==0){
 			int i = 0;
 			for (i=0; i<=12 ; i++) {
-				printf ("r[ %d ] : %s\n", i , r[i].valeur);
+				printf ("%s : %s\n", r[i].name , r[i].valeur);
 			}
 			printf ("sp : %s\n lr : %s\n pc : %s\n aspr : %s\n",sp.valeur,lr.valeur,pc.valeur,aspr.valeur);
 			return 0;
 		}
 		else {
+			registre r;
 			while (reg != NULL){
 				
-				if (is_reg(reg) == 1 ) { /*Vérification de la bonne saisie du nom du registre*/
-				printf ("%s : %s\n", reg.name , reg.valeur);
+				if (is_reg(reg) == 1 ) {/*Vérification de la bonne saisie du nom du registre*/
+				r = which(reg);
+				printf ("%s : %s\n", r.name , r.valeur);
 				reg = get_next_token(inter);
 				}
 				
@@ -138,6 +140,32 @@ int dispcmd (interpreteur inter) {
 	}
 }
 
+registre wich_reg (char*nom) {
+	registre r;
+	strcpy(r.name, nom);
+	int i;
+	for (i=0; i<=12; i++){
+		if (strcmp(r.name, r[i]) == 0 ){
+			return r[i];
+		}
+	}
+	if (strcmp(r.name, sp) == 1) {
+		return sp;
+	}
+	else if (strcmp(r.name, lr) == 1){
+		return lr;
+	}
+	else if (strcmp(r.name, pc) == 1) {
+		return pc;
+	}
+	else if (strcmp(r.name, aspr) == 1) {
+		return aspr;
+	}
+
+	else return 0;
+	
+}
+
 
 int is_reg (char* nom) {
 	registre r;
@@ -148,7 +176,7 @@ int is_reg (char* nom) {
 			return 1;
 		}
 	}
-	if (strcmp(r.name, sp) == 1 ||strcmp(r.name, sp) == 1 || strcmp(r.name, sp) == 1 || strcmp(r.name, sp) == 1 ){
+	if (strcmp(r.name, sp) == 1 ||strcmp(r.name, lr) == 1 || strcmp(r.name, pc) == 1 || strcmp(r.name, aspr) == 1 ){
 			return 1;
 		}
 	else return 0;
@@ -245,7 +273,8 @@ int set_reg (interpreteur inter, char* reg, char* valeur) {
 	if(is_hexa(valeur) == 1 || is_dec(valeur) == 1 || is_oct(valeur) == 1) {
 		
 		if (is_reg(reg) == 1 ) { /*Vérification de la bonne saisie du nom du registre*/
-			strcpy(reg.name,valeur);
+			r=which_reg(reg);
+			strcpy(r.name,valeur);
 			return 0;
 		}
 		
