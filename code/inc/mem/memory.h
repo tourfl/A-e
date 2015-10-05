@@ -22,6 +22,29 @@ typedef struct mem_seg
 
 typedef struct mem_seg Mem_map;
 
+
+typedef struct {
+	char* section_name;
+	int size;
+	unsigned char* seg;
+	unsigned int @start; //adresse virtuelle;
+} segment;
+
+typedef struct {
+	registre reg;
+	memoire mem;
+	int nb_seg;
+} emulateur;
+
+typedef segment* memoire_virtuelle;
+
+typedef struct {
+	char* name_reg;
+	unsigned int adr_virt;
+	char* valeur;
+} registre;
+
+
 /*
  * Fonctions
  */
