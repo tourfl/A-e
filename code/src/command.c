@@ -1,37 +1,28 @@
 
-#include "common/interpreteur.h"
+#include "common/command.h"
 
 int loadcmd(interpreteur inter) {
 
 	char * token=NULL;
     FILE *fo = NULL;
-    char caractereActuel = 0;
 	
 	token = get_next_token(inter);
 
     // le token suivant est normalement le nom du fichier, on essaye donc de l'ouvrir
 
-    if (token == NULL || get_type(token) == HEXA)
+    if (token == NULL)
     {
         WARNING_MSG("please specifiy a file");
         return 1;
     }
 
-    fo = fopen(token, "rb" );
+    fo = fopen(token, "r" );
     if ( fo == NULL ) 
     {
         perror( "fopen" );
         WARNING_MSG("file doesn't exist");
         return 1;
     }
-
-    do
-        {
-            caractereActuel = fgetc(fo); // On lit le caractère
-            printf("%c", caractereActuel); // On l'affiche
-        } while (caractereActuel != EOF); // On continue tant que fgetc n'a pas retourné EOF (fin de fichier)
-
-    token = get_next_token(inter);
 
 	switch(get_type(token)) {
         case HEXA:
@@ -43,10 +34,6 @@ int loadcmd(interpreteur inter) {
             return 1;
         }
 
-<<<<<<< HEAD
-    fclose(fo);
-}
-=======
 
 }
 
@@ -75,6 +62,9 @@ int dispcmd (interpreteur inter) {
 			// fonction disp_mem_plage;
 			return 0;
 		}
+		else if (token == NULL){
+			WARNING_MSG("Spécifiez la mémoire à afficher");
+		}
 		else {
 			WARNING_MSG("%s n'est pas un bon argument pour disp mem \n",token);
 			return 1;
@@ -94,5 +84,76 @@ int dispcmd (interpreteur inter) {
 }
 
 
+int setcmd (interpreteur inter){
+	char* token;
+	token = get_next_token (inter);
+	int a;
+	
+	if (token == NULL ){
+		WARNING_MSG("Spécifiez la mémoire à modifier");
+		return 0;
+	}
+	
+	else if (strcmp (token, "mem") == 0){
+		char* type = NULL;
+		char* valeur = NULL;
+		char* adresse = NULL;
+		type = get_next_token(inter);
+		adresse = get_next_token(inter);
+		valeur = get_next_token (inter);
+		a = set_mem (inter, type, adresse, valeur); //A écrire --> fonction qui copie "valeur" à "adresse";
+		return (a);
+	}
+	
+	else if (strcmp (token, "reg") == 0){
+		char* valeur = NULL;
+		char* registre = NULL;
+		registre = get_netxt_token (inter);
+		valeur = get_next_token(inter);
+		a = set_reg(inter,registre,valeur); //A écrire --> fonction qui copie "valeur" dans le registre "registre"; 
+		return (a); 
+		
+	}
+	
+	else {
+		WARNING_MSG("Mauvaise utilisation de la fonction disp\n");
+		return 1;
+	}
+	
+}
 
->>>>>>> refs/remotes/origin/master
+
+
+
+
+
+
+int set_mem (interpreteur inter,char* type,char* adresse,char* valeur) {
+
+	if (token == NULL ){
+		WARNING_MSG("Spécifiez la mémoire à modifier");
+		}
+		
+		
+	else if (strcmp (type, "word") == 0 || strcmp (type, "byte") == 0  ){
+	
+			
+		if(is_hexa(valeur) == 1 || is_dec(valeur) == 1 || is_oct(valeur) == 1) {
+			//Inscrire cette valeur à l'adresse adresse;
+			return 0;
+		}
+			
+		else {
+			WARNING_MSG ("Mauvais format de la valeur\n");
+			return 1;
+		}	
+	}
+		
+		
+	else {
+		WARNING_MSG("Mauvaise utilisation de la fonction disp\n");
+		return 1;
+	}
+}	
+
+
