@@ -4,8 +4,14 @@
 
 ### Mise en place de l'interpréteur
 
-On ouvre l'interpréteur, sans fichier script. Celui-ci doit-il réserver la mémoire directement ?
+On ouvre l'interpréteur, sans fichier script. L'interpréteur ne réserve pas de mémoire.
 
+[] emul-arm fichier.o
+
+<=>
+
+[] emul-arm
+[] load fichier.o
 
 ## Ecriture des tests
 
@@ -13,6 +19,6 @@ On ouvre l'interpréteur, sans fichier script. Celui-ci doit-il réserver la mé
 
 - 1er test :
 
-à l'ouverture, l'émulateur réserve de la mémoire pour les futures instructions.
+
 
 

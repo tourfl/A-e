@@ -239,46 +239,6 @@ int  acquire_line(FILE *fp, interpreteur inter) {
 
 
 
-
-
-
-
-
-
-
-
-
-int loadcmd(interpreteur inter) {
-
-	
-	char * token=NULL;
-	
-
-	token = get_next_token(inter)
-	switch(get_type(token)) {
-        case HEXA:
-            sscanf(token,"%x",&hexValue);
-	   /* charger le fichier Ã  l'adresse saisi */ 	//?????????? _loadcmd
-            break;
-        default :
-            WARNING_MSG("value %s is not a valid argument of command %s\n",token,"testcmd");
-            return 1;
-        }
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
 int exitcmd(interpreteur inter) {
     INFO_MSG("Bye bye !");
     return CMD_EXIT_RETURN_VALUE;
