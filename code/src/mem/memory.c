@@ -26,6 +26,18 @@ int add_first_segment(char *name, long va, int size, Mem_map *map)
 	return(add_segment(name, 0, &va, size, map))
 }
 
+//je crois que je fais de la merde;
+void allocation_reg(){
+	registre* r;
+	int i;
+	for (i=0; i<=12; i++){
+		strcpy(r[i].name, r[i]);
+		malloc (word * sizeof(*r[i].valeur));
+	}
+	
+}
+
+
 int add_segment(char *name, char map_cursor, long *va, int size, Mem_map *map)
 {
 	Mem_seg *seg = NULL;
