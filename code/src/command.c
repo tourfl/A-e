@@ -58,12 +58,16 @@ int dispcmd (interpreteur inter) {
 			return 0;
 		}
 		else if (is_hexa(token) == 1) {
-			//Afficher la plage de memoire;
+			char* adresse =NULL;
+			adresse = get_next_token(inter);
+			adresse = get_next_token(inter);
+			//Afficher la plage de memoire des adresses "token" à "adresse";
 			// fonction disp_mem_plage;
 			return 0;
 		}
 		else if (token == NULL){
 			WARNING_MSG("Spécifiez la mémoire à afficher");
+			return 1;
 		}
 		else {
 			WARNING_MSG("%s n'est pas un bon argument pour disp mem \n",token);
@@ -72,9 +76,30 @@ int dispcmd (interpreteur inter) {
 	}
 	
 	else if (strcmp(token, "reg") == 0) {
-		token = get_next_token (inter);
-		//Afficher les valeur du/des registre(s) mentionné(s);
-		// fonction disp_reg
+		
+		char* registre = NULL;
+		registre = get_next_token(inter);
+		if(strcmp (registre, "all")==0){
+			//Afficher le contenu de tous les registres;
+			return 0;
+		}
+		else {
+			while (registre != NULL){
+				
+				if (is_reg(registre) == 1 ) { /*Vérification de la bonne saisie du nom du registre*/
+				//Afficher la valeur de "registre";
+				// fonction disp_reg
+				registre = get_next_token(inter);
+				}
+				
+				else {
+					WARNING_MSG ("Maivais format de la valeur à écrire\n");
+					return 1;
+				}
+		
+			}
+			return 0;
+		}
 	}
 	
 	else {
@@ -101,7 +126,7 @@ int setcmd (interpreteur inter){
 		type = get_next_token(inter);
 		adresse = get_next_token(inter);
 		valeur = get_next_token (inter);
-		a = set_mem (inter, type, adresse, valeur); //A écrire --> fonction qui copie "valeur" à "adresse";
+		a = set_mem (inter, type, adresse, valeur); //fonction qui copie "valeur" à "adresse";
 		return (a);
 	}
 	
@@ -110,7 +135,7 @@ int setcmd (interpreteur inter){
 		char* registre = NULL;
 		registre = get_netxt_token (inter);
 		valeur = get_next_token(inter);
-		a = set_reg(inter,registre,valeur); //A écrire --> fonction qui copie "valeur" dans le registre "registre"; 
+		a = set_reg(inter,registre,valeur); //fonction qui copie "valeur" dans le registre "registre"; 
 		return (a); 
 		
 	}
@@ -124,12 +149,32 @@ int setcmd (interpreteur inter){
 
 
 
-
+//Pour la fonction setcmd
 int set_reg (interpreteur inter, char* registre, char* valeur) {
+	
+	
+	if(is_hexa(valeur) == 1 || is_dec(valeur) == 1 || is_oct(valeur) == 1) {
+		
+		if (is_reg(registre) == 1 ) { /*Vérification de la bonne saisie du nom du registre*/
+			//Ecrire valeur dans le registre;
+			return 0;
+		}
+		
+		else {
+			WARNING_MSG ("Mauvaise saisie du nom du registre\n");
+			return 1;
+		}
+	}
+	
+	else {
+		WARNING_MSG ("Maivais format de la valeur à écrire\n");
+		return 1;
+	}
+	
 	
 }
 
-
+//Pour la Fonction setcmd;
 int set_mem (interpreteur inter,char* type,char* adresse,char* valeur) {
 
 	if (token == NULL ){
