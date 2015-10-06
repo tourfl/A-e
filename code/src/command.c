@@ -230,11 +230,7 @@ int is_reg (char* nom) {
 
 
 //Pour la fonction discmd;
-<<<<<<< HEAD
 int disp_mem (char *va_1, char *va_2, Map *map) {
-=======
-int disp_mem (interpreteur inter, char* token, char* adresse) {
->>>>>>> 912151e6d0c99c6c1f8590fbe6138aa2d77c14ac
 	
 	if (is_hexa(va_1) == 1) {
 			if (is_hexa(va_2) == 1) {

@@ -76,6 +76,7 @@ void allocation_reg(){
 		//strcpy(r[i].name, r[i]);
 		//malloc (word * sizeof(*r[i].valeur));
 	}
+	/*
 	strcpy(r[13].name, sp);
 	malloc (word * sizeof(*r[13].valeur));
 	strcpy(r[14].name, lr);
@@ -84,6 +85,7 @@ void allocation_reg(){
 	malloc (word * sizeof(*r[15].valeur));
 	strcpy(r[16].name, aspr);
 	malloc (word * sizeof(*r[16].valeur));
+	*/
 }
 
 
