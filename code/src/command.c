@@ -175,7 +175,7 @@ int is_reg (char* nom) {
 
 
 //Pour la fonction discmd;
-int set_mem (interpreteur inter, char* token, char* adresse) {
+int disp_mem (interpreteur inter, char* token, char* adresse) {
 	
 	if (strcmp(token, "map") == 0) {
 		//Afficher la carte mémoire;
