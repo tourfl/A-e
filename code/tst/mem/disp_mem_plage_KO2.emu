@@ -1,0 +1,6 @@
+#-------
+#TEST_RETURN_CODE=FAIL           
+#TEST_COMMENT="Teste fonctionnement memoire"
+#-------
+
+disp mem 0X00FF : 0X00AA
