@@ -14,7 +14,7 @@
 int dispcmd (interpreteur inter);
 registre wich_reg (char*nom);
 int is_reg (char* nom);
-int set_mem (interpreteur inter, char* token, char* adresse);
+int disp_mem (interpreteur inter, char* token, char* adresse);
 int setcmd (interpreteur inter);
 int set_reg (interpreteur inter, char* reg, char* valeur);
 int set_mem (interpreteur inter,char* type,char* adresse,char* valeur);
