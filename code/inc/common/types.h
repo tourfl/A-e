@@ -39,6 +39,13 @@ typedef char string[STRLEN+1];
 
 typedef enum { UNDEF, LSB, MSB } endianness;
 
+/* Fonctions */
+
+int get_type(char* chaine);
+int is_hexa(char* chaine);
+int is_oct(char* chaine);
+int is_dec (char* chaine);
+
 #ifdef __cplusplus
 }
 #endif

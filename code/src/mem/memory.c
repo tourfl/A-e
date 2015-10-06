@@ -7,7 +7,7 @@
  #include "mem/memory.h"
  #include "elf/elf.h"
 
- int load_elf(FILE *fo, long va, Memory *mem)
+ int load_elf_in_mem(FILE *fo, char *va, Map *map)
  {
  	/*
  	 * Cela va sans doute être le zbeul avec les **
@@ -27,24 +27,27 @@
 
  	ehdr = __elf_get_ehdr(fo);
 
- 	[ehdr == NULL] ? return 2;
+ 	if (ehdr == NULL) return 2;
 
  	section_names = elf_extract_section_names(fo, mem_size);
 
- 	[section_names == NULL] ? return 3;
+ 	if (section_names == NULL) return 3;
 
  	// On alloue le nombre de segments mem_size
 
- 	mem->map = malloc(mem_size * sizeof(*Segment));
+ 	map = malloc(*mem_size * sizeof(Segment *));
 
- 	for(i = 0; i < *mem_size; i++)
+ 	for(int i = 0; i < *mem_size; i++)
  	{
- 		mem->map[i]->name = section_names[i]; // On donne son nom au segment
+ 		Segment seg;
 
- 		mem->map[i]->content = elf_extract_scn_by_name(ehdr, fo, section_names[i], secsz[i], NULL); // On récupère le contenu du segment
+ 		map[i] = &seg;
 
- 		mem->map[i]->size = secsz[i]; // on récupère la taille du segment
+ 		map[i]->name = section_names[i]; // On donne son nom au segment
 
+ 		map[i]->content = elf_extract_scn_by_name(ehdr, fo, section_names[i], secsz[i], NULL); // On récupère le contenu du segment
+
+ 		map[i]->size = secsz[i]; // on récupère la taille du segment
  	}
 
  	return 0;
@@ -57,39 +60,39 @@ int init_Map(char mem_size)
  	* On crée mem_size cases pour (.rodata), .text, .data, .bss, [lib], [stack]
  	*/
 
- 	return malloc(mem_size * sizeof(*Segment)); // retourne évidemment NULL si cela n'a pas fonctionné
+ 	return malloc(mem_size * sizeof(Segment *)); // retourne évidemment NULL si cela n'a pas fonctionné
  }
 
-int add_first_segment(char *name, long va, int size, Map *map, char *content)
+int add_first_segment(char *name, char *va, int size, Map *map, char *content)
 {
-	return(add_segment(name, 0, &va, size, map))
+	return(add_segment(name, 0, va, size, map, content));
 }
 
 //je crois que je fais de la merde;
 void allocation_reg(){
-	registre* r;
+	Registre* r;
 	int i;
-	for (i=0; i<=12; i++){
-		strcpy(r[i].name, r[i]);
-		malloc (word * sizeof(*r[i].valeur));
+	for (i=0; i < 15; i++){
+		//strcpy(r[i].name, r[i]);
+		//malloc (word * sizeof(*r[i].valeur));
 	}
 	
 }
 
 
-int add_segment(char *name, char map_cursor, long *va, int size, Map *map, char *content)
+int add_segment(char *name, char map_cursor, char *va, int size, Map *map, char *content)
 {
 	Segment *seg = NULL;
 
 	seg = malloc(sizeof(Segment));
 
-	(seg == NULL) ? return 1; // La mémoire n'a pas été réservée
+	if(seg == NULL) return 1; // La mémoire n'a pas été réservée
 
 	seg->name = name;
 	seg->va = *va;
 	//seg->size = size;
 
-	map[map_cursor] = first_seg;
+	map[map_cursor] = seg;
 
 	update_va(va, size);
 
@@ -97,7 +100,7 @@ int add_segment(char *name, char map_cursor, long *va, int size, Map *map, char 
 }
 
 
-int update_va(long *va, int size)
+int update_va(char **va, int size)
 {
 	// TODO
 }

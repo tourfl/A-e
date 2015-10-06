@@ -22,7 +22,7 @@ DOCDIR=doc
 GARBAGE=*~ $(SRCDIR)/*~ $(INCDIR)/*~ $(TESTDIR)/*~ $(SRCDIR)/*.orig $(INCDIR)/*.orig
 
 # ou se trouve les sources (i.e., le *.c)
-SRC=$(wildcard $(SRCDIR)/*.c)
+SRC= $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/*/*.c)
 
 # les objets avec l'option DEBUG s'appeleront fichier.dbg.o
 # ceux de la release fichier.rls.o
@@ -32,6 +32,8 @@ OBJ_RLS=$(SRC:.c=.rls.o)
 # 1er target (celui executé par défaut quand make est lancé sans nom de cible) 
 # affiche l'aide
 all : 
+	
+	@echo $(SRC)
 	@echo ""
 	@echo "Usage:"
 	@echo ""

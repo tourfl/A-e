@@ -16,7 +16,8 @@
 /* macros de DEBUG_MSG fournies , etc */
 #include "common/notify.h"
 
- #include "memory.h"
+ #include "mem/memory.h"
+ #include "common/types.h"
 
 
 /* prompt du mode shell interactif */
@@ -37,7 +38,6 @@ Toute autre valeur signifie qu'une erreur est survenue
 
 
 
-enum {HEXA,OCT,DEC,UNKNOWN};
 
 /* mode d'interaction avec l'interpreteur (exemple)*/
 typedef enum {INTERACTIF,SCRIPT,DEBUG_MODE} inter_mode;
@@ -59,60 +59,7 @@ interpreteur init_inter(void) {
     if (inter ==NULL)
         ERROR_MSG("impossible d'allouer un nouvel interpreteur");
     return inter;
-}
-
-
-
-int get_type(char* chaine) {
-    if (is_hexa(chaine))
-        return HEXA;
-    else if (is_oct (chaine))
-	return OCT;
-    else if (is_dec (chaine))
-	return DEC;	
-    else return UNKNOWN;
-}
-
-
-
-
-int is_hexa(char* chaine) {
-    int i;
-    long l;
-    char* p;
-    if (chaine!=NULL && strlen(chaine)>2&& chaine[0]=='0' && chaine[1]=='x' && sscanf(chaine,"%x",&i)==1){
-	 l = strtol (chaine, &p , 16);
-	 if (l!=0) return 1;
-	 else return 0;
-}
-    else return 0;
-}
-
-int is_oct(char* chaine) {
-    int i;
-    long l;
-    char* p;
-    if (chaine!=NULL && strlen(chaine)> 1 && chaine[0]=='0' && sscanf(chaine,"%x",&i)==1){
-	 l = strtol (chaine, &p , 8);
-	 if (l!=0) return 1;
-	 else return 0;
-}
-    else return 0;
-}
-
-int is_dec (char* chaine){
-    int i;
-    long l;
-    char* p;
-    if (chaine!=NULL && chaine[0] != '0' && sscanf(chaine,"%x",&i)==1){
-	 l = strtol (chaine, &p , 10);
-	 if (l!=0) return 1;
-	 else return 0;
-}
-    else return 0;
-}   
-
-
+}  
 
 
 char* get_next_token(interpreteur inter) {
@@ -135,6 +82,81 @@ char* get_next_token(interpreteur inter) {
     return token;
 }
 
+
+
+
+
+int exitcmd(interpreteur inter) {
+    INFO_MSG("Bye bye !");
+    return CMD_EXIT_RETURN_VALUE;
+}
+
+
+
+/**
+ * desallocation de l'interpreteur
+ * @param inter le pointeur vers l'interpreteur à libérer
+ */
+void del_inter(interpreteur inter) {
+    if (inter !=NULL)
+        free(inter);
+}
+
+
+
+
+
+
+/**
+ * @param in Input line (possibly very badly written).
+ * @param out Line in a suitable form for further analysis.
+ * @return nothing
+ * @brief This function will prepare a line for further analysis.
+ *
+ * This function will prepare a line for further analysis and check for low-level syntax errors.
+ * colon, brackets, commas are surrounded with blank; tabs are replaced with blanks.
+ * negs '-' are attached to the following token (e.g., "toto -   56" -> "toto -56")  .
+ */
+void string_standardise( char* in, char* out ) {
+    unsigned int i=0, j;
+
+    for ( j= 0; i< strlen(in); i++ ) {
+
+        /* insert blanks around special characters*/
+        if (in[i]==':' || in[i]=='+' || in[i]=='~') {
+            out[j++]=' ';
+            out[j++]=in[i];
+            out[j++]=' ';
+
+        }
+
+        /* remove blanks after negation*/
+        else if (in[i]=='-') {
+            out[j++]=' ';
+            out[j++]=in[i];
+            while (isblank((int) in[i+1])) i++;
+        }
+
+        /* insert one blank before comments */
+        else if (in[i]=='#') {
+            out[j++]=' ';
+            out[j++]=in[i];
+        }
+        /* translate tabs into white spaces*/
+        else if (isblank((int) in[i])) out[j++]=' ';
+        else out[j++]=in[i];
+    }
+}
+
+
+/**
+ *
+ * @brief extrait la prochaine ligne du flux fp.
+ * Si fp ==stdin, utilise la librairie readline pour gestion d'historique de commande.
+ *
+ * @return 0 si succes.
+ * @return un nombre non nul si aucune ligne lue
+ */
 int  acquire_line(FILE *fp, interpreteur inter) {
     char* chunk =NULL;
 
@@ -182,12 +204,9 @@ int  acquire_line(FILE *fp, interpreteur inter) {
 }
 
 
-
-
-
-int exitcmd(interpreteur inter) {
-    INFO_MSG("Bye bye !");
-    return CMD_EXIT_RETURN_VALUE;
+/****************/
+void usage_ERROR_MSG( char *command ) {
+    fprintf( stderr, "Usage: %s [file.emul]\n   If no file is given, executes in Shell mode.", command );
 }
 
 

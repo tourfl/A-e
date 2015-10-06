@@ -54,8 +54,4 @@ typedef struct {
 
  int get_type(char* chaine);
 
- /* Commandes */
-
- int loadcmd(interpreteur inter);
-
 #endif
