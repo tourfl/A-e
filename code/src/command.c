@@ -45,10 +45,12 @@ int execute_cmd(interpreteur inter, Memory *mem) {
 
 int loadcmd(interpreteur inter, Memory *mem) {
 
+	DEBUG_MSG("Load Command entered");
+
 	char * token=NULL;
     FILE *fo = NULL;
 
-    char *va = "0x00001000";
+    char va[11];
 
 	
 	token = get_next_token(inter);
@@ -69,22 +71,32 @@ int loadcmd(interpreteur inter, Memory *mem) {
         return 1;
     }
 
+    DEBUG_MSG("file %s opened", token);
 
     token = get_next_token(inter);
 
-    if(token != NULL && get_type(token) != HEXA)
+    if(token == NULL)
     {
-        WARNING_MSG("value %s is not a valid address for load command\n",token);
+    	DEBUG_MSG("No address specified");
+    	strcpy(va, "0x00001000"); // Pas de valeur spécifiée, la mémoire sera implantée à partir de l'adresse 0x00001000
+    }
+    else if(get_type(token) == HEXA)
+    {
+    	DEBUG_MSG("Address specified : %s", token);
+        strcpy(va, token); // On affecte la valeur spécifiée
+    }
+    else
+    {
+        WARNING_MSG("value %s is not a valid address for load command\n", token);
         return 1;
     }
 
-    else if(get_type(token) == HEXA)
-        va = token; // On affecte la valeur spécifiée
-
-    // Pas de valeur spécifiée, la mémoire sera implantée à partir de l'adresse 0x00001000
-
     // On récupère le contenu du fichier ELF puis on le charge en mémoire
-    load_elf_in_mem(fo, *va, mem->map);
+    load_elf_in_mem(fo, va, mem->map);
+
+    DEBUG_MSG("HERE");
+
+    fclose(fo);
 
     return 0;
 }

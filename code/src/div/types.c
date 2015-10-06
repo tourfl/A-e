@@ -6,6 +6,9 @@
 enum {HEXA,OCT,DEC,UNKNOWN};
 
 int get_type(char* chaine) {
+
+    DEBUG_MSG("get_type entered");
+
     if (is_hexa(chaine))
         return HEXA;
     else if (is_oct (chaine))
@@ -19,6 +22,8 @@ int get_type(char* chaine) {
 
 
 int is_hexa(char* chaine) {
+    DEBUG_MSG("is_hexa entered");
+
     int i;
     long l;
     char* p;
@@ -31,6 +36,8 @@ int is_hexa(char* chaine) {
 }
 
 int is_oct(char* chaine) {
+    DEBUG_MSG("is_oct entered");
+
     int i;
     long l;
     char* p;
@@ -43,6 +50,8 @@ int is_oct(char* chaine) {
 }
 
 int is_dec (char* chaine){
+    DEBUG_MSG("is_dec entered");
+
     int i;
     long l;
     char* p;

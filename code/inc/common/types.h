@@ -17,7 +17,8 @@ extern "C" {
 
 #include <stdint.h>
 #include <string.h>
-
+#include "common/notify.h"
+	
 typedef uint32_t uint, word;
 typedef uint8_t  byte;
 

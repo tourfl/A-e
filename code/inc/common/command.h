@@ -1,6 +1,8 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
+#include <string.h>
+
 #include "common/interpreteur.h"
 #include "mem/memory.h"
 #include "common/notify.h"

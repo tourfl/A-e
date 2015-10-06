@@ -2,16 +2,58 @@
  * fichier qui gere l'initialisation de la memoire
  */
 
- #include <stdlib.h>
-
  #include "mem/memory.h"
- #include "elf/elf.h"
+
+ Memory *init_mem()
+ {
+ 	DEBUG_MSG("init_mem entered");
+
+ 	Memory *memory = NULL;
+ 	Map *memory_map = NULL;
+ 	Registres *registres = NULL;
+
+ 	registres = malloc(sizeof(Registres));
+
+ 	if(registres == NULL) return NULL;
+
+ 	memory_map = malloc(sizeof(Map));
+
+ 	if(memory_map == NULL) return NULL;
+
+ 	memory = malloc(sizeof(Memory));
+
+ 	if (memory == NULL) return NULL;
+
+ 	memory->map = memory_map;
+ 	memory->reg = registres;
+
+ 	return memory;
+ }
+
+ Segment * init_seg()
+ {
+ 	Segment *segment = NULL;
+	char va[11]; // Une adresse 32 bits en hexa fait 10 caractères + \0
+
+	segment = malloc(sizeof(Segment));
+	if (segment == NULL) return NULL;
+
+	segment->va = va;
+
+	return segment;
+ }
+
+ Segment * init_seg_with(char *name, char *content)
+ {
+ }
 
  int load_elf_in_mem(FILE *fo, char *va, Map *map)
  {
  	/*
  	 * Cela va sans doute être le zbeul avec les **
  	 */
+
+ 	 DEBUG_MSG("load_elf_in_mem fonction entered");
 
 
  	if (!assert_elf_file(fo))
@@ -22,11 +64,18 @@
  	uint *mem_size = NULL;
  	byte *section_names = NULL;
 
- 	uint **secsz = NULL;
- 	byte **scn = NULL;
+ 	uint *secsz = NULL;
+
+ 	ehdr = malloc(sizeof(byte));
+ 	if (ehdr == NULL) return 4;
+
+ 	mem_size = malloc(sizeof(uint));
+ 	if (mem_size == NULL) return 6;
+
+ 	secsz = malloc(sizeof(uint *));
+ 	if (secsz == NULL) return 5;
 
  	ehdr = __elf_get_ehdr(fo);
-
  	if (ehdr == NULL) return 2;
 
  	section_names = elf_extract_section_names(fo, mem_size);
@@ -37,30 +86,37 @@
 
  	map = malloc(*mem_size * sizeof(Segment *));
 
+ 	DEBUG_MSG("%s", section_names);
+
  	for(int i = 0; i < *mem_size; i++)
  	{
- 		Segment seg;
+ 		Segment *seg = NULL;
 
- 		map[i] = &seg;
+ 		// Pour que cela soit plus lisible, on crée des copies des variables
 
- 		map[i]->name = section_names[i]; // On donne son nom au segment
+ 		byte *section_name = &section_name[i];
+ 		uint *size = &secsz[i];
+ 		byte *scn = NULL;
 
- 		map[i]->content = elf_extract_scn_by_name(ehdr, fo, section_names[i], secsz[i], NULL); // On récupère le contenu du segment
+ 		seg = init_seg();
+ 		if (seg == NULL) return 8;
 
- 		map[i]->size = secsz[i]; // on récupère la taille du segment
+ 		map[i] = seg;
+
+ 		map[i]->content = scn;
+
+ 		map[i]->name = section_name; // On donne son nom au segment
+
+ 		map[i]->content = elf_extract_scn_by_name(ehdr, fo, section_name, secsz[i], NULL); // On récupère le contenu du segment
+
+ 		map[i]->size = size; // on récupère la taille du segment
+
+ 		DEBUG_MSG("How many : %i", i);
  	}
 
+ 	DEBUG_MSG("here");
+
  	return 0;
- }
-
-int init_Map(char mem_size)
- {
-
- 	/*
- 	* On crée mem_size cases pour (.rodata), .text, .data, .bss, [lib], [stack]
- 	*/
-
- 	return malloc(mem_size * sizeof(Segment *)); // retourne évidemment NULL si cela n'a pas fonctionné
  }
 
 int add_first_segment(char *name, char *va, int size, Map *map, char *content)

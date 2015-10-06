@@ -219,8 +219,15 @@ int main ( int argc, char *argv[] ) {
     WARNING_MSG("Un message WARNING_MSG !"); /* macro INFO_MSG */
     DEBUG_MSG("Un message DEBUG_MSG !"); /* macro DEBUG_MSG : uniquement si compil en mode DEBUG_MSG */
 
-
     Memory *mem = NULL; // On crée la structure de mémoire
+
+    mem = init_mem();
+
+    if(mem == NULL)
+    {
+        ERROR_MSG("Memory issue");
+        exit(EXIT_FAILURE);
+    }
 
     interpreteur inter=init_inter(); /* structure gardant les infos et états de l'interpreteur*/
     FILE *fp = NULL; /* le flux dans lequel les commande seront lues : stdin (mode shell) ou un fichier */

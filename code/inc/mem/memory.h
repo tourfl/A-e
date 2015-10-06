@@ -4,6 +4,10 @@
 
 #include <stdio.h>
 
+#include "elf/elf.h"
+#include "common/notify.h"
+
+
 /*
  * Structures
  */
@@ -54,9 +58,11 @@ typedef struct {
  * Fonctions
  */
 
-int load_elf_in_mem(FILE *fo, char *va, Map *map);
+Memory *init_mem();
+Segment *init_seg();
+Segment *init_seg_with(char *name, char *content);
 
-int init_Map(char mem_size);
+int load_elf_in_mem(FILE *fo, char *va, Map *map);
 
 /* Fonction qui crée le 1er segment, soit .rodata, soit .text */
 int add_first_segment(char *name, char *va, int size, Map *map, char *content);
