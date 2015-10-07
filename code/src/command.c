@@ -37,11 +37,13 @@ int execute_cmd(interpreteur inter, Memory *mem) {
     else if(strcmp(token, "set") == 0) {
 	return setcmd(inter, mem);
     }
+    else if(strcmp(token, "taupin") == 0)
+    {
+    }
 
     WARNING_MSG("Unknown Command : '%s'\n", cmdStr);
     return CMD_UNKOWN_RETURN_VALUE;
 }
-
 
 int loadcmd(interpreteur inter, Memory *mem) {
 
@@ -92,9 +94,7 @@ int loadcmd(interpreteur inter, Memory *mem) {
     }
 
     // On récupère le contenu du fichier ELF puis on le charge en mémoire
-    load_elf_in_mem(fo, va, mem->map);
-
-    DEBUG_MSG("HERE");
+    load_elf_in_mem(fo, mem->map);
 
     fclose(fo);
 
@@ -124,9 +124,12 @@ int dispcmd (interpreteur inter, Memory *mem) {
 	}
 	
 	else if (strcmp(token, "mem") == 0){
+
+		token = get_next_token(inter);
+
 		if (strcmp(token, "map") == 0)
 		{
-			disp_mem(0x00000000, 0xffffffff, mem->map); // On affiche toute la mémoire
+			disp_map(mem); // On affiche toute la mémoire
 			return 0;
 		}
 		else if(is_hexa(token) == 0)
@@ -219,34 +222,12 @@ Registre * which_reg (char *nom, Registres *reg) {
 	
 }
 
-/*
-
-Cette fonction refait celle d'au dessus
-
-int is_reg (char* nom) {
-	registre r;
-	strcpy(r.name, nom);
-	int i;
-	for (i=0; i<=12; i++){
-		if (strcmp(r.name, r[i]) == 0 ){
-			return 1;
-		}
-	}
-	if (strcmp(r.name, sp) == 1 ||strcmp(r.name, lr) == 1 || strcmp(r.name, pc) == 1 || strcmp(r.name, aspr) == 1 ){
-			return 1;
-		}
-	else return 0;
-	
-}
-*/
-
 
 //Pour la fonction discmd;
-int disp_mem (char *va_1, char *va_2, Map *map) {
+int disp_mem (char *va_1, char *va_2, Segment map[]) {
 	
 	if (is_hexa(va_1) == 1) {
 			if (is_hexa(va_2) == 1) {
-				//Afficher la plage de memoire des adresses "token" à "adresse";
 				return 0;
 			}
 			else {
@@ -343,7 +324,7 @@ int set_reg (interpreteur inter, char* r_name, char* r_content, Registres *reg) 
 }
 
 //Pour la fonction setcmd;
-int set_mem (interpreteur inter,char* type,char* adresse,char* valeur, Map *map) {
+int set_mem (interpreteur inter,char* type,char* adresse,char* valeur, Segment map[]) {
 
 	char *token = get_next_token(inter);
 
@@ -372,6 +353,5 @@ int set_mem (interpreteur inter,char* type,char* adresse,char* valeur, Map *map)
 		return 1;
 	}
 }	
-
 
 

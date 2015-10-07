@@ -15,8 +15,7 @@
 
 /* macros de DEBUG_MSG fournies , etc */
 #include "common/notify.h"
-
- #include "mem/memory.h"
+ #include "mem/memory_v2.h"
  #include "common/types.h"
 
 
@@ -219,14 +218,16 @@ int main ( int argc, char *argv[] ) {
     WARNING_MSG("Un message WARNING_MSG !"); /* macro INFO_MSG */
     DEBUG_MSG("Un message DEBUG_MSG !"); /* macro DEBUG_MSG : uniquement si compil en mode DEBUG_MSG */
 
-    Memory *mem = NULL; // On crée la structure de mémoire
+    // TODO On initialise la mémoire
+    
+    Memory *mem = NULL;
 
-    mem = init_mem();
+    mem = malloc(sizeof(Memory));
 
     if(mem == NULL)
     {
-        ERROR_MSG("Memory issue");
-        exit(EXIT_FAILURE);
+        ERROR_MSG("unable to allocate Memory");
+        return 1;
     }
 
     interpreteur inter=init_inter(); /* structure gardant les infos et états de l'interpreteur*/
