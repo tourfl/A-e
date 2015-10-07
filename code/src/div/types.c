@@ -24,15 +24,14 @@ int get_type(char* chaine) {
 int is_hexa(char* chaine) {
     DEBUG_MSG("is_hexa entered");
 
-    int i;
-    long l;
     char* p;
-    if (chaine!=NULL && strlen(chaine)>2&& chaine[0]=='0' && chaine[1]=='x' && sscanf(chaine,"%x",&i)==1){
-	 l = strtol (chaine, &p , 16);
-	 if (l!=0) return 1;
-	 else return 0;
-}
-    else return 0;
+    if (chaine==NULL 
+        || strlen(chaine) <= 2 
+        || chaine[0]!='0'
+        || chaine[1]!='x')
+        return 1;
+
+    return 0;
 }
 
 int is_oct(char* chaine) {
@@ -62,3 +61,5 @@ int is_dec (char* chaine){
 }
     else return 0;
 }
+
+

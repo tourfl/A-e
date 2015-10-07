@@ -94,7 +94,7 @@ int loadcmd(interpreteur inter, Memory *mem) {
     }
 
     // On récupère le contenu du fichier ELF puis on le charge en mémoire
-    load_elf_in_mem(fo, mem->map);
+    load_elf_in_mem(fo, mem);
 
     fclose(fo);
 
@@ -123,7 +123,7 @@ int dispcmd (interpreteur inter, Memory *mem) {
 		return 1;
 	}
 	
-	else if (strcmp(token, "mem") == 0){
+	else if (strcmp(token, "mem") == 0) {
 
 		token = get_next_token(inter);
 
@@ -134,16 +134,17 @@ int dispcmd (interpreteur inter, Memory *mem) {
 		}
 		else if(is_hexa(token) == 0)
 		{
+			unsigned long va_1 = strtoul(token, NULL, 0);
+			
+    		token = get_next_token(inter); // Ce caractère est a priori ':' mais on s'en fout
 
+			token = get_next_token(inter);
 
-			char *va_1 = token;
-
-			char *va_2 = get_next_token(inter);
-
-			if(is_hexa(va_2))
+			if(is_hexa(token) == 0)
 			{
+				unsigned long va_2 = strtoul(token, NULL, 0);
 				// On affiche la mémoire comprise entre va_1 et va_2
-				return disp_mem (va_1, va_2, mem->map);
+				return disp_mem (va_1, va_2, mem);
 			}
 
 			else
@@ -221,28 +222,6 @@ Registre * which_reg (char *nom, Registres *reg) {
 	return NULL; // Si aucun des cas n'a été rencontré
 	
 }
-
-
-//Pour la fonction discmd;
-int disp_mem (char *va_1, char *va_2, Segment map[]) {
-	
-	if (is_hexa(va_1) == 1) {
-			if (is_hexa(va_2) == 1) {
-				return 0;
-			}
-			else {
-				WARNING_MSG("%n n'est pas un bon argument pour disp mem \n", va_2);
-				return 1;
-			}
-		}
-	else {
-			WARNING_MSG("%n n'est pas un bon argument pour disp mem \n", va_1);
-			return 1;
-		}
-}
-
-
-
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
