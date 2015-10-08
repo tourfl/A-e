@@ -57,6 +57,6 @@ typedef struct
 	Registres *reg;
 } Memory;
 
-int load_elf_in_mem(FILE *fo, Memory *mem);
+int load_elf_in_mem(FILE *fo, Memory *mem, unsigned long va);
 
 #endif

@@ -21,7 +21,7 @@ int init_seg(unsigned long va, char name[], byte content[], Segment *seg)
 	return 0;
 }
 
- int load_elf_in_mem(FILE *fo, Memory *mem)
+ int load_elf_in_mem(FILE *fo, Memory *mem, unsigned long va)
  {
     char* section_names[NB_SECTIONS]= {TEXT_SECTION_STR,RODATA_SECTION_STR,DATA_SECTION_STR,BSS_SECTION_STR};
     scntab section_table;
@@ -30,7 +30,7 @@ int init_seg(unsigned long va, char name[], byte content[], Segment *seg)
     unsigned int type_machine;
     unsigned int endianness;   //little ou big endian
     unsigned int bus_width;    // 32 bits ou 64bits
-    unsigned int next_segment_start = START_MEM; // compteur pour designer le début de la prochaine section
+    unsigned int next_segment_start = va; // compteur pour designer le début de la prochaine section
 
     stab symtab= new_stab(0); // table des symboles
 

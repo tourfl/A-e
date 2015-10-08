@@ -52,7 +52,7 @@ int loadcmd(interpreteur inter, Memory *mem) {
 	char * token=NULL;
     FILE *fo = NULL;
 
-    char va[11];
+    unsigned long va = START_MEM;
 
 	
 	token = get_next_token(inter);
@@ -78,14 +78,15 @@ int loadcmd(interpreteur inter, Memory *mem) {
     token = get_next_token(inter);
 
     if(token == NULL)
-    {
     	DEBUG_MSG("No address specified");
-    	strcpy(va, "0x00001000"); // Pas de valeur spécifiée, la mémoire sera implantée à partir de l'adresse 0x00001000
-    }
-    else if(get_type(token) == HEXA)
+
+    else if(is_hexa(token) == 0)
     {
     	DEBUG_MSG("Address specified : %s", token);
-        strcpy(va, token); // On affecte la valeur spécifiée
+        va = strtoul(token, NULL, 0);
+
+        if(va % 4096 != 0) // on arrondit au ko supérieur
+        	va = (va/4096 + 1) * 4096;
     }
     else
     {
@@ -94,7 +95,7 @@ int loadcmd(interpreteur inter, Memory *mem) {
     }
 
     // On récupère le contenu du fichier ELF puis on le charge en mémoire
-    load_elf_in_mem(fo, mem);
+    load_elf_in_mem(fo, mem, va);
 
     fclose(fo);
 
@@ -132,32 +133,39 @@ int dispcmd (interpreteur inter, Memory *mem) {
 			disp_map(mem); // On affiche toute la mémoire
 			return 0;
 		}
-		else if(is_hexa(token) == 0) // A améliorer, pouvoir afficher des valeurs seules et plusieurs plages/valeurs d'un coup
+
+		int j = 3; // compte les token
+		int p = 0; // pour les plages
+		unsigned long va = 0;
+
+		while(token != NULL)
 		{
-			unsigned long va_1 = strtoul(token, NULL, 0);
-
-    		token = get_next_token(inter); // Ce caractère est a priori ':' mais on s'en fout
-
-			token = get_next_token(inter);
 
 			if(is_hexa(token) == 0)
 			{
-				unsigned long va_2 = strtoul(token, NULL, 0);
-				// On affiche la mémoire comprise entre va_1 et va_2
-				return disp_mem (va_1, va_2, mem);
+				if(p != 0)
+				{
+					disp_plage(va, strtoul(token, NULL, 0), mem);
+					p = 0;
+					va = 0;
+				}
+				else 
+				{
+					if(va != 0) disp_oct(va, mem);
+					
+					va = strtoul(token, NULL, 0);
+				}
 			}
 
-			else
-			{
-				WARNING_MSG("Seconde adresse mémoire invalide \n");
-				return 3;
-			}
+			else if(strcmp(token, ":") == 0 && va != 0) p++;
+
+			else WARNING_MSG("invalid token %i", j);
+
+			token = get_next_token(inter);
+			j++;
 		}
-		else
-		{
-			WARNING_MSG("Spécifiez la zone mémoire à afficher\n");
-			return 2;
-		}
+
+		if(va != 0) disp_oct(va, mem);
 	}
 	
 	else if (strcmp(token, "reg") == 0) {
@@ -189,6 +197,8 @@ int dispcmd (interpreteur inter, Memory *mem) {
 		WARNING_MSG("Mauvaise utilisation de la fonction disp\n");
 		return 1;
 	}
+
+	return 0;
 }
 
 // Registre * which_reg (char *nom, Registres *reg) {

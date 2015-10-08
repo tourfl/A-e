@@ -22,8 +22,6 @@ int get_type(char* chaine) {
 
 
 int is_hexa(char* chaine) {
-    DEBUG_MSG("is_hexa entered");
-
     char* p;
     if (chaine==NULL 
         || strlen(chaine) <= 2 

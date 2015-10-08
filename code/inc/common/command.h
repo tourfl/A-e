@@ -20,10 +20,12 @@ int exitcmd(interpreteur inter);
 
 Registre * which_reg (char *nom, Registres *reg);
 //int is_reg (char* nom);
-int disp_map(Memory *memory);
-int disp_mem (unsigned long va_1, unsigned long va_2, Memory *mem); //Pour la fonction discmd
+void disp_map(Memory *memory);
+void disp_plage (unsigned long va_1, unsigned long va_2, Memory *mem); //Pour la fonction discmd
+void disp_oct(unsigned long va, Memory *mem);
 
 void disp_all_regs(Registres *mem);
+void disp_reg(char *name, Registres *reg);
 void display_reg_content(Registre reg);
 
 int set_reg (interpreteur inter, char* r_name, char* r_content, Registres *reg); //Pour la fonction setcmd
