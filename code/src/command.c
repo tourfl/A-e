@@ -132,10 +132,10 @@ int dispcmd (interpreteur inter, Memory *mem) {
 			disp_map(mem); // On affiche toute la mémoire
 			return 0;
 		}
-		else if(is_hexa(token) == 0)
+		else if(is_hexa(token) == 0) // A améliorer, pouvoir afficher des valeurs seules et plusieurs plages/valeurs d'un coup
 		{
 			unsigned long va_1 = strtoul(token, NULL, 0);
-			
+
     		token = get_next_token(inter); // Ce caractère est a priori ':' mais on s'en fout
 
 			token = get_next_token(inter);
@@ -149,8 +149,8 @@ int dispcmd (interpreteur inter, Memory *mem) {
 
 			else
 			{
-				// Sinon on pourrait afficher toute la mémoire à partir de la seule adresse spécifiée
 				WARNING_MSG("Seconde adresse mémoire invalide \n");
+				return 3;
 			}
 		}
 		else
@@ -161,32 +161,24 @@ int dispcmd (interpreteur inter, Memory *mem) {
 	}
 	
 	else if (strcmp(token, "reg") == 0) {
-		
-		char* token = NULL;
-		token = get_next_token(inter);
-		if(strcmp (token, "all")==0){
-			int i = 0;
-			for (i=0; i<15 ; i++) {
-				printf ("%s : %s\n", mem->reg->r[i].name , mem->reg->r[i].content);
-			}
-			printf ("sp : %s\n lr : %s\n pc : %s\n apsr : %s\n",mem->reg->sp->content, mem->reg->lr->content, mem->reg->pc->content, mem->reg->apsr->content);
-			return 0;
-		}
-		else {
-			Registre *r;
-			while (token != NULL){
 
-				r = which_reg(token, mem->reg);
-				
-				if (r != NULL) {/*Vérification de la bonne saisie du nom du registre*/
-					printf ("%s : %s\n", r->name , r->content);
-					token = get_next_token(inter);
-				}
-				
-				else {
-					WARNING_MSG ("Erreur lors de la saisie des reg\n");
-					return 1;
-				}
+		token = get_next_token(inter);
+
+		if(token == NULL)
+		{
+			WARNING_MSG("Please give a registre to display");
+			return 1;
+		}
+
+		else if(strcmp (token, "all")==0){
+			
+			disp_all_regs(mem->reg);
+		}
+
+		else {
+			 while (token != NULL) {
+				disp_reg(token, mem->reg);
+				token = get_next_token(inter);
 			}
 		}
 
@@ -199,29 +191,29 @@ int dispcmd (interpreteur inter, Memory *mem) {
 	}
 }
 
-Registre * which_reg (char *nom, Registres *reg) {
-	int i;
-	for (i=0; i<15; i++){
-		if (strcmp(nom, reg->r[i].name) == 0 ){
-			 return &(reg->r[i]);
-		}
-	}
-	if (strcmp(nom, reg->sp->name) == 0) {
-		return reg->sp;
-	}
-	else if (strcmp(nom, reg->lr->name) == 0){
-		return reg->lr;
-	}
-	else if (strcmp(nom, reg->pc->name) == 0) {
-		return reg->pc;
-	}
-	else if (strcmp(nom, reg->apsr->name) == 0) {
-		return reg->apsr;
-	}
+// Registre * which_reg (char *nom, Registres *reg) {
+// 	int i;
+// 	for (i=0; i<15; i++){
+// 		if (strcmp(nom, reg->r[i].name) == 0 ){
+// 			 return &(reg->r[i]);
+// 		}
+// 	}
+// 	if (strcmp(nom, reg->sp->name) == 0) {
+// 		return reg->sp;
+// 	}
+// 	else if (strcmp(nom, reg->lr->name) == 0){
+// 		return reg->lr;
+// 	}
+// 	else if (strcmp(nom, reg->pc->name) == 0) {
+// 		return reg->pc;
+// 	}
+// 	else if (strcmp(nom, reg->apsr->name) == 0) {
+// 		return reg->apsr;
+// 	}
 
-	return NULL; // Si aucun des cas n'a été rencontré
+// 	return NULL; // Si aucun des cas n'a été rencontré
 	
-}
+// }
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
@@ -279,25 +271,25 @@ int setcmd (interpreteur inter, Memory *mem){
 int set_reg (interpreteur inter, char* r_name, char* r_content, Registres *reg) {
 	
 	
-	if(is_hexa(r_content) == 1 || is_dec(r_content) == 1 || is_oct(r_content) == 1) {
+	// if(is_hexa(r_content) == 1 || is_dec(r_content) == 1 || is_oct(r_content) == 1) {
 		
-		Registre *r = which_reg(r_name, reg);
+	// 	Registre *r = which_reg(r_name, reg);
 
-		if (r != NULL) { /*Vérification de la bonne saisie du nom du registre*/
-			strcpy(r->content, r_content);
-			return 0;
-		}
+	// 	if (r != NULL) { /*Vérification de la bonne saisie du nom du registre*/
+	// 		strcpy(r, r_content);
+	// 		return 0;
+	// 	}
 		
-		else {
-			WARNING_MSG ("Mauvaise saisie du nom du registre\n");
-			return 1;
-		}
-	}
+	// 	else {
+	// 		WARNING_MSG ("Mauvaise saisie du nom du registre\n");
+	// 		return 1;
+	// 	}
+	// }
 	
-	else {
-		WARNING_MSG ("Mauvais format de la valeur à écrire\n");
-		return 1;
-	}
+	// else {
+	// 	WARNING_MSG ("Mauvais format de la valeur à écrire\n");
+	// 	return 1;
+	// }
 	
 	
 }

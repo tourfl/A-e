@@ -213,14 +213,18 @@ void usage_ERROR_MSG( char *command ) {
  * Programme principal
  */
 int main ( int argc, char *argv[] ) {
-    /* exemples d'utilisation des macros du fichier notify.h */
-    INFO_MSG("Un message INFO_MSG : Debut du programme %s", argv[0]); /* macro INFO_MSG */
-    WARNING_MSG("Un message WARNING_MSG !"); /* macro INFO_MSG */
-    DEBUG_MSG("Un message DEBUG_MSG !"); /* macro DEBUG_MSG : uniquement si compil en mode DEBUG_MSG */
-
-    // TODO On initialise la mémoire
+    // On initialise la mémoire
     
     Memory *mem = NULL;
+    Registres *reg = NULL;
+
+    reg = malloc(sizeof(Memory));
+
+    if(reg == NULL)
+    {
+        ERROR_MSG("unable to allocate Registres");
+        return 1;
+    }
 
     mem = malloc(sizeof(Memory));
 
@@ -229,6 +233,10 @@ int main ( int argc, char *argv[] ) {
         ERROR_MSG("unable to allocate Memory");
         return 1;
     }
+
+    mem->reg = reg;
+
+    DEBUG_MSG("Memory initialized");
 
     interpreteur inter=init_inter(); /* structure gardant les infos et états de l'interpreteur*/
     FILE *fp = NULL; /* le flux dans lequel les commande seront lues : stdin (mode shell) ou un fichier */

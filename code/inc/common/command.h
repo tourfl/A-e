@@ -22,6 +22,10 @@ Registre * which_reg (char *nom, Registres *reg);
 //int is_reg (char* nom);
 int disp_map(Memory *memory);
 int disp_mem (unsigned long va_1, unsigned long va_2, Memory *mem); //Pour la fonction discmd
+
+void disp_all_regs(Registres *mem);
+void display_reg_content(Registre reg);
+
 int set_reg (interpreteur inter, char* r_name, char* r_content, Registres *reg); //Pour la fonction setcmd
 int set_mem (interpreteur inter,char* type,char* adresse, char* content, Segment map[]);	//Pour la fonction setcmd;
 
