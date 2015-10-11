@@ -68,7 +68,7 @@ int get_type(char* chaine) {
 	return OCT;
     else if (is_dec (chaine))
 	return DEC;	
-    return UNKNOWN;
+    else return UNKNOWN;
 }
 
 
