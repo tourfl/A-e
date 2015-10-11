@@ -252,7 +252,7 @@ int setcmd (interpreteur inter, Memory *mem){
 		type = get_next_token(inter);
 		adresse = get_next_token(inter);
 		valeur = get_next_token (inter);
-		a = set_mem (inter, type, adresse, valeur, mem->map); //fonction qui copie "valeur" à "adresse";
+		a = set_mem (inter, type, adresse, valeur, mem->map); //fonction qui copie "valeur" à l'adrese "adresse";
 		return (a);
 	}
 	
