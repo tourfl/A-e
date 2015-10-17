@@ -157,9 +157,14 @@ int dispcmd (interpreteur inter, Memory *mem) {
 				}
 			}
 
-			else if(strcmp(token, ":") == 0 && va != 0) p++;
+			else if(strcmp(token, ":") == 0) p++;
 
-			else WARNING_MSG("invalid token %i", j);
+			else 
+			{
+				WARNING_MSG("invalid token %i (%s)", j, token);
+				return 1;
+			}
+
 
 			token = get_next_token(inter);
 			j++;

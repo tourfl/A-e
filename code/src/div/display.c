@@ -107,7 +107,7 @@ void disp_plage (unsigned long va_1, unsigned long va_2, Memory *mem)
   while (va <= va_2)
   {
     if (k % 16 == 0)
-      printf("\n 0x%08x ", va);
+      printf("\n  0x%08x ", va);
 
     printf("00 ");
 
