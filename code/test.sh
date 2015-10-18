@@ -1,14 +1,21 @@
 #!/bin/bash
 
-if [ $# = 0 ]; then
+mode=
+
+if [ $# -eq 0 ]; then
 	echo "Usage: ./test dir_name* (ou ./test all)"
 	exit
-elif [ $1 == "all" ]; then
-	TST_SRC=`ls ./tst/*/*.emu`
 else
 	for arg in $*; do
-		TST_SRC+=`ls ./tst/$arg/*.emu`
+		if [ $arg == "-b" ]; then
+			mode="-b"
+		elif [ $arg == "all" ]; then
+			TST_SRC=`ls ./tst/*/*.emu`
+			break
+		else
+			TST_SRC+=`ls ./tst/$arg/*.emu`
+		fi
 	done
 fi
 
-../prof/testing/simpleUnitTest.sh -e ./emul-ARM $TST_SRC
+../prof/testing/simpleUnitTest.sh $mode -e ./emul-ARM $TST_SRC
