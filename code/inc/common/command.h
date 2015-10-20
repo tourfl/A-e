@@ -2,6 +2,7 @@
 #define COMMAND_H
 
 #include <string.h>
+#include <math.h>
 
 #include "common/interpreteur.h"
 #include "mem/memory_v2.h"

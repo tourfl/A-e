@@ -51,7 +51,7 @@ void disp_map(Memory *mem)
   printf("\n");
 }
 
-void disp_plage (unsigned long va_1, unsigned long va_2, Memory *mem)
+void disp_plage (unsigned long va_1, unsigned long va_2, Memory *mem) // on suppose va_1 > va_2
 {
   /* Les octets sont dans des segments sinon ils sont nuls 
   */

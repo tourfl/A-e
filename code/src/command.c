@@ -37,8 +37,9 @@ int execute_cmd(interpreteur inter, Memory *mem) {
     else if(strcmp(token, "set") == 0) {
 	return setcmd(inter, mem);
     }
-    else if(strcmp(token, "taupin") == 0)
+    else if(strcmp(token, "dic") == 0)
     {
+    	return disp_dic();
     }
 
     WARNING_MSG("Unknown Command : '%s'\n", cmdStr);
@@ -145,7 +146,9 @@ int dispcmd (interpreteur inter, Memory *mem) {
 			{
 				if(p != 0)
 				{
-					disp_plage(va, strtoul(token, NULL, 0), mem);
+					unsigned long va_2 = strtoul(token, NULL, 0);
+					if(va < va_2) disp_plage(va, va_2, mem);
+					else disp_plage(va_2, va, mem);
 					p = 0;
 					va = 0;
 				}
