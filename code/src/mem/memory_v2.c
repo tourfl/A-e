@@ -56,7 +56,8 @@ int init_seg(unsigned long va, char name[], byte content[], Segment *seg)
         byte* content = elf_extract_scn_by_name(ehdr, fo, section_names[i], &taille, NULL );
         
         if (content!=NULL){
-        	for(int j = 0; j < taille && j < CONTENT_SIZE_MAX; j++)
+int j;
+        	for(j = 0; j < taille && j < CONTENT_SIZE_MAX; j++)
         		 mem->map[i].content[j] = *(content + j); // On copie proprement le contenu
 
 			mem->map[i].va = next_segment_start;

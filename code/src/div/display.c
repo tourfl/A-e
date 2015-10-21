@@ -38,8 +38,8 @@ void disp_map(Memory *mem)
 {
   unsigned int next_segment_start = START_MEM; // compteur pour designer le début de la prochaine section
 
-
-  for(int i = 0; i < NB_SECTIONS; i++)
+int i;
+  for(i = 0; i < NB_SECTIONS; i++)
   {
     if(mem->map[i].size != 0)
     {
@@ -61,8 +61,8 @@ void disp_plage (unsigned long va_1, unsigned long va_2, Memory *mem) // on supp
   unsigned long va_end;
   unsigned long size;
   char k = 0;
-
-  for (char i = 0; i < NB_SECTIONS; i++)
+char i;
+  for (i = 0; i < NB_SECTIONS; i++)
   {
     va_start = mem->map[i].va;
     size = mem->map[i].size;
@@ -126,9 +126,9 @@ void disp_oct(unsigned long va, Memory *mem)
   unsigned char octet =0;
 
   printf("  0x%08x ", va);
+char i;
 
-
-  for (char i = 0; i < NB_SECTIONS; i++)
+  for (i = 0; i < NB_SECTIONS; i++)
   {
     va_start = mem->map[i].va;
     size = mem->map[i].size;
@@ -155,8 +155,8 @@ void disp_reg(char *name, Registres *reg)
 
   if(name[0] == 'r')
   {
-
-    for (char i = 0; i < REG_NB; ++i)
+char i;
+    for (i = 0; i < REG_NB; ++i)
     {
         sprintf(n, "r%i", i); // On stocke "ri" dans n
 
@@ -196,7 +196,8 @@ void disp_reg(char *name, Registres *reg)
 
 void disp_all_regs(Registres *reg)
 {
-  for (int i = 0; i < REG_NB; ++i)
+int i;
+  for (i = 0; i < REG_NB; ++i)
   {
     printf("  r%i : ", i);
     display_reg_content(reg->r[i]);

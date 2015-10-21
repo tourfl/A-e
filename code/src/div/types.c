@@ -23,10 +23,11 @@ int get_type(char* chaine) {
 
 int is_hexa(char* chaine) {
     char* p;
-    if (chaine==NULL 
-        || strlen(chaine) <= 2 
+    if (chaine==NULL  
+	|| strlen(chaine) <= 2 
         || chaine[0]!='0'
-        || chaine[1]!='x')
+        || chaine[1]!='x'
+	)
         return 1;
 
     return 0;

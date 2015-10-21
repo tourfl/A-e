@@ -55,7 +55,7 @@ release : $(OBJ_RLS)
 	$(CC) $< $(CFLAGS_DBG) -c -o $(basename $<).dbg.o
 
 clean : 
-	$(RM) $(TARGET) $(SRCDIR)/*.o $(GARBAGE) 
+	$(RM) $(TARGET) $(wildcard $(SRCDIR)/*.o) $(wildcard $(SRCDIR)/*/*.o) $(GARBAGE) 
 	$(RM) -r $(DOCDIR)/*	
 
 # créé l'archive à envoyer à votre tuteur (pas de rar SVP! et interdiction absolu d'envoyer autre chose qu'une archive, il ne doit y avoir qu'un seul fichier joint dans l'e-mail !)

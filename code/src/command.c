@@ -209,29 +209,7 @@ int dispcmd (interpreteur inter, Memory *mem) {
 	return 0;
 }
 
-// Registre * which_reg (char *nom, Registres *reg) {
-// 	int i;
-// 	for (i=0; i<15; i++){
-// 		if (strcmp(nom, reg->r[i].name) == 0 ){
-// 			 return &(reg->r[i]);
-// 		}
-// 	}
-// 	if (strcmp(nom, reg->sp->name) == 0) {
-// 		return reg->sp;
-// 	}
-// 	else if (strcmp(nom, reg->lr->name) == 0){
-// 		return reg->lr;
-// 	}
-// 	else if (strcmp(nom, reg->pc->name) == 0) {
-// 		return reg->pc;
-// 	}
-// 	else if (strcmp(nom, reg->apsr->name) == 0) {
-// 		return reg->apsr;
-// 	}
 
-// 	return NULL; // Si aucun des cas n'a été rencontré
-	
-// }
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
@@ -253,7 +231,7 @@ int setcmd (interpreteur inter, Memory *mem){
 		return 0;
 	}
 	
-	else if (strcmp (token, "mem") == 0){
+	/*else if (strcmp (token, "mem") == 0){
 		char* type = NULL;
 		char* valeur = NULL;
 		char* adresse = NULL;
@@ -262,13 +240,14 @@ int setcmd (interpreteur inter, Memory *mem){
 		valeur = get_next_token (inter);
 		a = set_mem (inter, type, adresse, valeur, mem->map); //fonction qui copie "valeur" à l'adrese "adresse";
 		return (a);
-	}
+	}*/
 	
 	else if (strcmp (token, "reg") == 0){
 		char* valeur = NULL;
 		char* reg = NULL;
 		reg = get_next_token (inter);
 		valeur = get_next_token(inter);
+
 		a = set_reg(inter,reg,valeur, mem->reg); //fonction qui copie "valeur" dans le registre "reg"; 
 		return (a); 
 		
@@ -282,38 +261,66 @@ int setcmd (interpreteur inter, Memory *mem){
 }
 
 
+Registre * which_reg (char *nom, Registres *reg) {
+ 	int i;
+	char n[3];
+ 	for (i=0; i<15; i++){
 
+		sprintf(n, "r%i", i);
+
+ 		if (strcmp(nom, n) == 0 ){
+ 			 return &(reg->r[i]);
+ 		}
+
+ 	}
+ 	if (strcmp(nom, "sp") == 0) {
+ 		return reg->sp;
+ 	}
+ 	else if (strcmp(nom, "lr") == 0){
+ 		return reg->lr;
+ 	}
+ 	else if (strcmp(nom, "pc") == 0) {
+ 		return reg->pc;
+ 	}
+ 	else if (strcmp(nom, "aspr") == 0) {
+ 		return reg->apsr;
+ 	}
+
+ 	return NULL; // Si aucun des cas n'a été rencontré
+	
+}
 
 
 //Pour la fonction setcmd
 int set_reg (interpreteur inter, char* r_name, char* r_content, Registres *reg) {
 	
 	
-	// if(is_hexa(r_content) == 1 || is_dec(r_content) == 1 || is_oct(r_content) == 1) {
-		
-	// 	Registre *r = which_reg(r_name, reg);
-
-	// 	if (r != NULL) { /*Vérification de la bonne saisie du nom du registre*/
-	// 		strcpy(r, r_content);
-	// 		return 0;
-	// 	}
-		
-	// 	else {
-	// 		WARNING_MSG ("Mauvaise saisie du nom du registre\n");
-	// 		return 1;
-	// 	}
-	// }
+	 if(is_hexa(r_content) == 0 || is_dec(r_content) == 1 || is_oct(r_content) == 1) {
 	
-	// else {
-	// 	WARNING_MSG ("Mauvais format de la valeur à écrire\n");
-	// 	return 1;
-	// }
+	 	Registre *r = which_reg(r_name, reg);
+
+
+	 	if (r != NULL) {
+	 		strcpy(r, r_content);
+	 		return 0;
+	 	}
+		
+	 	else {
+	 		WARNING_MSG ("Mauvaise saisie du nom du registre\n");
+	 		return 1;
+	 	}
+	 }
+	
+	 else {
+	 	WARNING_MSG ("Mauvais format de la valeur à écrire\n");
+	 	return 1;
+	 }
 	
 	
 }
 
 //Pour la fonction setcmd;
-int set_mem (interpreteur inter,char* type,char* adresse,char* valeur, Segment map[]) {
+/*int set_mem (interpreteur inter,char* type,char* adresse,char* valeur, Segment map[]) {
 
 	char *token = get_next_token(inter);
 
@@ -341,6 +348,19 @@ int set_mem (interpreteur inter,char* type,char* adresse,char* valeur, Segment m
 		WARNING_MSG("Mauvaise utilisation de la fonction disp\n");
 		return 1;
 	}
-}	
+}	*/
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+
+
+//*int assertcmd (interpreteur inter, Memory mem) {
+
 
 
