@@ -1,17 +1,7 @@
 #ifndef  INTERPRETEUR_H
 #define INTERPRETEUR_H
 
-#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-
-/* la librairie readline */
-#include <readline/readline.h>
-#include <readline/history.h>
-
-/* macros de DEBUG_MSG fournies , etc */
-#include "common/notify.h"
-
 
 /* prompt du mode shell interactif */
 #define PROMPT_STRING "ARMShell> "
@@ -50,7 +40,16 @@ typedef struct {
  *	Fonctions
  */
 
+ // Fournies
+
+ interpreteur init_inter(void);
+ void del_inter(interpreteur inter);
  char* get_next_token(interpreteur inter);
+ void string_standardise( char* in, char* out );
+ int  acquire_line(FILE *fp, interpreteur inter);
+ void usage_ERROR_MSG( char *command );
+
+ // Créées
 
  int get_type(char* chaine);
 

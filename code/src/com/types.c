@@ -1,6 +1,9 @@
 /* Fonctions relatives aux types */
 
-#include "common/types.h"
+#include "com/types.h"
+#include <string.h> // Pour strtok notamment
+#include "com/notify.h" // messages de contrôle
+#include <stdlib.h> // sscanf notamment
 
 
 enum {HEXA,OCT,DEC,UNKNOWN};
@@ -22,7 +25,6 @@ int get_type(char* chaine) {
 
 
 int is_hexa(char* chaine) {
-    char* p;
     if (chaine==NULL  
 	|| strlen(chaine) <= 2 
         || chaine[0]!='0'

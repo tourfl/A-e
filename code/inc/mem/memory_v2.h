@@ -1,18 +1,18 @@
 #ifndef H_MEMORY
 #define H_MEMORY
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
-#include "common/types.h"
-#include "common/notify.h"
-#include "elf/elf.h"
+#include <stdio.h> // pour fo
+#include "com/types.h" // pour uint32_t
 
 #define NAME_SIZE_MAX 100
 #define CONTENT_SIZE_MAX 1000
 
-#define REG_NB 16 // de 0 à 15
+#define NB_REG 17
+/*
+ * de r0 à r15 + apsr (reg[16])
+ * r13 : sp 	r14 : lr 	r15 : pc
+ */
+
 #define REG_SIZE_MAX 1000
 	
  // On fixe ici une adresse basse dans la mémoire virtuelle. Le premier segment
@@ -20,7 +20,7 @@
 #define START_MEM 0x1000
 
 // nombre max de sections que l'on extraira du fichier ELF
-#define NB_SECTIONS 4
+#define NB_SEC 4
 
 // nom de chaque section
 #define TEXT_SECTION_STR ".text"
@@ -28,35 +28,27 @@
 #define DATA_SECTION_STR ".data"
 #define BSS_SECTION_STR ".bss"
 
-typedef struct
+typedef struct segment
 {
-	unsigned long va;
+	unsigned int va;
 	char name[NAME_SIZE_MAX];
 	byte content[CONTENT_SIZE_MAX];
 	uint32_t size;
 
 } Segment;
 
-int init_seg(unsigned long va, char name[], byte content[], Segment *seg); // OK
+// un registre est un unsigned int
 
-// un registre est un banal tableau de caractères
+typedef unsigned int Registre;
 
-typedef char Registre[REG_SIZE_MAX];
-
-typedef struct {
-	Registre r[REG_NB];
-	Registre sp;
-	Registre lr;
-	Registre pc;
-	Registre apsr;
-} Registres;
-
+int which_reg (char *nom, Registre reg[NB_REG], Registre *r); // obsolète, inutilisée
 typedef struct
 {
-	Segment map[NB_SECTIONS];
-	Registres *reg;
+	Segment map[NB_SEC];
+	Registre reg[NB_REG];
+
 } Memory;
 
-int load_elf_in_mem(FILE *fo, Memory *mem, unsigned long va);
+int load_elf_in_mem(FILE *fo, Memory *mem, unsigned int va);
 
 #endif

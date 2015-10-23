@@ -1,4 +1,7 @@
-#include "common/command.h"
+#include "com/command.h" // inclut memory
+#include "com/types.h" // byte
+#include "com/notify.h" // messages de contrôle, inclut stdlib (printf)
+#include <string.h> // pour strcmp
 
 // fonction affichant les octets d'un segment sur la sortie standard
 // parametres :
@@ -28,7 +31,7 @@ void print_section_raw_content(char* name, unsigned int start, byte* content, un
            // (*(content + k) dans la mémoire physique)
       if(k%16==0) printf("\n  0x%08x ", start + k);
       octet = *((unsigned char *) (content+k));
-      printf("%02x ",	octet);
+      printf("%02x ", octet);
     }
   }
   printf("\n");
@@ -36,33 +39,31 @@ void print_section_raw_content(char* name, unsigned int start, byte* content, un
 
 void disp_map(Memory *mem)
 {
-  unsigned int next_segment_start = START_MEM; // compteur pour designer le début de la prochaine section
-
-int i;
-  for(i = 0; i < NB_SECTIONS; i++)
+  int i;
+  for(i = 0; i < NB_SEC; i++)
   {
     if(mem->map[i].size != 0)
     {
       print_section_raw_content(mem->map[i].name, (unsigned int) mem->map[i].va, mem->map[i].content, mem->map[i].size);
-      next_segment_start+= (mem->map[i].size/4096 + 1) * 4096; // on arrondit au 1k suppérieur
     }
   }
 
   printf("\n");
 }
 
-void disp_plage (unsigned long va_1, unsigned long va_2, Memory *mem) // on suppose va_1 > va_2
+void disp_plage (unsigned int va_1, unsigned int va_2, Memory *mem) // on suppose va_1 > va_2
 {
   /* Les octets sont dans des segments sinon ils sont nuls 
   */
 
-  unsigned long va = va_1;
-  unsigned long va_start;
-  unsigned long va_end;
-  unsigned long size;
-  char k = 0;
-char i;
-  for (i = 0; i < NB_SECTIONS; i++)
+  unsigned int va = va_1;
+  unsigned int va_start;
+  unsigned int va_end;
+  unsigned int size;
+  int k = 0;
+  int i;
+  
+  for (i = 0; i < NB_SEC; i++)
   {
     va_start = mem->map[i].va;
     size = mem->map[i].size;
@@ -118,17 +119,17 @@ char i;
   printf("\n");
 }
 
-void disp_oct(unsigned long va, Memory *mem)
+void disp_oct(unsigned int va, Memory *mem)
 {
-  unsigned long va_start;
-  unsigned long va_end;
-  unsigned long size;
+  unsigned int va_start;
+  unsigned int va_end;
+  unsigned int size;
   unsigned char octet =0;
 
   printf("  0x%08x ", va);
-char i;
+  int i;
 
-  for (i = 0; i < NB_SECTIONS; i++)
+  for (i = 0; i < NB_SEC; i++)
   {
     va_start = mem->map[i].va;
     size = mem->map[i].size;
@@ -149,21 +150,20 @@ char i;
   printf("00 \n");
 }
 
-void disp_reg(char *name, Registres *reg)
+void disp_reg(char *name, Registre reg[NB_REG])
 {
   char n[4];
 
   if(name[0] == 'r')
   {
-char i;
-    for (i = 0; i < REG_NB; ++i)
+    int i;
+    for (i = 0; i < NB_REG-4; ++i)
     {
         sprintf(n, "r%i", i); // On stocke "ri" dans n
 
         if(strcmp(name, n) == 0)
         {
-          printf("  r%i : ", i);
-          display_reg_content(reg->r[i]);
+          printf("  r%i : %i \n", i, reg[i]);
           return;
         }
     }
@@ -173,52 +173,33 @@ char i;
 
   else if(strcmp(name, "sp") == 0)
   {
-    printf("  sp : ");
-    display_reg_content(reg->sp);
+    printf("  sp : %i \n", reg[13]);
   }
   else if(strcmp(name, "lr") == 0)
   {
-    printf("  lr : ");
-    display_reg_content(reg->lr);
+    printf("  lr : %i \n", reg[14]);
   }
   else if(strcmp(name, "pc") == 0)
   {
-    printf("  pc : ");
-    display_reg_content(reg->pc);
+    printf("  pc : %i \n", reg[15]);
   }
   else if(strcmp(name, "apsr") == 0)
   {
-    printf("  apsr : ");
-    display_reg_content(reg->apsr);
+    printf("  apsr : %i \n", reg[16]);
   }
   else WARNING_MSG ("No '%s' registre\n", name);
 }
 
-void disp_all_regs(Registres *reg)
+void disp_all_regs(Registre reg[NB_REG])
 {
-int i;
-  for (i = 0; i < REG_NB; ++i)
+  int i;
+  for (i = 0; i < NB_REG-4; ++i)
   {
-    printf("  r%i : ", i);
-    display_reg_content(reg->r[i]);
+    printf("  r%i : %i \n", i, reg[i]);
   }
 
-  printf("  sp : ");
-  display_reg_content(reg->sp);
-  printf("  lr : ");
-  display_reg_content(reg->lr);
-  printf("  pc : ");
-  display_reg_content(reg->pc);
-  printf("  apsr : ");
-  display_reg_content(reg->apsr);
+  printf("  sp : %i \n", reg[13]);
+  printf("  lr : %i \n", reg[14]);
+  printf("  pc : %i \n", reg[15]);
+  printf("  apsr : %i \n", reg[16]);
 }
-
-void display_reg_content(Registre reg)
-{
-  if(strlen(reg) == 0 || strcmp(reg, "\0") == 0)
-    printf("vide \n");
-
-  else
-    printf("%s \n", reg);
-}
-

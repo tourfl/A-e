@@ -15,11 +15,7 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
-#include <string.h>
-#include <math.h>
-
-#include "common/notify.h"
+#include <stdint.h> // Pour memset ?
 	
 typedef uint32_t uint, word;
 typedef uint8_t  byte;

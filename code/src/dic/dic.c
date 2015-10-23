@@ -1,4 +1,4 @@
-#include "common/dic.h"
+#include "com/dic.h"
 
 int disp_dic()
 {

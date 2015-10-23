@@ -1,7 +1,15 @@
 
-#include "common/command.h"
+#include "com/command.h" // inclut interpreteur et mémoire
+#include "com/notify.h" // Pour les messages de contrôle, inclut stdlib et stdio
+#include <string.h> // pour strcmp notamment
+#include <math.h> // je ne sais plus pour quoi
+#include "com/dic.h" // Pour lire le dictionnaire pardi
 
 
+int exitcmd(interpreteur inter) {
+    INFO_MSG("Bye bye !");
+    return CMD_EXIT_RETURN_VALUE;
+}
 
 
 /* Fonction appelée dans le main, qui sert à réorienter le programme vers les commandes */
@@ -53,7 +61,7 @@ int loadcmd(interpreteur inter, Memory *mem) {
 	char * token=NULL;
     FILE *fo = NULL;
 
-    unsigned long va = START_MEM;
+    unsigned int va = START_MEM;
 
 	
 	token = get_next_token(inter);
@@ -137,7 +145,7 @@ int dispcmd (interpreteur inter, Memory *mem) {
 
 		int j = 3; // compte les token
 		int p = 0; // pour les plages
-		unsigned long va = 0;
+		unsigned int va = 0;
 
 		while(token != NULL)
 		{
@@ -146,7 +154,7 @@ int dispcmd (interpreteur inter, Memory *mem) {
 			{
 				if(p != 0)
 				{
-					unsigned long va_2 = strtoul(token, NULL, 0);
+					unsigned int va_2 = strtoul(token, NULL, 0);
 					if(va < va_2) disp_plage(va, va_2, mem);
 					else disp_plage(va_2, va, mem);
 					p = 0;
@@ -245,10 +253,10 @@ int setcmd (interpreteur inter, Memory *mem){
 	else if (strcmp (token, "reg") == 0){
 		char* valeur = NULL;
 		char* reg = NULL;
-		reg = get_next_token (inter);
+		reg = get_next_token(inter);
 		valeur = get_next_token(inter);
 
-		a = set_reg(inter,reg,valeur, mem->reg); //fonction qui copie "valeur" dans le registre "reg"; 
+		a = set_reg(reg, valeur, mem->reg); //fonction qui copie "valeur" dans le registre "reg"; 
 		return (a); 
 		
 	}
@@ -261,62 +269,56 @@ int setcmd (interpreteur inter, Memory *mem){
 }
 
 
-Registre * which_reg (char *nom, Registres *reg) {
- 	int i;
-	char n[3];
- 	for (i=0; i<15; i++){
-
-		sprintf(n, "r%i", i);
-
- 		if (strcmp(nom, n) == 0 ){
- 			 return &(reg->r[i]);
- 		}
-
- 	}
- 	if (strcmp(nom, "sp") == 0) {
- 		return reg->sp;
- 	}
- 	else if (strcmp(nom, "lr") == 0){
- 		return reg->lr;
- 	}
- 	else if (strcmp(nom, "pc") == 0) {
- 		return reg->pc;
- 	}
- 	else if (strcmp(nom, "aspr") == 0) {
- 		return reg->apsr;
- 	}
-
- 	return NULL; // Si aucun des cas n'a été rencontré
-	
-}
-
-
 //Pour la fonction setcmd
-int set_reg (interpreteur inter, char* r_name, char* r_content, Registres *reg) {
+int set_reg (char* name, char* content, Registre reg[NB_REG]) {
 	
 	
-	 if(is_hexa(r_content) == 1/* || is_dec(r_content) == 1 || is_oct(r_content) == 1*/) {
-	
-	 	Registre *r = which_reg(r_name, reg);
+	if(is_hexa(content) == 0 || is_dec(content) == 1 || is_oct(content) == 1) {int i;
+    	char n[4]; // la taille peut aller jusqu'à 4 : r15'\0'
+    	unsigned int c = strtoul(content, NULL, 0);
+
+    	for (i=0; i<NB_REG-1; i++){
+
+    		sprintf(n, "r%i", i);
+
+    		if (strcmp(name, n) == 0 ){
+    			reg[i] = c;
+    			return 0;
+    		}
+
+    	}
+    	if (strcmp(name, "sp") == 0) {
+    		reg[13] = c;
+    		return 0;
+    	}
+    	else if (strcmp(name, "lr") == 0){
+    		reg[14] = c;
+    		return 0;
+    	}
+    	else if (strcmp(name, "pc") == 0) {
+    		reg[15] = c;
+    		return 0;
+    	}
+    	else if (strcmp(name, "aspr") == 0) {
+    		reg[16] = c;
+    		return 0;
+    	}
+
+    	else
+    	{
+    		WARNING_MSG("%s n'est pas un registre", name);
+    		return 3;
+    	}
 
 
-	 	if (r != NULL) {
-	 		strcpy(r, r_content);
-	 		return 0;
-	 	}
-		
-	 	else {
-	 		WARNING_MSG ("Mauvaise saisie du nom du registre\n");
-	 		return 1;
-	 	}
-	 }
-	
-	 else {
-	 	WARNING_MSG ("Mauvais format de la valeur à écrire\n");
-	 	return 1;
-	 }
-	
-	
+    }
+
+    else {
+    	WARNING_MSG ("Mauvais format de la valeur à écrire\n");
+    	return 2;
+    }
+
+
 }
 
 //Pour la fonction setcmd;

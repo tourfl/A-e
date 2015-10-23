@@ -5,60 +5,26 @@
  *
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+ #include "com/interpreteur.h"
+ #include <string.h> // pour strtok notamment
+ #include <stdlib.h> // Pour free
+ #include "com/notify.h" // Pour les messages warning, debug, etc.
+ #include <ctype.h> // Pour isblank()
 
 /* la librairie readline */
 #include <readline/readline.h>
 #include <readline/history.h>
 
-/* macros de DEBUG_MSG fournies , etc */
-#include "common/notify.h"
- #include "mem/memory_v2.h"
- #include "common/types.h"
-
-
-/* prompt du mode shell interactif */
-#define PROMPT_STRING "ARMShell : > "
-
-/* taille max pour nos chaines de char */
-#define MAX_STR 1024
-
-
-/*************************************************************\
-Valeur de retour speciales pour la fonction
-	int execute_cmd(interpreteur inter) ;
-Toute autre valeur signifie qu'une erreur est survenue
- \*************************************************************/
-#define CMD_OK_RETURN_VALUE 0
-#define CMD_EXIT_RETURN_VALUE -1
-#define CMD_UNKOWN_RETURN_VALUE -2
-
-
-
-
-/* mode d'interaction avec l'interpreteur (exemple)*/
-typedef enum {INTERACTIF,SCRIPT,DEBUG_MODE} inter_mode;
-
-/* structure passée en parametre qui contient la connaissance de l'état de
- * l'interpréteur
+/**
+ * allocation et init interpreteur
+ * @return un pointeur vers une structure allouée dynamiquement
  */
-typedef struct {
-    inter_mode mode;
-    char input[MAX_STR];
-    char * from;
-    char first_token;
-} *interpreteur;
-
-
-
 interpreteur init_inter(void) {
     interpreteur inter = calloc(1,sizeof(*inter));
     if (inter ==NULL)
         ERROR_MSG("impossible d'allouer un nouvel interpreteur");
     return inter;
-}  
+}
 
 
 char* get_next_token(interpreteur inter) {
@@ -83,15 +49,6 @@ char* get_next_token(interpreteur inter) {
 
 
 
-
-
-int exitcmd(interpreteur inter) {
-    INFO_MSG("Bye bye !");
-    return CMD_EXIT_RETURN_VALUE;
-}
-
-
-
 /**
  * desallocation de l'interpreteur
  * @param inter le pointeur vers l'interpreteur à libérer
@@ -100,6 +57,7 @@ void del_inter(interpreteur inter) {
     if (inter !=NULL)
         free(inter);
 }
+
 
 
 
@@ -146,6 +104,11 @@ void string_standardise( char* in, char* out ) {
         else out[j++]=in[i];
     }
 }
+
+
+
+
+
 
 
 /**
@@ -207,106 +170,3 @@ int  acquire_line(FILE *fp, interpreteur inter) {
 void usage_ERROR_MSG( char *command ) {
     fprintf( stderr, "Usage: %s [file.emul]\n   If no file is given, executes in Shell mode.", command );
 }
-
-
-/**
- * Programme principal
- */
-int main ( int argc, char *argv[] ) {
-    // On initialise la mémoire
-    
-    Memory *mem = NULL;
-    Registres *reg = NULL;
-
-    reg = malloc(sizeof(Memory));
-
-    if(reg == NULL)
-    {
-        ERROR_MSG("unable to allocate Registres");
-        return 1;
-    }
-
-    mem = malloc(sizeof(Memory));
-
-    if(mem == NULL)
-    {
-        ERROR_MSG("unable to allocate Memory");
-        return 1;
-    }
-
-    mem->reg = reg;
-
-    DEBUG_MSG("Memory initialized");
-
-    interpreteur inter=init_inter(); /* structure gardant les infos et états de l'interpreteur*/
-    FILE *fp = NULL; /* le flux dans lequel les commande seront lues : stdin (mode shell) ou un fichier */
-
-    if ( argc > 2 ) {
-        usage_ERROR_MSG( argv[0] );
-        exit( EXIT_FAILURE );
-    }
-    if(argc == 2 && strcmp(argv[1], "-h") == 0) {
-        usage_ERROR_MSG( argv[0] );
-        exit( EXIT_SUCCESS );
-    }
-
-    /*par defaut : mode shell interactif */
-    fp = stdin;
-    inter->mode = INTERACTIF;
-    if(argc == 2) {
-        /* mode fichier de commandes */
-        fp = fopen( argv[1], "r" );
-        if ( fp == NULL ) {
-            perror( "fopen" );
-            exit( EXIT_FAILURE );
-        }
-        inter->mode = SCRIPT;
-    }
-
-    /* boucle infinie : lit puis execute une cmd en boucle */
-    while ( 1 ) {
-
-
-
-        if (acquire_line( fp,  inter)  == 0 ) {
-            /* Une nouvelle ligne a ete acquise dans le flux fp*/
-
-            int res = execute_cmd(inter, mem); /* execution de la commande */
-
-            // traitement des erreurs
-            switch(res) {
-            case CMD_OK_RETURN_VALUE:
-                break;
-            case CMD_EXIT_RETURN_VALUE:
-                /* sortie propre du programme */
-                if ( inter->mode == SCRIPT ) {
-                    fclose( fp );
-                }
-                del_inter(inter);
-                exit(EXIT_SUCCESS);
-                break;
-            default:
-                /* erreur durant l'execution de la commande */
-                /* En mode "fichier" toute erreur implique la fin du programme ! */
-                if (inter->mode == SCRIPT) {
-                    fclose( fp );
-                    del_inter(inter);
-                    /*macro ERROR_MSG : message d'erreur puis fin de programme ! */
-                    ERROR_MSG("ERREUR DETECTEE. Aborts");
-                }
-                break;
-            }
-        }
-        if( inter->mode == SCRIPT && feof(fp) ) {
-            /* mode fichier, fin de fichier => sortie propre du programme */
-            DEBUG_MSG("FIN DE FICHIER");
-            fclose( fp );
-            del_inter(inter);
-            exit(EXIT_SUCCESS);
-        }
-    }
-    /* tous les cas de sortie du programme sont gérés plus haut*/
-    ERROR_MSG("SHOULD NEVER BE HERE\n");
-}
-
-

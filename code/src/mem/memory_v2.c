@@ -1,29 +1,12 @@
-#include "mem/memory_v2.h"
+#include "mem/memory_v2.h" // inclut la mémoire
+#include "com/notify.h" // messages de contrôle, inclut stdio, stdlib
+#include <string.h> // pour strcpy notamment
+#include "elf/elf.h" // Pour assert_elf_file entre autres, inclut scntab, stdio, etc.
 
-int init_seg(unsigned long va, char name[], byte content[], Segment *seg)
-{	
-	if (seg == NULL)
-	{
-		ERROR_MSG("seg is not allocated");
-		return 2;
-	}
 
-	if (sizeof(content) > CONTENT_SIZE_MAX)
-	{
-		WARNING_MSG("content is too big");
-		return 1;
-	}
-
-	strcpy(seg->va, va);
-	strcpy(seg->name, name);
-	strcpy(seg->content, content);
-
-	return 0;
-}
-
- int load_elf_in_mem(FILE *fo, Memory *mem, unsigned long va)
+ int load_elf_in_mem(FILE *fo, Memory *mem, unsigned int va)
  {
-    char* section_names[NB_SECTIONS]= {TEXT_SECTION_STR,RODATA_SECTION_STR,DATA_SECTION_STR,BSS_SECTION_STR};
+    char* section_names[NB_SEC]= {TEXT_SECTION_STR,RODATA_SECTION_STR,DATA_SECTION_STR,BSS_SECTION_STR};
     scntab section_table;
     unsigned int nsegments;
     int i=0;
@@ -46,7 +29,7 @@ int init_seg(unsigned long va, char name[], byte content[], Segment *seg)
 
 	nsegments=0;
     byte *ehdr    = __elf_get_ehdr(fo );    
-    for (i=0; i<NB_SECTIONS; i++) {
+    for (i=0; i<NB_SEC; i++) {
 
         printf("Processing section named %s\n", section_names[i]); 
 
@@ -77,3 +60,40 @@ int j;
     del_scntab( section_table );
  	return 0;
  }
+
+
+
+int which_reg (char *nom, Registre reg[NB_REG], Registre *r) {
+    int i;
+    char n[4]; // la taille peut aller jusqu'à 4 : r15'\0'
+
+    for (i=0; i<NB_REG-1; i++){
+
+        sprintf(n, "r%i", i);
+
+        if (strcmp(nom, n) == 0 ){
+             *r = reg[i];
+             return 0;
+        }
+
+    }
+    if (strcmp(nom, "sp") == 0) {
+             *r = reg[13];
+             return 0;
+    }
+    else if (strcmp(nom, "lr") == 0){
+             *r = reg[14];
+             return 0;
+    }
+    else if (strcmp(nom, "pc") == 0) {
+             *r = reg[15];
+             return 0;
+    }
+    else if (strcmp(nom, "aspr") == 0) {
+             *r = reg[16];
+             return 0;
+    }
+
+    return 1; 
+    
+}

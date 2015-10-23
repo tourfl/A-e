@@ -62,5 +62,5 @@ clean :
 # créé l'archive à envoyer à votre tuteur (pas de rar SVP! et interdiction absolu d'envoyer autre chose qu'une archive, il ne doit y avoir qu'un seul fichier joint dans l'e-mail !)
 archive : 
 	make clean 
-	tar -czvf ../$(notdir $(PWD) )-`whoami`-`date +%d-%m-%H-%M`.tgz .
-	echo "Fichier archive ../emulARM-`whoami`-`date +%d-%m-%H-%M`.tgz genere"
+	tar -czvf ../$(notdir $(PWD) )-ZEGGAI_DEIN-`date +%d-%m-%H-%M`.tgz .
+	echo "Fichier archive ../emulARM-ZEGGAI_DEIN-`date +%d-%m-%H-%M`.tgz genere"

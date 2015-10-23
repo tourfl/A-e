@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-#include "common/types.h"
+#include "com/types.h"
 
 
 typedef enum {

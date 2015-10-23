@@ -110,6 +110,8 @@ extern "C" {
 #define DEBUG_MSG(...)
 #endif
 
+#define here DEBUG_MSG("Able to be here !");
+
 #ifdef __cplusplus
 }
 #endif

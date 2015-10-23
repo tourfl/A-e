@@ -10,6 +10,6 @@ int disp_dic();
 
 int comp_instr(); // TODO
 
-int bin_x_bin(unsigned long bin_1, unsigned long bin_2); // TODO
+int bin_x_bin(unsigned int bin_1, unsigned int bin_2); // TODO
 
 #endif
