@@ -23,7 +23,6 @@ int get_type(char* chaine) {
 
 
 
-
 int is_hexa(char* chaine) {
     if (chaine==NULL  
 	|| strlen(chaine) <= 2 
