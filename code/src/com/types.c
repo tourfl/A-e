@@ -43,13 +43,13 @@ int is_oct(char* chaine) { // Ne fait pas bien son taf a priori
     char* p;
     if (chaine!=NULL && strlen(chaine)> 1 && chaine[0]=='0' && sscanf(chaine,"%x",&i)==1){
 	 l = strtol (chaine, &p , 8);
-	 if (l!=0) return 1;
+	 if (l!=0 && strcmp (p , "") == 0) return 1;
 	 else return 0;
 }
     else return 0;
 }
 
-int is_dec (char* chaine){ // Cette fonction ne fait pas bien son taf
+int is_dec (char* chaine){ // Fixed!
     DEBUG_MSG("is_dec entered");
 
     int i;
@@ -57,7 +57,7 @@ int is_dec (char* chaine){ // Cette fonction ne fait pas bien son taf
     char* p;
     if (chaine!=NULL && chaine[0] != '0' && sscanf(chaine,"%x",&i)==1){
 	 l = strtol (chaine, &p , 10);
-	 if (l!=0) return 1;
+	 if (l!=0 && strcmp (p , "") == 0) return 1;
 	 else return 0;
 }
     else return 0;
