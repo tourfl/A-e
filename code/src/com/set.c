@@ -26,7 +26,7 @@ int setcmd (interpreteur inter, Memory *mem){
 	name = get_next_token(inter); // registre ou adresse
 	value = get_next_token(inter); // valeur
 
-	/* On commence par tester la valeur car elle est commune au 3 commandes
+	/* On commence par tester la valeur car elle est commune aux 3 commandes
 	*/
 
 	if( what == NULL
@@ -39,7 +39,7 @@ int setcmd (interpreteur inter, Memory *mem){
 		return 1;
 	}
 
-	if(is_figure(value) == 2) // La valeur n'est pas correcte
+	if(is_figure(value) != 0) // La valeur n'est pas correcte
 	{
 		WARNING_MSG("Value must be decimal, hexadecimal or octodecimal");
 		return 2;
@@ -50,11 +50,6 @@ int setcmd (interpreteur inter, Memory *mem){
 	if(strcmp(what, "reg") == 0)
 	{
 		return set_reg(name, val, mem->reg);
-	}
-	else if(is_figure(value) == 2)
-	{
-		WARNING_MSG("Address must be decimal, hexadecimal or octodecimal");
-		return 2;
 	}
 	else if(strcmp(what, "word") == 0)
 	{

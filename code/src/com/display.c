@@ -58,43 +58,6 @@ int dispcmd (interpreteur inter, Memory *mem) {
 	WARNING_MSG("Problem with tokens");
 	printf("%s", usage);
 	return 1;
-/*
-	else if (strcmp(what, "mem") == 0) {
-
-		if (strcmp(where, "map") == 0 && get_next_token(inter) == NULL)
-		{
-			disp_map(mem); // On affiche toute la mémoire
-			return 0;
-		}
-
-		else if()
-
-		else
-			return disp_mem_plage()
-    }
-
-    else if (strcmp(what, "reg") == 0) {
-
-    	if(strcmp (where, "all")==0)
-    		disp_all_regs(mem->reg);
-
-    	else {
-    		while (where != NULL && is_reg(where)) {
-    			disp_reg(where, mem->reg);
-    			where = get_next_token(inter);
-    		}
-    	}
-
-    	return 0;
-    }
-
-    else {
-    	WARNING_MSG("Mauvaise utilisation de la fonction disp\n");
-    	printf("%s", usage);
-    	return 1;
-    }
-
-    return 0;*/
 }
 
 

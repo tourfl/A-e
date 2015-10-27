@@ -32,7 +32,7 @@ typedef struct segment
 {
 	vaddr32 va;
 	char name[NAME_SIZE_MAX];
-	byte content[CONTENT_SIZE_MAX];
+	byte *content; // On utilise l'allocation dynamique
 	uint32_t size;
 
 } Segment;
@@ -53,7 +53,7 @@ typedef struct
 
 } Memory;
 
-int load_elf_in_mem(FILE *fo, Memory *mem, unsigned int va);
+int load_elf_in_mem(FILE *fo, Segment map[NB_SEC], unsigned int va);
 
 // Les fonctions suivantes risquent d'être assez compliquées
 

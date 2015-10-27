@@ -18,6 +18,8 @@ int assert(interpreteur inter, Memory *mem);
 
 // Affichage
 
+void print_section_raw_content(char* name, unsigned int start, byte* content, unsigned int taille);
+
 int disp_some_mem(char *token, interpreteur inter, Memory *mem);
 
 void disp_map(Memory *memory);

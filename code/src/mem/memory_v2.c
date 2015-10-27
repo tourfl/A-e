@@ -3,9 +3,10 @@
 #include <string.h> // pour strcpy notamment
 #include "elf/elf.h" // Pour assert_elf_file entre autres, inclut scntab, stdio, etc.
 #include <math.h> // pow
+#include "com/command.h" // pour print_section_raw_content
 
 
- int load_elf_in_mem(FILE *fo, Memory *mem, unsigned int va)
+ int load_elf_in_mem(FILE *fo, Segment map[NB_SEC], unsigned int va)
  {
     char* section_names[NB_SEC]= {TEXT_SECTION_STR,RODATA_SECTION_STR,DATA_SECTION_STR,BSS_SECTION_STR};
     scntab section_table;
@@ -32,27 +33,35 @@
     byte *ehdr    = __elf_get_ehdr(fo );    
     for (i=0; i<NB_SEC; i++) {
 
-        printf("Processing section named %s\n", section_names[i]); 
+        INFO_MSG("Processing section named %s", section_names[i]); 
 
-        strcpy(mem->map[i].name, section_names[i]);
+        strcpy(map[i].name, section_names[i]);
 
-        uint32_t taille = 0;
-        byte* content = elf_extract_scn_by_name(ehdr, fo, section_names[i], &taille, NULL );
-        
-        if (content!=NULL){
-int j;
-        	for(j = 0; j < taille && j < CONTENT_SIZE_MAX; j++)
-        		 mem->map[i].content[j] = *(content + j); // On copie proprement le contenu
+        map[i].size = 0;
+        byte *content = elf_extract_scn_by_name(ehdr, fo, section_names[i], &(map[i].size), NULL );
 
-			mem->map[i].va = next_segment_start;
-			next_segment_start += (taille/4096 + 1) * 4096;
+        if(content != NULL && map[i].size != 0)
+        {
+            map[i].content = malloc(map[i].size * sizeof(byte));
+
+            if(map[i].content == NULL)
+            {
+                ERROR_MSG("Unable to allocate memory");
+                return 1;
+            }
+
+            int j;
+
+            for(j = 0; j < map[i].size; j++)
+                *(map[i].content+j) = *(content+j);
+
+            map[i].va = next_segment_start;
+            next_segment_start += (map[i].size/4096 + 1) * 4096;
         }
-        else{
 
-            DEBUG_MSG("section %s not present in the elf file",section_names[i]);
+        else {
+            DEBUG_MSG("section %s not present in the elf file", section_names[i]);
         }
-
-        mem->map[i].size = taille;
     }
 		free(ehdr); 
 
@@ -274,4 +283,6 @@ word get_word(vaddr32 va_1, Memory *mem)
 }
 
 int set_word(vaddr32 va, byte value, Memory *mem)
-{}
+{
+
+}
