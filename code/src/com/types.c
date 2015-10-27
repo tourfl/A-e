@@ -69,7 +69,7 @@ int is_figure (char *chaine){
     || is_oct(chaine) == 0) // La valeur n'est pas correcte
         return 0;
 
-    WARNING_MSG("Value must be decimal, hexadecimal or octodecimal");
+    WARNING_MSG("Value must be decimal, hexadecimal or octal");
     return 2;
 }
 
