@@ -42,10 +42,10 @@ int is_oct(char* chaine) { // Ne fait pas bien son taf a priori
     char* p;
     if (chaine!=NULL && strlen(chaine)> 1 && chaine[0]=='0' && sscanf(chaine,"%x",&i)==1){
 	 l = strtol (chaine, &p , 8);
-	 if (l!=0 && strcmp (p , "") == 0) return 1;
-	 else return 0;
+	 if (l!=0 && strcmp (p , "") == 0) return 0;
+	 else return 1;
 }
-    else return 0;
+    else return 1;
 }
 
 int is_dec (char* chaine){ // Fixed!
@@ -56,10 +56,10 @@ int is_dec (char* chaine){ // Fixed!
     char* p;
     if (chaine!=NULL && chaine[0] != '0' && sscanf(chaine,"%x",&i)==1){
 	 l = strtol (chaine, &p , 10);
-	 if (l!=0 && strcmp (p , "") == 0) return 1;
-	 else return 0;
+	 if (l!=0 && strcmp (p , "") == 0) return 0;
+	 else return 1;
 }
-    else return 0;
+    else return 1;
 }
 
 int is_figure (char *chaine){
