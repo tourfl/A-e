@@ -35,7 +35,7 @@ int is_hexa(char* chaine) {
     return 0;
 }
 
-int is_oct(char* chaine) {
+int is_oct(char* chaine) { // Ne fait pas bien son taf a priori
     DEBUG_MSG("is_oct entered");
 
     int i;
@@ -49,7 +49,7 @@ int is_oct(char* chaine) {
     else return 0;
 }
 
-int is_dec (char* chaine){
+int is_dec (char* chaine){ // Cette fonction ne fait pas bien son taf
     DEBUG_MSG("is_dec entered");
 
     int i;
@@ -61,6 +61,17 @@ int is_dec (char* chaine){
 	 else return 0;
 }
     else return 0;
+}
+
+int is_figure (char *chaine){
+
+    if(is_hexa(chaine) == 0
+    || is_dec(chaine) == 0
+    || is_oct(chaine) == 0) // La valeur n'est pas correcte
+        return 0;
+
+    WARNING_MSG("Value must be decimal, hexadecimal or octodecimal");
+    return 2;
 }
 
 

@@ -2,6 +2,7 @@
 #include "com/notify.h" // messages de contrôle, inclut stdio, stdlib
 #include <string.h> // pour strcpy notamment
 #include "elf/elf.h" // Pour assert_elf_file entre autres, inclut scntab, stdio, etc.
+#include <math.h> // pow
 
 
  int load_elf_in_mem(FILE *fo, Memory *mem, unsigned int va)
@@ -97,3 +98,180 @@ int which_reg (char *nom, Registre reg[NB_REG], Registre *r) {
     return 1; 
     
 }
+
+
+
+int get_reg(char *name, word *content, Registre reg[NB_REG])
+{
+    char n[4];
+    int k = -1; // indice du reg trouvé
+
+    if(name[0] == 'r')
+    {
+        int i;
+        for (i = 0; i < NB_REG-4 && k<0; ++i)
+        {
+            sprintf(n, "r%i", i); // On stocke "ri" dans n
+
+            if(strcmp(name, n) == 0)
+                k=i;
+        }
+    }
+
+    else if(strcmp(name, "sp") == 0)
+        k=13;
+    
+    else if(strcmp(name, "lr") == 0)
+        k=14;
+
+    else if(strcmp(name, "pc") == 0)
+        k=15;
+
+    else if(strcmp(name, "apsr") == 0)
+        k=16;
+
+    if(k < 0)
+            return 1;
+
+    *content = reg[k];
+    return 0;
+}
+
+
+
+int set_reg(char *name, word value, Registre reg[NB_REG])
+{
+    char n[4];
+    int k = -1; // indice du reg trouvé
+
+    if(name[0] == 'r')
+    {
+        int i;
+        for (i = 0; i < NB_REG-4 && k<0; ++i)
+        {
+            sprintf(n, "r%i", i); // On stocke "ri" dans n
+
+            if(strcmp(name, n) == 0)
+                k=i;
+        }
+    }
+
+    else if(strcmp(name, "sp") == 0)
+        k=13;
+    
+    else if(strcmp(name, "lr") == 0)
+        k=14;
+
+    else if(strcmp(name, "pc") == 0)
+        k=15;
+
+    else if(strcmp(name, "apsr") == 0)
+        k=16;
+
+    if(k < 0) {
+        WARNING_MSG ("No '%s' registre\n", name);
+        return 1;
+    }
+
+    reg[k] = value;
+    return 0;
+}
+
+
+
+byte get_byte(vaddr32 va, Memory *mem)
+{
+    vaddr32 va_start;
+    vaddr32 va_end;
+    vaddr32 size;
+    int i;
+
+    for (i = 0; i < NB_SEC; i++)
+    {
+        va_start = mem->map[i].va;
+        size = mem->map[i].size;
+        va_end = va_start + size;
+
+        if (va < va_start)
+            return 0;
+
+        else if (va < va_end)
+            return *(mem->map[i].content + va - va_start);
+    }
+
+    return 0;
+}
+
+
+int set_byte(vaddr32 va, byte value, Memory *mem)
+{
+    vaddr32 va_start;
+    vaddr32 va_end;
+    vaddr32 size;
+    int i;
+
+    here_n(1);
+
+    for (i = 0; i < NB_SEC; i++)
+    {
+        va_start = mem->map[i].va;
+        size = mem->map[i].size;
+        va_end = va_start + size;
+
+        if (va < va_start)
+            return 1; // Que faire si l'octet n'appartient pas au map ?
+
+        else if (va < va_end)
+        {
+            *(mem->map[i].content + va - va_start) = value;
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+word get_word(vaddr32 va_1, Memory *mem)
+{
+    
+  /* Les octets sont dans des segments sinon ils sont nuls 
+  */
+
+    vaddr32 va = va_1;
+    vaddr32 va_start;
+    vaddr32 va_end;
+    uint32_t size;
+    word w = 0;
+    int i;
+
+    for (i = 0; i < NB_SEC; i++)
+    {
+        va_start = mem->map[i].va;
+        size = mem->map[i].size;
+        va_end = va_start + size;
+
+        while (va < va_start)
+        {
+            if(va == va_1 + 3) // $(0x1)*16^3 + $(0x2)*16^2 + $(0x3)*16 + 0x4
+                return w;
+
+            va++;
+        }
+
+        while (va <= va_end)
+        {
+
+            w += *(mem->map[i].content + va - va_start) * pow(16, 2*(3-va+va_1));
+
+            if (va == va_1 + 3)
+                return w;
+
+            va++;
+        }
+    }
+
+    return w;
+}
+
+int set_word(vaddr32 va, byte value, Memory *mem)
+{}

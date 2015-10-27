@@ -112,6 +112,8 @@ extern "C" {
 
 #define here DEBUG_MSG("Able to be here !");
 
+#define here_n(n) DEBUG_MSG("Able to be here n°%i", n);
+
 #ifdef __cplusplus
 }
 #endif

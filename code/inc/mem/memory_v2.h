@@ -30,7 +30,7 @@
 
 typedef struct segment
 {
-	unsigned int va;
+	vaddr32 va;
 	char name[NAME_SIZE_MAX];
 	byte content[CONTENT_SIZE_MAX];
 	uint32_t size;
@@ -39,9 +39,13 @@ typedef struct segment
 
 // un registre est un unsigned int
 
-typedef unsigned int Registre;
+typedef word Registre;
+
+int get_reg(char *name, word *content, Registre reg[NB_REG]); // Il faut une valeur de retour pour savoir si name appartient bien aux registres
+int set_reg(char *name, word value, Registre reg[NB_REG]);
 
 int which_reg (char *nom, Registre reg[NB_REG], Registre *r); // obsolète, inutilisée
+
 typedef struct
 {
 	Segment map[NB_SEC];
@@ -50,5 +54,13 @@ typedef struct
 } Memory;
 
 int load_elf_in_mem(FILE *fo, Memory *mem, unsigned int va);
+
+// Les fonctions suivantes risquent d'être assez compliquées
+
+byte get_byte(vaddr32 va, Memory *mem);
+int set_byte(vaddr32 va, byte value, Memory *mem);
+
+word get_word(vaddr32 va, Memory *mem);
+int set_word(vaddr32 va, byte value, Memory *mem);
 
 #endif

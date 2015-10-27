@@ -44,6 +44,7 @@ int get_type(char* chaine);
 int is_hexa(char* chaine);
 int is_oct(char* chaine);
 int is_dec (char* chaine);
+int is_figure(char* chaine);
 
 #ifdef __cplusplus
 }
