@@ -1,0 +1,2 @@
+Usage : set mem <type> <adresse> <valeur>
+	set reg <registre> <valeur>

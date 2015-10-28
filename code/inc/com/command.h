@@ -22,7 +22,7 @@ void print_section_raw_content(char* name, unsigned int start, byte* content, un
 
 int disp_some_mem(char *token, interpreteur inter, Memory *mem);
 
-void disp_map(Memory *memory);
+void disp_map(Segment map[NB_SEC]);
 void disp_plage(unsigned int va_1, unsigned int va_2, Memory *mem); //Pour la fonction discmd
 void disp_oct(unsigned int va, Memory *mem);
 

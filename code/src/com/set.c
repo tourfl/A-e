@@ -55,13 +55,13 @@ int setcmd (interpreteur inter, Memory *mem){
 	{
 		va = strtoul(name, NULL, 0);
 
-		return set_word(va, val, mem);
+		return set_word(va, val, mem->map);
 	}
 	else if(strcmp(what, "byte") == 0)
 	{
 		va = strtoul(name, NULL, 0);
 
-		return set_byte(va, val, mem);
+		return set_byte(va, val, mem->map);
 	}
 	else {
 		WARNING_MSG("Bad value for second or third token");

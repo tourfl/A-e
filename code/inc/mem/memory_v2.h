@@ -5,15 +5,12 @@
 #include "com/types.h" // pour uint32_t
 
 #define NAME_SIZE_MAX 100
-#define CONTENT_SIZE_MAX 1000
 
 #define NB_REG 17
 /*
  * de r0 à r15 + apsr (reg[16])
  * r13 : sp 	r14 : lr 	r15 : pc
  */
-
-#define REG_SIZE_MAX 1000
 	
  // On fixe ici une adresse basse dans la mémoire virtuelle. Le premier segment
 // ira se loger à cette adresse.
@@ -37,6 +34,15 @@ typedef struct segment
 
 } Segment;
 
+/* realloc_seg :
+ *
+ *	on realloue map[i].content avec la taille size
+ * 	le map est nécessaire pour décaler les autres segments, si besoin
+ *	on suppose size > 0
+ */
+
+int realloc_seg(int size, int i, Segment map[NB_SEC]);
+
 // un registre est un unsigned int
 
 typedef word Registre;
@@ -53,14 +59,16 @@ typedef struct
 
 } Memory;
 
+void init_mem(Memory *mem);
+
 int load_elf_in_mem(FILE *fo, Segment map[NB_SEC], unsigned int va);
 
 // Les fonctions suivantes risquent d'être assez compliquées
 
-byte get_byte(vaddr32 va, Memory *mem);
-int set_byte(vaddr32 va, byte value, Memory *mem);
+byte get_byte(vaddr32 va, Segment map[NB_SEC]);
+int set_byte(vaddr32 va, byte value, Segment map[NB_SEC]);
 
-word get_word(vaddr32 va, Memory *mem);
-int set_word(vaddr32 va, byte value, Memory *mem);
+word get_word(vaddr32 va_1, Memory *mem);
+int set_word(vaddr32 va_1, word value, Segment map[NB_SEC]);
 
 #endif

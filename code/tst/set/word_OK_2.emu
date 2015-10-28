@@ -1,0 +1,7 @@
+#-------
+#TEST_RETURN_CODE=PASS       
+#TEST_COMMENT="Teste set"
+#-------
+
+load pile.o
+set mem word 0x1036 0xAAFFBBDD

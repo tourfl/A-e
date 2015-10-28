@@ -3,4 +3,4 @@
 #TEST_COMMENT="Teste set"
 #-------
 
-set mem word 0x5000 0xAAFFBBDD
+set mem word 0x1036 0xAA

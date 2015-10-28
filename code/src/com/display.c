@@ -27,11 +27,11 @@ int dispcmd (interpreteur inter, Memory *mem) {
 	{
 		if(where != NULL && strcmp(where, "map") == 0 && get_next_token(inter) == NULL)
 		{
-			disp_map(mem);
+			disp_map(mem->map);
 			return 0;
 		}
 
-		else if(is_hexa(where) == 0) // Comprend where != NULL
+		else if(is_figure(where) == 0) // Comprend where != NULL
 		{
 			return disp_some_mem(where, inter, mem);
 		}
@@ -69,9 +69,9 @@ int disp_some_mem(char *token, interpreteur inter, Memory *mem)
 	while(token != NULL)
 	{
 
-		if(is_hexa(token) == 0)
+		if(is_figure(token) == 0)
 		{
-			if(p != 0)
+			if(p != 0) // il faut afficher une plage.
 			{
 				unsigned int va_2 = strtoul(token, NULL, 0);
 				if(va < va_2) disp_plage(va, va_2, mem);
@@ -80,13 +80,13 @@ int disp_some_mem(char *token, interpreteur inter, Memory *mem)
 				va = 0;
 			}
 			else {
-				if(va != 0) disp_oct(va, mem);
+				if(va != 0) disp_oct(va, mem); // Si va est non-nulle, on affiche son contenu
 
-				va = strtoul(token, NULL, 0);
+				va = strtoul(token, NULL, 0); // va prend la valeur du token courant
 			}
 		}
 
-		else if(strcmp(token, ":") == 0) p++;
+		else if(strcmp(token, ":") == 0) p++; // on va afficher une plage
 
 		else 
 		{
@@ -143,14 +143,14 @@ void print_section_raw_content(char* name, unsigned int start, byte* content, un
 	printf("\n");
 }
 
-void disp_map(Memory *mem)
+void disp_map(Segment map[NB_SEC])
 {
 	int i;
 	for(i = 0; i < NB_SEC; i++)
 	{
-		if(mem->map[i].size != 0)
+		if(map[i].size != 0)
 		{
-			print_section_raw_content(mem->map[i].name, (unsigned int) mem->map[i].va, mem->map[i].content, mem->map[i].size);
+			print_section_raw_content(map[i].name, (unsigned int) map[i].va, map[i].content, map[i].size);
 		}
 	}
 
@@ -173,7 +173,7 @@ void disp_plage (unsigned int va_1, unsigned int va_2, Memory *mem) // on suppos
 	{
 		va_start = mem->map[i].va;
 		size = mem->map[i].size;
-		va_end = va_start + size;
+		va_end = va_start + size - 1;  // avec 00 ff : size = 2, va_end = va_start + size - 1
 
 		while (va < va_start)
 		{
@@ -227,7 +227,7 @@ void disp_plage (unsigned int va_1, unsigned int va_2, Memory *mem) // on suppos
 
 void disp_oct(unsigned int va, Memory *mem) // V2
 {
-	printf(" 0x%08x %02x\n", va, get_byte(va, mem));
+	printf(" 0x%08x %02x\n", va, get_byte(va, mem->map));
 }
 
 int disp_reg(char *name, Registre reg[NB_REG])

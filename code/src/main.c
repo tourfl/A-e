@@ -14,15 +14,9 @@
 int main ( int argc, char *argv[] ) {
     // On initialise la mémoire
     
-    Memory *mem = NULL;
+    Memory mem;
 
-    mem = malloc(sizeof(Memory));
-
-    if(mem == NULL)
-    {
-        ERROR_MSG("unable to allocate Memory");
-        return 1;
-    }
+    init_mem(&mem);
 
     DEBUG_MSG("Memory initialized");
 
@@ -60,7 +54,7 @@ int main ( int argc, char *argv[] ) {
         if (acquire_line( fp,  inter)  == 0 ) {
             /* Une nouvelle ligne a ete acquise dans le flux fp*/
 
-            int res = execute_cmd(inter, mem); /* execution de la commande */
+            int res = execute_cmd(inter, &mem); /* execution de la commande */
 
             // traitement des erreurs
             switch(res) {

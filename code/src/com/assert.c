@@ -34,9 +34,7 @@ int assert(interpreteur inter, Memory *mem)
 	/* On commence par tester la valeur car elle est commune au 3 commandes
 	*/
 
-	if(is_hexa(value) != 0
-	&& is_dec(value) != 0
-	&& is_oct(value) != 0) // La valeur n'est pas correcte
+	if(is_figure(value) != 0) // La valeur n'est pas correcte
 	{
 		WARNING_MSG("Value must be decimal, hexadecimal or octodecimal");
 		return 2;
@@ -101,7 +99,7 @@ int assert_wrd(vaddr32 va, word val, Memory *mem)
 
 int assert_bte(vaddr32 va, unsigned int val, Memory *mem)
 {
-	if(get_byte(va, mem) == val)
+	if(get_byte(va, mem->map) == val)
     {
     	INFO_MSG("True");
     	return 0;
