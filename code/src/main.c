@@ -7,7 +7,7 @@
  #include "mem/memory_v2.h"
  #include "com/notify.h" // Pour mettre des messages de warning et de debugs, inclut stdio (utile pour fp)
  #include "com/interpreteur.h"
- #include "com/command.h" // pour execute_command
+ #include "com/command.h" // pour execute_command, inclut dic.h
  #include <string.h> // Pour utiliser strcmp notamment
 
 
@@ -15,8 +15,10 @@ int main ( int argc, char *argv[] ) {
     // On initialise la mémoire
     
     Memory mem;
+    Dic dic;
 
     init_mem(&mem);
+    init_dic(&dic);
 
     DEBUG_MSG("Memory initialized");
 
@@ -41,6 +43,9 @@ int main ( int argc, char *argv[] ) {
         fp = fopen( argv[1], "r" );
         if ( fp == NULL ) {
             perror( "fopen" );
+
+            del_mem(&mem);
+            del_dic(&dic);
             exit( EXIT_FAILURE );
         }
         inter->mode = SCRIPT;
@@ -54,7 +59,7 @@ int main ( int argc, char *argv[] ) {
         if (acquire_line( fp,  inter)  == 0 ) {
             /* Une nouvelle ligne a ete acquise dans le flux fp*/
 
-            int res = execute_cmd(inter, &mem); /* execution de la commande */
+            int res = execute_cmd(inter, &mem, &dic); /* execution de la commande */
 
             // traitement des erreurs
             switch(res) {
@@ -66,6 +71,8 @@ int main ( int argc, char *argv[] ) {
                     fclose( fp );
                 }
                 del_inter(inter);
+                del_dic(&dic);
+                del_mem(&mem);
                 exit(EXIT_SUCCESS);
                 break;
             default:
@@ -73,7 +80,9 @@ int main ( int argc, char *argv[] ) {
                 /* En mode "fichier" toute erreur implique la fin du programme ! */
                 if (inter->mode == SCRIPT) {
                     fclose( fp );
+                    del_dic(&dic);
                     del_inter(inter);
+                    del_mem(&mem);
                     /*macro ERROR_MSG : message d'erreur puis fin de programme ! */
                     ERROR_MSG("ERREUR DETECTEE. Aborts");
                 }
@@ -84,7 +93,9 @@ int main ( int argc, char *argv[] ) {
             /* mode fichier, fin de fichier => sortie propre du programme */
             DEBUG_MSG("FIN DE FICHIER");
             fclose( fp );
+            del_dic(&dic);
             del_inter(inter);
+            del_mem(&mem);
             exit(EXIT_SUCCESS);
         }
     }

@@ -3,6 +3,7 @@
 
 #include "com/interpreteur.h"
 #include "mem/memory_v2.h" // pour Memory et Registre
+#include "com/dic.h"
 
  /* Commandes */
 
@@ -11,8 +12,9 @@ int exitcmd(interpreteur inter);
 int loadcmd(interpreteur inter, Memory *mem);
 int dispcmd (interpreteur inter, Memory *mem);
 int setcmd (interpreteur inter, Memory *mem);
-int execute_cmd(interpreteur inter, Memory *mem);
+int execute_cmd(interpreteur inter, Memory *mem, Dic *dic);
 int assert(interpreteur inter, Memory *mem);
+int disasm(interpreteur inter, Memory *mem, Dic *dic);
 
 //int disasmcmd(interpreteur inter);
 
@@ -23,7 +25,7 @@ void print_section_raw_content(char* name, unsigned int start, byte* content, un
 int disp_some_mem(char *token, interpreteur inter, Memory *mem);
 
 void disp_map(Segment map[NB_SEC]);
-void disp_plage(unsigned int va_1, unsigned int va_2, Memory *mem); //Pour la fonction discmd
+void disp_plage(unsigned int va, unsigned int va_2, Memory *mem); //Pour la fonction discmd
 void disp_oct(unsigned int va, Memory *mem);
 
 int disp_some_reg(char *token, interpreteur inter, Registre reg[NB_REG]);
@@ -40,5 +42,9 @@ int set_mem (interpreteur inter,char* type,char* adresse, char* content, Segment
 int assert_reg(char *name, unsigned int val, Registre reg[NB_REG]); // OK
 int assert_wrd(vaddr32 va_1, word val, Memory *mem);
 int assert_bte(vaddr32 va, unsigned int val, Memory *mem);
+
+// Disasm
+
+int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic);
 
 #endif

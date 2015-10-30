@@ -1,5 +1,5 @@
 
-#include "com/command.h" // inclut interpreteur et mémoire
+#include "com/command.h" // inclut interpreteur, dic et mémoire
 #include "com/notify.h" // Pour les messages de contrôle, inclut stdlib et stdio
 #include <string.h> // pour strcmp notamment
 #include <math.h> // je ne sais plus pour quoi
@@ -14,7 +14,7 @@ int exitcmd(interpreteur inter) {
 
 /* Fonction appelée dans le main, qui sert à réorienter le programme vers les commandes */
 
-int execute_cmd(interpreteur inter, Memory *mem) {
+int execute_cmd(interpreteur inter, Memory *mem, Dic *dic) {
     DEBUG_MSG("input '%s'", inter->input);
     char cmdStr[MAX_STR];
     memset( cmdStr, '\0', MAX_STR );
@@ -39,9 +39,6 @@ int execute_cmd(interpreteur inter, Memory *mem) {
     else if(strcmp(token, "disp") == 0) {
 	return dispcmd(inter, mem);
     }
-    else if(strcmp(token, "disasm") == 0) {
-	//return disasmcmd(inter);
-    }
     else if(strcmp(token, "set") == 0) {
 	return setcmd(inter, mem);
     }
@@ -49,9 +46,13 @@ int execute_cmd(interpreteur inter, Memory *mem) {
     {
     	return assert(inter, mem);
     }
+    else if(strcmp(token, "disasm") == 0)
+    {
+        return disasm(inter, mem, dic);
+    }
     else if(strcmp(token, "dic") == 0)
     {
-    	return disp_dic();
+    	return load_dic(dic);
     }
 
     WARNING_MSG("Unknown Command : '%s'\n", cmdStr);
@@ -94,7 +95,7 @@ int loadcmd(interpreteur inter, Memory *mem) {
         va = (va/4096 + 1) * 4096;
 
     // On récupère le contenu du fichier ELF puis on le charge en mémoire
-    load_elf_in_mem(fo, mem, va);
+    load_elf_in_mem(fo, mem->map, va);
 
     fclose(fo);
 

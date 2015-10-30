@@ -13,8 +13,6 @@
 
 int realloc_seg(int size, int i, Segment map[NB_SEC])
 {
-	DEBUG_MSG("new size : %i", size);
-
 	if(map[i].content != NULL)
 		map[i].content = realloc(map[i].content, size * sizeof(byte));
 
@@ -46,15 +44,48 @@ int realloc_seg(int size, int i, Segment map[NB_SEC])
 
 
 
+void del_seg(Segment *seg)
+{
+
+    if(seg != NULL && seg->content != NULL)
+        free(seg->content);
+}
+
+
+
+
+
+
 void init_mem(Memory *mem)
 {
 	int i;
 
 	for (i = 0; i < NB_SEC; ++i)
+    {
 		mem->map[i].size = 0;
+        mem->map[i].content = NULL; // Sinon problème lors de la désallocation
+    }
 
 	for (i = 0; i < NB_REG; ++i)
 		mem->reg[i] = 0;
+}
+
+
+
+
+
+
+void del_mem(Memory *mem)
+{
+    if(mem == NULL)
+        return;
+
+    int i;
+
+    for (i = 0; i < NB_SEC; ++i)
+    {
+        del_seg(mem->map + i);
+    }
 }
 
 
@@ -398,8 +429,6 @@ int set_word(vaddr32 va_1, word value, Segment map[NB_SEC])
 		va_start = map[i].va;
 		size = map[i].size;
 
-		DEBUG_MSG("size : %u", size);
-
    		if(va < va_start)
    			return 1;
 
@@ -436,3 +465,58 @@ int set_word(vaddr32 va_1, word value, Segment map[NB_SEC])
 
 	return 1;
 }
+
+byte *get_plage(vaddr32 va_1, vaddr32 va_2, Segment map[NB_SEC]) // on suppose va_2 > va_1
+{
+  /* Les octets sont dans des segments sinon ils sont nuls 
+  */
+
+    byte *plage = malloc((va_2 - va_1 + 1) * sizeof(byte));
+    vaddr32 va = va_1;
+    vaddr32 va_start;
+    vaddr32 va_end;
+    vaddr32 size;
+    int i;
+
+    for (i = 0; i < NB_SEC; i++)
+    {
+        va_start = map[i].va;
+        size = map[i].size;
+
+
+        while (va < va_start)
+        {
+            plage[va - va_1] = 0;
+
+            if (va == va_2)
+                return plage;
+
+            va++;
+        }
+
+        if(size > 0)
+        {
+            va_end = va_start + size - 1;  // avec 00 ff : size = 2, va_end = va_start + size - 1
+
+            while (va <= va_end)
+            {
+                plage[va - va_1] = *(map[i].content + va - va_start);
+
+                if (va == va_2)
+                    return plage;
+
+                va++;
+            }
+        }
+    }
+
+    while (va <= va_2)
+    {
+        plage[va - va_1] = 0;
+
+        va++;
+    }
+
+    return plage;
+}
+

@@ -31,7 +31,7 @@ int dispcmd (interpreteur inter, Memory *mem) {
 			return 0;
 		}
 
-		else if(is_figure(where) == 0) // Comprend where != NULL
+		else if(is_figure(where) == 0)
 		{
 			return disp_some_mem(where, inter, mem);
 		}
@@ -75,7 +75,11 @@ int disp_some_mem(char *token, interpreteur inter, Memory *mem)
 			{
 				unsigned int va_2 = strtoul(token, NULL, 0);
 				if(va < va_2) disp_plage(va, va_2, mem);
-				else disp_plage(va_2, va, mem);
+				else {
+
+					WARNING_MSG("Second address must be superior");
+					return 1;
+				}
 				p = 0;
 				va = 0;
 			}
@@ -163,64 +167,23 @@ void disp_plage (unsigned int va_1, unsigned int va_2, Memory *mem) // on suppos
   */
 
 	vaddr32 va = va_1;
-	vaddr32 va_start;
-	vaddr32 va_end;
-	vaddr32 size;
+	byte *plage = NULL;
 	int k = 0;
-	int i;
 
-	for (i = 0; i < NB_SEC; i++)
-	{
-		va_start = mem->map[i].va;
-		size = mem->map[i].size;
-		va_end = va_start + size - 1;  // avec 00 ff : size = 2, va_end = va_start + size - 1
+	plage = get_plage(va_1, va_2, mem->map);
 
-		while (va < va_start)
-		{
-			if (k % 16 == 0)
-				printf("\n  0x%08x ", va);
-
-			printf("00 ");
-
-			if(va == va_2)
-			{
-				printf("\n");
-				return;
-			}
-
-			va++;
-			k++;
-		}
-
-		while (va <= va_end)
-		{
-
-			if (k % 16 == 0)
-				printf("\n  0x%08x ", va);
-
-			print_section_bytes(va - va_start, mem->map[i].content);
-
-			if (va == va_2)
-			{
-				printf("\n");
-				return;
-			}
-
-			va++;
-			k++;
-		}
-	}
-
-	while (va <= va_2)
+	while(va <= va_2)
 	{
 		if (k % 16 == 0)
 			printf("\n  0x%08x ", va);
 
-		printf("00 ");
+		printf("%02x ", plage[va - va_1]);
 
-		va++;
-		k++;
+		va ++;
+		k ++;
 	}
+
+	free(plage);
 
 	printf("\n");
 }

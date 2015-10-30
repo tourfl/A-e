@@ -1,0 +1,7 @@
+#-------
+#TEST_RETURN_CODE=PASS           
+#TEST_COMMENT="Teste fonctionnement memoire"
+#-------
+
+load pile.o
+disp mem 0x0fff : 0x200f

@@ -25,7 +25,7 @@
 #define DATA_SECTION_STR ".data"
 #define BSS_SECTION_STR ".bss"
 
-typedef struct segment
+typedef struct
 {
 	vaddr32 va;
 	char name[NAME_SIZE_MAX];
@@ -42,6 +42,8 @@ typedef struct segment
  */
 
 int realloc_seg(int size, int i, Segment map[NB_SEC]);
+
+void del_seg(Segment *seg);
 
 // un registre est un unsigned int
 
@@ -60,6 +62,7 @@ typedef struct
 } Memory;
 
 void init_mem(Memory *mem);
+void del_mem(Memory *mem);
 
 int load_elf_in_mem(FILE *fo, Segment map[NB_SEC], unsigned int va);
 
@@ -70,5 +73,7 @@ int set_byte(vaddr32 va, byte value, Segment map[NB_SEC]);
 
 word get_word(vaddr32 va_1, Memory *mem);
 int set_word(vaddr32 va_1, word value, Segment map[NB_SEC]);
+
+byte *get_plage(vaddr32 va_1, vaddr32 va_2, Segment map[NB_SEC]);
 
 #endif
