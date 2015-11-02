@@ -78,7 +78,7 @@ int comp_instr_16(unsigned int inst, char ligne[TAILLE_MAX])
 	while (token != NULL)
 	{
 		printf ("%s\n", token);
-		token = strtok (NULL, " /");
+		token = strtok (NULL, " ,.-");
 		i++;
 		
 		if(i == 5) // token 5 contient le masque

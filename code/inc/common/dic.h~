@@ -11,7 +11,7 @@
 
 int disp_dic();
 
-int comp_instr_16(unsigned int inst, char ligne[TAILLE_MAX]); // parsing ok
+int comp_instr_16(unsigned int inst, char ligne[TAILLE_MAX]);
 
 int comp_instr_32(unsigned long inst, char ligne[TAILLE_MAX]);
 

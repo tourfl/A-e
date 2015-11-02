@@ -39,8 +39,7 @@ int execute_cmd(interpreteur inter, Memory *mem) {
     }
     else if(strcmp(token, "dic") == 0)
     {
-    	char ins[] = "add_imm/T1 ADD/ADDS 1111111000000000 0001110000000000";
-    	comp_instr_16(1, ins);
+    	comp_instr_16(1, "add_imm/T1 ADD/ADDS 1111111000000000 0001110000000000\0");
     }
 
     WARNING_MSG("Unknown Command : '%s'\n", cmdStr);
