@@ -11,8 +11,8 @@
 #include <strings.h>
 #include <string.h>
 
-#include "common/notify.h"
-#include "common/bits.h"
+#include "com/notify.h"
+#include "com/bits.h"
 #include "elf/elf.h"
 #include "elf/formats.h"
 

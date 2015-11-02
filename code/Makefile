@@ -55,11 +55,16 @@ release : $(OBJ_RLS)
 	$(CC) $< $(CFLAGS_DBG) -c -o $(basename $<).dbg.o
 
 clean : 
+<<<<<<< HEAD
 	$(RM) $(TARGET) $(SRCDIR)/*.o $(wildcard $(SRCDIR)/*/*.o) $(GARBAGE) 
+=======
+	$(RM) $(TARGET) $(wildcard $(SRCDIR)/*.o) $(wildcard $(SRCDIR)/*/*.o) $(GARBAGE) 
+
+>>>>>>> 6d7bbe8025177fe764735953c187fea9cc72e456
 	$(RM) -r $(DOCDIR)/*	
 
 # créé l'archive à envoyer à votre tuteur (pas de rar SVP! et interdiction absolu d'envoyer autre chose qu'une archive, il ne doit y avoir qu'un seul fichier joint dans l'e-mail !)
 archive : 
 	make clean 
-	tar -czvf ../$(notdir $(PWD) )-`whoami`-`date +%d-%m-%H-%M`.tgz .
-	echo "Fichier archive ../emulARM-`whoami`-`date +%d-%m-%H-%M`.tgz genere"
+	tar -czvf ../$(notdir $(PWD) )-ZEGGAI_DEIN-`date +%d-%m-%H-%M`.tgz .
+	echo "Fichier archive ../emulARM-ZEGGAI_DEIN-`date +%d-%m-%H-%M`.tgz genere"

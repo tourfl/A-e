@@ -18,7 +18,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdio.h>
 
-#include "common/types.h"
+#include "com/types.h"
 #include "elf/syms.h"
 #include "elf/section.h"
 

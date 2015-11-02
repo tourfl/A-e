@@ -1,0 +1,6 @@
+#-------
+#TEST_RETURN_CODE=FAIL           
+#TEST_COMMENT="Affiche les plages 0 à 0x00aa et 0x00f0 à 0x00ff"
+#-------
+
+disp mem :0x00aa 0x00f0:0x00ff

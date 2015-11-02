@@ -1,8 +1,0 @@
-#-------
-#TEST_RETURN_CODE=PASS           
-#TEST_COMMENT="Teste fonctionnement memoire"
-#-------
-
-disp mem 0x012f : 0x013f
-disp mem 0x1000 : 0x0ff0
-disp mem 0x1000 0x100f

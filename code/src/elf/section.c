@@ -8,7 +8,7 @@
  * Section handling.
  */
 
-#include "common/notify.h"
+#include "com/notify.h"
 #include "elf/section.h"
 
 

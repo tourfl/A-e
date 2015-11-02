@@ -10,12 +10,12 @@ else
 		if [ $arg == "-b" ]; then
 			mode="-b"
 		elif [ $arg == "all" ]; then
-			TST_SRC=`ls ./tst/*/*.emu`
+			TST_SRC=`ls ~/ARM-emulator/code/tst/*/*.emu`
 			break
 		else
-			TST_SRC+=`ls ./tst/$arg/*.emu`
+			TST_SRC+=`ls ~/ARM-emulator/code/tst/$arg/*.emu`
 		fi
 	done
 fi
 
-../prof/testing/simpleUnitTest.sh $mode -e ./emul-ARM $TST_SRC
+~/ARM-emulator/prof/testing/simpleUnitTest.sh $mode -e ~/ARM-emulator/code/emul-ARM $TST_SRC
