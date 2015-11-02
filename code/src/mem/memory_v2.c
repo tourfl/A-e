@@ -13,15 +13,14 @@
 
 int realloc_seg(int size, int i, Segment map[NB_SEC])
 {
-	if(map[i].content != NULL)
-		map[i].content = realloc(map[i].content, size * sizeof(byte));
+    void *p = realloc(map[i].content, size * sizeof(byte));
 
-	else
-		map[i].content = malloc(size * sizeof(byte));
+	if(p == 0)
+        return 1;
 
-
-	if(map[i].content != NULL)
-	{
+    else
+    {
+        map[i].content = p;
 		map[i].size = size;
 
         if(i < NB_SEC && map[i].va + size >= map[i+1].va) // Si le segment empiète sur le suivant, on décale les adresses
@@ -35,8 +34,6 @@ int realloc_seg(int size, int i, Segment map[NB_SEC])
 
         return 0;
     }
-
-    return 1;
 }
 
 

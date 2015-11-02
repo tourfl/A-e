@@ -184,17 +184,10 @@ void init_ins(Instruction *ins) // pour éviter les bugs lors de la désallocati
 
 void del_ins(Instruction *ins) // Les éléments alloués sont libérés
 {
-	if(ins->commande != NULL)
-		free(ins->commande);
-
-	if(ins->encoding != NULL)
-		free(ins->encoding);
-
-	if(ins->name_in_IT != NULL)
-		free(ins->name_in_IT);
-
-	if(ins->name_out_IT != NULL)
-		free(ins->name_out_IT);
+	free(ins->commande);
+	free(ins->encoding);
+	free(ins->name_in_IT);
+	free(ins->name_out_IT);
 }
 
 

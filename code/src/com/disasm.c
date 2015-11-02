@@ -11,66 +11,71 @@
 
 int disasm(interpreteur inter, Memory *mem, Dic *dic)
 {
-	char *va;
+	char *va = NULL;
+	char *ponc = NULL;
+	char *v2 = NULL;
 	vaddr32 virt_ad = 0;
-	char *token;
 	vaddr32 virt_ad_2 = 0;
 	uint32_t size = 0;
 	char usage[] = "Usage : disasm <plage>+\n";
 	int p = 1;
 
 	va = get_next_token(inter);
+	ponc = get_next_token(inter);
+	v2 = get_next_token(inter);
 
-	if(va == NULL)
+	printf("va : %s \n ponc : %s \n v2 : %s", va, ponc, v2);
+
+	if(va == NULL || ponc == NULL || v2 == NULL)
 	{
 		WARNING_MSG("Problem with tokens");
-		printf("%s", usage);
-		return 1;
+		printf("%s", usage);	
 	}
 
-	while(va != NULL)
+	while(va != NULL && ponc != NULL && v2 != NULL) // C'est un peu le else de la condition précédente
 	{
 		if(is_hexa(va) != 0)
 		{
-			WARNING_MSG("address must be hexadecimal");
-			return 1;
+			WARNING_MSG("first address must be hexadecimal");
+			break;
 		}
 
 		virt_ad = strtoul(va, NULL, 16);
-		token = get_next_token(inter);
 
-		if (token != NULL && strcmp(token, ":") == 0)
+		if (strcmp(ponc, ":") == 0 && is_hexa(v2) == 0) // Une adresse doit être hexadécimal
 		{
-			token = get_next_token(inter);
+			virt_ad_2 = strtoul(v2, NULL, 16);
 
-			if(token != NULL && is_hexa(token) == 0)
-			{
-				virt_ad_2 = strtoul(token, NULL, 16);
+			if(virt_ad_2 < virt_ad)
+				p = disasm_plage(virt_ad_2, virt_ad, mem, dic);
 
-				if(virt_ad_2 > virt_ad)
-					p = disasm_plage(virt_ad, virt_ad_2, mem, dic);
-			}
+			else
+				p = disasm_plage(virt_ad, virt_ad_2, mem, dic);
 		}
-		else if (token != NULL && strcmp(token, "+") == 0)
+		else if (strcmp(ponc, "+") == 0 && is_dec(v2) == 0) // Ce nombre peut-être en base 8, 10 ou 16
 		{
-			token = get_next_token(inter);
+			size = strtoul(v2, NULL, 0);
 
-			if(token != NULL && is_figure(token) == 0)
-			{
-				size = strtoul(token, NULL, 0);
 
-				if(size > 0 && size < (0xffffffff - virt_ad)) // On évite les dépassements de mémoire
-					p = disasm_plage(virt_ad, virt_ad+size, mem, dic);
+			if(size < (0xffffffff - virt_ad)) // On évite les dépassements de mémoire
+					virt_ad_2 = virt_ad + size;
+
+			else {
+				WARNING_MSG("second value is too big");
+				break;
 			}
 
+			p = disasm_plage(virt_ad, virt_ad_2, mem, dic);
 		}
-		else
-		{
-			WARNING_MSG("invalid or missing second value");
-			return 1;
+		else {
+			WARNING_MSG("invalid second value");
+			break;
 		}
+
 
 		va = get_next_token(inter);
+		ponc = get_next_token(inter);
+		v2 = get_next_token(inter);	
 	}
 
 	return p;  // renvoie la valeur de retour de la dernière plage lue
@@ -91,8 +96,6 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 	Instruction ins;
 
 	// On récupère la plage d'octet
-	
-	printf("%08x", va_2);
 
 	plage = get_plage(va_1, va_2, mem->map);
 	

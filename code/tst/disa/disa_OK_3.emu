@@ -1,0 +1,6 @@
+#-------
+#TEST_RETURN_CODE=PASS      
+#TEST_COMMENT="Teste disa"
+#-------
+
+disasm 0x1000:0x1008 0x1000+8

@@ -31,6 +31,10 @@ typedef union {
 
 #define STRLEN 256
 
+#define NB_CHIFFRES_MAX_32o 11
+#define NB_CHIFFRES_MAX_32d 10
+#define NB_CHIFFRES_MAX_32h 8
+
 typedef char string[STRLEN+1];
 
 #define init_string(s) memset( s, '\0', STRLEN+1 )
