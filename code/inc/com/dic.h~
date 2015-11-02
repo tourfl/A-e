@@ -55,6 +55,6 @@ int comp_instr(); // TODO
 
 char* int_to_bin(unsigned int n, char taille);
 
-char* bin_x_bin(char bin_1[], char bin_2[], int taille); // TODO
+int bin_x_bin(unsigned int bin_1, unsigned int bin_2); // TODO
 
 #endif

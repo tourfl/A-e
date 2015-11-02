@@ -2,6 +2,7 @@
 #include <stdlib.h> // Pour free
 #include <string.h> // Pour strtok
 #include "com/notify.h"
+#include <math.h> // pow
 
 
 
@@ -65,7 +66,12 @@ int disp_dic()
 	return 0;
 }
 
-<<<<<<< HEAD
+
+
+
+
+
+
 char* int_to_bin(unsigned int n, char taille)
 {
 	int i, p;
@@ -97,6 +103,12 @@ char* int_to_bin(unsigned int n, char taille)
 	return bin;
 }
 
+
+
+
+
+
+
 char* bin_x_bin(char bin_1[], char bin_2[], int taille)
 {
 	int i;
@@ -104,47 +116,13 @@ char* bin_x_bin(char bin_1[], char bin_2[], int taille)
 	for(i = 0; i < taille; i++)
 	{
 		if(bin_1[i] == '0' || bin_2[i] == '0')
-			bin_1[i] == '0';
+			bin_1[i] = '0';
 			
-		else bin_1[i] == '1';
+		else bin_1[i] = '1';
 	}
 	
 	return bin_1;
 }
-
-int comp_instr_16(unsigned int inst, char ligne[TAILLE_MAX])
-{
-	// on utilise une fonction qui sectionne la ligne avec un espace ou un slash comme délimiteur
-	
-	char * token = NULL;
-	int i = 1;
-	
-	
-	token = strtok (ligne," /"); // token 1 contient la commande
-	
-	while (token != NULL)
-	{
-		printf ("%s\n", token);
-		token = strtok (NULL, " /");
-		i++;
-		
-		if(i == 5) // token 5 contient le masque
-		{
-		}
-		
-		else if (i == 6) // token 6 contient l'opcode
-		{
-		}
-			
-  	}
-	
-}
-
-int comp_inst_32(unsigned long inst, char ligne[TAILLE_MAX])
-{
-=======
-
-
 
 
 
@@ -280,13 +258,8 @@ void disp_ins(Instruction ins)
 {
 	if(ins.name_in_IT != NULL)
 		printf("\n%s\n", ins.name_in_IT);
->>>>>>> 6d7bbe8025177fe764735953c187fea9cc72e456
 }
 
-
-
-<<<<<<< HEAD
-=======
 
 
 
@@ -295,4 +268,3 @@ Instruction get_ins(word in, Instruction ins[])
 {
 	return ins[0];
 }
->>>>>>> 6d7bbe8025177fe764735953c187fea9cc72e456

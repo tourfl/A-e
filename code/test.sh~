@@ -18,4 +18,4 @@ else
 	done
 fi
 
-../prof/testing/simpleUnitTest.sh $mode -e ./emul-arm $TST_SRC
+../prof/testing/simpleUnitTest.sh $mode -e ./emul-ARM $TST_SRC

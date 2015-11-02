@@ -91,11 +91,10 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 	Instruction ins;
 
 	// On récupère la plage d'octet
-	
-	printf("%08x", va_2);
 
 	plage = get_plage(va_1, va_2, mem->map);
 	
+	here;
 
 	// On charge le dictionnaire si ce n'est pas déjà fait
 
