@@ -150,15 +150,11 @@ void print_section_raw_content(char* name, unsigned int start, byte* content, un
 void disp_map(Segment map[NB_SEC])
 {
 	int i;
-	for(i = 0; i < NB_SEC; i++)
-	{
-		if(map[i].size != 0)
-		{
-			print_section_raw_content(map[i].name, (unsigned int) map[i].va, map[i].content, map[i].size);
-		}
-	}
 
-	printf("\n");
+	printf("Virtual memory map (%u segments)\n", NB_SEC);
+
+	for(i = 0; i < NB_SEC; i++)
+		printf("%s\trwx\tVaddr: 0x%08x\tSize: %u bytes\n", map[i].name, map[i].va, map[i].size);
 }
 
 void disp_plage (unsigned int va_1, unsigned int va_2, Memory *mem) // on suppose va_1 > va_2

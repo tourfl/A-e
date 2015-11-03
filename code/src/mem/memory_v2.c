@@ -58,6 +58,7 @@ void init_mem(Memory *mem)
 	for (i = 0; i < NB_SEC; ++i)
     {
 		mem->map[i].size = 0;
+        mem->map[i].perm = 0; // Aucune permission
         mem->map[i].content = NULL; // Sinon problème lors de la désallocation
     }
 
@@ -476,7 +477,7 @@ byte *get_plage(vaddr32 va_1, vaddr32 va_2, Segment map[NB_SEC]) // on suppose v
     vaddr32 va_end;
     vaddr32 size;
     int i;
-    
+
   /* Les octets appartiennent à des segments sinon ils sont nuls 
   */
 

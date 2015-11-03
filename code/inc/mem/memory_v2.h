@@ -31,6 +31,7 @@ typedef struct
 	char name[NAME_SIZE_MAX];
 	byte *content; // On utilise l'allocation dynamique
 	uint32_t size;
+	int perm; // rwx = 0b111 = 7, rw- = 0b110 = 6, r-- = 0b100 = 4, etc.
 
 } Segment;
 
