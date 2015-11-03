@@ -24,7 +24,7 @@ int disasm(interpreteur inter, Memory *mem, Dic *dic)
 	ponc = get_next_token(inter);
 	v2 = get_next_token(inter);
 
-	printf("va : %s \n ponc : %s \n v2 : %s", va, ponc, v2);
+	// printf("va : %s \n ponc : %s \n v2 : %s", va, ponc, v2);
 
 	if(va == NULL || ponc == NULL || v2 == NULL)
 	{
@@ -94,18 +94,22 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 	int i = 0;
 	word mot = 0;
 	Instruction ins;
+	init_ins(&ins); // très important
+	int p = 1;
 
-	// On récupère la plage d'octet
+	// On récupère la plage d'octet si elle est correcte (taille > 1 bytes, va_2 > va_1)
+
+	if(va_2 <= va_1)
+		return 1;
 
 	plage = get_plage(va_1, va_2, mem->map);
-	
 
 	// On charge le dictionnaire si ce n'est pas déjà fait
 
 	if(dic->ins32[0].commande == NULL && load_dic(dic) != 0) // ie si le dictionnaire n'a pas été chargé et ne charge pas
 		return 1;
 
-	while (i < va_2 - va_1 - 1) // il reste au moins 2 octets à lire (une instruction sur 16 bits)
+	while (i < va_2 - va_1) // il reste au moins 2 octets à lire (une instruction sur 16 bits)
 	{
 		if(plage[i] == 0)
 			i ++;
@@ -116,7 +120,11 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 			ins = get_ins16(mot, dic);
 
 			if(ins.commande != NULL) // C'est une instruction 16
+			{
 				i += 2; // on augment de 2 puisque une instruction de 2 octets a été lue
+				p = 0; // signifie qu'au moins une instruction a été lue
+			}
+			else i++;
 		}
 		else {
 			int j;
@@ -126,25 +134,30 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 			ins = get_ins32(mot, dic);
 
 			if(ins.commande != NULL) // C'est une instruction 32
+			{
 				i += 4; // on augment de 4 puisque une instruction de 4 octets a été lue
+				p = 0;
+			}
 
 			else {
 				ins = get_ins16(mot, dic);
 
 				if(ins.commande != NULL) // C'est une instruction 16
+				{
 					i += 2; // on augmente de 2 puisque une instruction de 2 octets a été lue
+					p = 0;
+				}
+
+				else i++;
 			}
 		}
 
 		if(ins.commande == NULL)
-		{
-			i ++;
 			WARNING_MSG("unable to find instruction");
-		}
 
 		else
 			disp_ins(ins);
 	}
 
-	return 0;
+	return p;
 }

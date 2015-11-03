@@ -61,6 +61,13 @@ typedef struct
 
 } Memory;
 
+/*
+ * Après réflexion, il eut été plus pratique que la mémoire soit une variable globale
+ * static Memory _mem_;
+ * ... Mais ce sera trop long à changer
+ */
+
+
 void init_mem(Memory *mem);
 void del_mem(Memory *mem);
 

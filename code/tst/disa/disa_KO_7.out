@@ -1,3 +1,1 @@
-va : : 
- ponc : 0x1000 
- v2 : (null)Usage : disasm <plage>+
+Usage : disasm <plage>+

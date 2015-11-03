@@ -3,4 +3,5 @@
 #TEST_COMMENT="Teste disa"
 #-------
 
+# aucun fichier n'est chargé donc le contenu est forcément nul
 disasm 0x3000+8

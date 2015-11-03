@@ -43,9 +43,7 @@ int realloc_seg(int size, int i, Segment map[NB_SEC])
 
 void del_seg(Segment *seg)
 {
-
-    if(seg != NULL && seg->content != NULL)
-        free(seg->content);
+      free(seg->content);
 }
 
 
@@ -463,17 +461,24 @@ int set_word(vaddr32 va_1, word value, Segment map[NB_SEC])
 	return 1;
 }
 
-byte *get_plage(vaddr32 va_1, vaddr32 va_2, Segment map[NB_SEC]) // on suppose va_2 > va_1
+byte *get_plage(vaddr32 va_1, vaddr32 va_2, Segment map[NB_SEC]) // on suppose va_2 >= va_1
 {
-  /* Les octets sont dans des segments sinon ils sont nuls 
-  */
+    if(va_1 > va_2)
+    {
+        WARNING_MSG("va_2 < va_1");
+        return NULL;
+    }
 
     byte *plage = malloc((va_2 - va_1 + 1) * sizeof(byte));
+
     vaddr32 va = va_1;
     vaddr32 va_start;
     vaddr32 va_end;
     vaddr32 size;
     int i;
+    
+  /* Les octets appartiennent à des segments sinon ils sont nuls 
+  */
 
     for (i = 0; i < NB_SEC; i++)
     {

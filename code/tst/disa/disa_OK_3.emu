@@ -3,4 +3,5 @@
 #TEST_COMMENT="Teste disa"
 #-------
 
+load pile.o
 disasm 0x1000:0x1008 0x1000+8
