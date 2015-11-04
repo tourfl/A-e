@@ -333,8 +333,6 @@ int set_byte(vaddr32 va, byte value, Segment map[NB_SEC])
 	vaddr32 size;
 	int i;
 
-	here_n(1);
-
 	for (i = 0; i < NB_SEC; i++)
 	{
 		va_start = map[i].va;

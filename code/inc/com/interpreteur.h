@@ -18,6 +18,8 @@ Toute autre valeur signifie qu'une erreur est survenue
 #define CMD_OK_RETURN_VALUE 0
 #define CMD_EXIT_RETURN_VALUE -1
 #define CMD_UNKOWN_RETURN_VALUE -2
+#define CMD_DEBUG_RETURN_VALUE -3
+#define CMD_RESUME_RETURN_VALUE -4
 
 
 /* type de token (exemple) */

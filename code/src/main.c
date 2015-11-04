@@ -25,6 +25,7 @@ int main ( int argc, char *argv[] ) {
     interpreteur inter=init_inter(); /* structure gardant les infos et états de l'interpreteur*/
 
     FILE *fp = NULL; /* le flux dans lequel les commande seront lues : stdin (mode shell) ou un fichier */
+    FILE *fd = NULL; // Pour le mode debug, permet de stocker provisoirement le fichier ouvert en mode script
 
     if ( argc > 2 ) {
         usage_ERROR_MSG( argv[0] );
@@ -65,11 +66,38 @@ int main ( int argc, char *argv[] ) {
             switch(res) {
             case CMD_OK_RETURN_VALUE:
                 break;
+
+            case CMD_DEBUG_RETURN_VALUE:
+                if(inter->mode == SCRIPT)
+                {
+                    fd = fp; // On stocke provisoirement l'adresse du fichier en cours
+                    fp = stdin; // On perd le fichier en cours
+                    inter->mode = DEBUG_MODE;
+                }
+                else
+                    WARNING_MSG("Debug command only in script mode");
+                break;
+
+            case CMD_RESUME_RETURN_VALUE:
+                if(inter->mode == DEBUG_MODE)
+                {
+                    fp = fd; // On repasse au contenu du fichier
+                    fd = NULL; // On remet fd à NULL
+                    inter->mode = SCRIPT;
+                }
+                else
+                    WARNING_MSG("Resume command only in debug mode");
+                break;
+
+
             case CMD_EXIT_RETURN_VALUE:
                 /* sortie propre du programme */
                 if ( inter->mode == SCRIPT ) {
                     fclose( fp );
                 }
+                else if(inter->mode == DEBUG_MODE) // fd pointe vers le fichier du mode SCRIPT
+                    fclose(fd);
+
                 del_inter(inter);
                 del_dic(&dic);
                 del_mem(&mem);
@@ -77,7 +105,7 @@ int main ( int argc, char *argv[] ) {
                 break;
             default:
                 /* erreur durant l'execution de la commande */
-                /* En mode "fichier" toute erreur implique la fin du programme ! */
+                /* En mode "fichier" toute erreur implique la fin du programme afin de récupérer la valeur de retour de la commande */
                 if (inter->mode == SCRIPT) {
                     fclose( fp );
                     del_dic(&dic);

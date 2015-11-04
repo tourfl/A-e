@@ -54,6 +54,11 @@ int execute_cmd(interpreteur inter, Memory *mem, Dic *dic) {
     {
     	return load_dic(dic);
     }
+    else if(strcmp(token, "debug") == 0)
+        return CMD_DEBUG_RETURN_VALUE;
+    
+    else if(strcmp(token, "resume") == 0)
+        return CMD_RESUME_RETURN_VALUE;
 
     WARNING_MSG("Unknown Command : '%s'\n", cmdStr);
     return CMD_UNKOWN_RETURN_VALUE;

@@ -1,0 +1,7 @@
+#-------
+#TEST_RETURN_CODE=PASS       
+#TEST_COMMENT="Teste load"
+#-------
+
+load pile.o
+load pile.o 0x5000

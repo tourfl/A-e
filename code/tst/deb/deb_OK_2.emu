@@ -1,0 +1,8 @@
+#-------
+#TEST_RETURN_CODE=PASS       
+#TEST_COMMENT="Teste debug mode"
+#-------
+
+load pile.o
+debug
+disp reg all
