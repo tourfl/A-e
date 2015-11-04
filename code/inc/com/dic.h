@@ -18,6 +18,7 @@ typedef struct
 	char *name_out_IT;
 	word mask;
 	word opcode;
+	int nb_param;
 
 
 } Instruction;
