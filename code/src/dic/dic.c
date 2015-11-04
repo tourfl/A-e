@@ -257,7 +257,33 @@ void disp_ins(Instruction ins)
 
 
 
-Instruction get_ins(word in, Instruction ins[])
+Instruction get_ins (word in, Instruction ins[]) // retourne l'instruction en question s'il y a match, NULL sinon;
 {
-	return ins[0];
+	char* _mask = NULL;
+	char* op_code = NULL;
+	char* a = NULL;
+	char* b = NULL;
+	int i=0;
+
+	in = int_to_bin(in,32);
+
+	while (i<=NB_INS_32) {
+
+		_mask = int_to_bin (ins[i].mask , 32);
+		op_code =  int_to_bin (ins[i].opcode , 32);
+		
+		a = bin_x_bin (in , mask , 16); //on compare l'entrée et le masque;
+		b = bin_x_bin (op_code, mask, 16); //on compare l'op code et le masque;
+
+		if(strcmp (a,b) == 0) {
+			return ins[i];
+		}
+
+		else i++;
+
+	}
+	
+	WARNING_MSG("unable to find instruction");
 }
+			
+			
