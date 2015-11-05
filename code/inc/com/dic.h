@@ -29,7 +29,7 @@ void del_ins(Instruction *ins);
 int load_ins(Instruction *ins, char *chaine);
 void disp_ins(Instruction ins);
 
-Instruction get_ins(word in, Instruction ins[]);
+Instruction get_ins(word in, Instruction ins[], int taille);
 
  typedef struct 
  {

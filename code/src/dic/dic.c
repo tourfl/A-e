@@ -112,16 +112,19 @@ char* int_to_bin(unsigned int n, char taille)
 char* bin_x_bin(char bin_1[], char bin_2[], int taille)
 {
 	int i;
+	char *bin = NULL;
+
+	bin = calloc(taille+1, sizeof(char)); // avec calloc, chaine remplie de '\0'
 	
 	for(i = 0; i < taille; i++)
 	{
-		if(bin_1[i] == '0' || bin_2[i] == '0')
-			bin_1[i] = '0';
+		if(bin_1[i] == '1' && bin_2[i] == '1')
+			bin[i] = '1';
 			
-		else bin_1[i] = '1';
+		else bin[i] = '0';
 	}
 	
-	return bin_1;
+	return bin;
 }
 
 
@@ -161,8 +164,8 @@ int load_dic(Dic *dic)
 
 
 
-Instruction get_ins32(word in, Dic *dic) { return get_ins(in, dic->ins32); }
-Instruction get_ins16(word in, Dic *dic) { return get_ins(in, dic->ins16); }
+Instruction get_ins32(word in, Dic *dic) { return get_ins(in, dic->ins32, 32); }
+Instruction get_ins16(word in, Dic *dic) { return get_ins(in, dic->ins16, 16); }
 
 
 
@@ -257,33 +260,59 @@ void disp_ins(Instruction ins)
 
 
 
-Instruction get_ins (word in, Instruction ins[]) // retourne l'instruction en question s'il y a match, NULL sinon;
+Instruction get_ins (word in, Instruction ins[], int taille) // retourne l'instruction en question s'il y a match, NULL sinon;
 {
-	char* _mask = NULL;
+	char* mask = NULL;
 	char* op_code = NULL;
+	char *cin = NULL;
 	char* a = NULL;
 	char* b = NULL;
 	int i=0;
+	Instruction ins_vide;
+	init_ins(&ins_vide);
 
-	in = int_to_bin(in,32);
+	printf("word: %8x\n", in);
 
-	while (i<=NB_INS_32) {
 
-		_mask = int_to_bin (ins[i].mask , 32);
-		op_code =  int_to_bin (ins[i].opcode , 32);
+	cin = int_to_bin(in, taille);
+	printf("in: %s\n", cin);
+
+	while (i<NB_INS_32) {
+
+		mask = int_to_bin (ins[i].mask , taille);
+		op_code =  int_to_bin (ins[i].opcode , taille);
 		
-		a = bin_x_bin (in , mask , 16); //on compare l'entrée et le masque;
-		b = bin_x_bin (op_code, mask, 16); //on compare l'op code et le masque;
+		a = bin_x_bin (cin , mask , taille); //on compare l'entrée et le masque;
+		b = bin_x_bin (op_code, mask, taille); //on compare l'op code et le masque;
 
 		if(strcmp (a,b) == 0) {
+		printf("in: %s\nmask: %s\topcode: %s\na: %s\tb: %s\n",cin, mask, op_code, a, b);
+			here;
+			free(mask);
+			here_n(2);
+			free(op_code);
+			here_n(3);
+			free(a);
+			here_n(4);
+			free(b);
+			here_n(5);
+			free(cin);
+			here_n(6);
 			return ins[i];
 		}
-
-		else i++;
+		free(mask);
+		free(op_code);
+		free(a);
+		free(b);
+		i++;
 
 	}
-	
+
+	free(cin);
+
 	WARNING_MSG("unable to find instruction");
+
+	return ins_vide;
 }
 			
 			
