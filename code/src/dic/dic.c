@@ -233,15 +233,15 @@ int load_ins(Instruction *ins, char *chaine) // On suppose qu'il n'y a pas d'err
 	if(token3 != NULL)
 	{
 		ins->name_out_IT = malloc(strlen(token3) * sizeof(char));
-		strcpy(ins->name_out_IT, token); // NULL s'il n'y a pas un 2ème /
+		strcpy(ins->name_out_IT, token3); // NULL s'il n'y a pas un 2ème /
 	}
 
-	// printf("\n %s \n", ins->commande);
-	// printf("\n %s \n", ins->encoding);
-	// printf("\n %s \n", ins->name_in_IT);
-	// printf("\n %s \n", ins->name_out_IT);
-	// printf("\n %08x \n", ins->mask);
-	// printf("\n %08x \n", ins->opcode);
+	printf("\n %s \n", ins->commande);
+	printf("\n %s \n", ins->encoding);
+	printf("\n %s \n", ins->name_in_IT);
+	printf("\n %s \n", ins->name_out_IT);
+	printf("\n %08x \n", ins->mask);
+	printf("\n %08x \n", ins->opcode);
 
 	return 0;
 }
@@ -275,7 +275,6 @@ Instruction get_ins (word in, Instruction ins[], int taille) // retourne l'instr
 
 
 	cin = int_to_bin(in, taille);
-	printf("in: %s\n", cin);
 
 	while (i<NB_INS_32) {
 
@@ -286,18 +285,12 @@ Instruction get_ins (word in, Instruction ins[], int taille) // retourne l'instr
 		b = bin_x_bin (op_code, mask, taille); //on compare l'op code et le masque;
 
 		if(strcmp (a,b) == 0) {
-		printf("in: %s\nmask: %s\topcode: %s\na: %s\tb: %s\n",cin, mask, op_code, a, b);
-			here;
+		printf("in: %s\tn°%u\nmask: %s\topcode: %s\na: %s\tb: %s\n",cin, i, mask, op_code, a, b);
 			free(mask);
-			here_n(2);
 			free(op_code);
-			here_n(3);
 			free(a);
-			here_n(4);
 			free(b);
-			here_n(5);
 			free(cin);
-			here_n(6);
 			return ins[i];
 		}
 		free(mask);

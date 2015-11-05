@@ -158,10 +158,10 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 			}
 		}
 
-		if(ins.commande != NULL)
+		if(ins.commande != NULL && strcmp(ins.commande, "") != 0)
 		{
 			disp_ins(ins);
-			del_ins(&ins); // Pour que l'instruction soit remise à zéro
+			/* ne surtout pas supprimer le contenu de l'instruction, sinon on le supprime du dic */
 			init_ins(&ins);
 		}
 	}
