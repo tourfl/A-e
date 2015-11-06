@@ -236,12 +236,12 @@ int load_ins(Instruction *ins, char *chaine) // On suppose qu'il n'y a pas d'err
 		strcpy(ins->name_out_IT, token3); // NULL s'il n'y a pas un 2ème /
 	}
 
-	printf("\n %s \n", ins->commande);
-	printf("\n %s \n", ins->encoding);
-	printf("\n %s \n", ins->name_in_IT);
-	printf("\n %s \n", ins->name_out_IT);
-	printf("\n %08x \n", ins->mask);
-	printf("\n %08x \n", ins->opcode);
+	// printf("\n %s \n", ins->commande);
+	// printf("\n %s \n", ins->encoding);
+	// printf("\n %s \n", ins->name_in_IT);
+	// printf("\n %s \n", ins->name_out_IT);
+	// printf("\n %08x \n", ins->mask);
+	// printf("\n %08x \n", ins->opcode);
 
 	return 0;
 }
@@ -262,6 +262,13 @@ void disp_ins(Instruction ins)
 
 Instruction get_ins (word in, Instruction ins[], int taille) // retourne l'instruction en question s'il y a match, NULL sinon;
 {
+	/*
+	 * Problème : les fichiers .o sont codés en little endian aligné (cf 2.4)
+	 * Les masques sont en big endian
+	 *
+	 * ce problème est résolu dans la fonction disasm_plage
+	 */
+
 	char* mask = NULL;
 	char* op_code = NULL;
 	char *cin = NULL;
@@ -271,7 +278,7 @@ Instruction get_ins (word in, Instruction ins[], int taille) // retourne l'instr
 	Instruction ins_vide;
 	init_ins(&ins_vide);
 
-	printf("word: %8x\n", in);
+	// printf("word: %8x\n", in);
 
 
 	cin = int_to_bin(in, taille);
@@ -285,7 +292,7 @@ Instruction get_ins (word in, Instruction ins[], int taille) // retourne l'instr
 		b = bin_x_bin (op_code, mask, taille); //on compare l'op code et le masque;
 
 		if(strcmp (a,b) == 0) {
-		printf("in: %s\tn°%u\nmask: %s\topcode: %s\na: %s\tb: %s\n",cin, i, mask, op_code, a, b);
+			// printf("in: %s\tn°%u\nmask: %s\topcode: %s\na: %s\tb: %s\n",cin, i, mask, op_code, a, b);
 			free(mask);
 			free(op_code);
 			free(a);
@@ -302,8 +309,6 @@ Instruction get_ins (word in, Instruction ins[], int taille) // retourne l'instr
 	}
 
 	free(cin);
-
-	WARNING_MSG("unable to find instruction");
 
 	return ins_vide;
 }

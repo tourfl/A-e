@@ -122,7 +122,7 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 
 		else if(i > va_2 - va_1 - 3) // il reste moins d'un mot à lire
 		{
-			mot = plage[i]*pow(16, 2) + plage[i+1];
+			mot = plage[i+1]*pow(16, 2) + plage[i]; // de LITTLE ENDIAN (segment) vers BIG ENDIAN (masque des instructions) (!)
 			ins = get_ins16(mot, dic);
 
 			if(ins.commande != NULL) // C'est une instruction 16
@@ -133,7 +133,7 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 			else i++;
 		}
 		else {
-			mot = plage[i]*pow(16, 2) + plage[i+1];
+			mot = plage[i+1]*pow(16, 2) + plage[i]; // de LITTLE ENDIAN (segment) vers BIG ENDIAN (masque des instructions) (!)
 			ins = get_ins16(mot, dic);
 
 			if(ins.commande != NULL) // C'est une instruction 16
@@ -143,8 +143,8 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 			}
 
 			else {
-				mot = mot * pow(16, 4); // Les premiers bits deviennent les bits de poids fort
-				mot += plage[i+2]*pow(16, 2) + plage[i+3]; // On ajoute les 2 octets suivants
+				mot = mot * pow(16, 4); // Little Endian ALIGNE (!)
+				mot += plage[i+3]*pow(16, 2) + plage[i+2]; // On ajoute les 2 octets suivants de LITTLE ENDIAN (segment) vers BIG ENDIAN (masque des instructions) (!)
 
 				ins = get_ins32(mot, dic);
 
@@ -164,6 +164,8 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 			/* ne surtout pas supprimer le contenu de l'instruction, sinon on le supprime du dic */
 			init_ins(&ins);
 		}
+		else
+			WARNING_MSG("unable to find instruction");
 	}
 
 	return p;
