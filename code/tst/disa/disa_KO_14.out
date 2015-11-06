@@ -1,0 +1,480 @@
+ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 
+ add_imm 
+
+ T3 
+
+ ADD.W 
+
+ (null) 
+
+ fbe08000 
+
+ f2000000 
+
+ add_imm 
+
+ T4 
+
+ ADDW 
+
+ (null) 
+
+ fbf08000 
+
+ f2000000 
+
+ add_reg 
+
+ T3 
+
+ ADD.W 
+
+ (null) 
+
+ ffe00000 
+
+ eb000000 
+
+ b 
+
+ T3 
+
+ B.W 
+
+ (null) 
+
+ f800d000 
+
+ f0008000 
+
+ b 
+
+ T4 
+
+ B.W 
+
+ (null) 
+
+ f800d000 
+
+ f0009000 
+
+ bl 
+
+ T1 
+
+ BL 
+
+ (null) 
+
+ f800d000 
+
+ f000d000 
+
+ cmp_imm 
+
+ T2 
+
+ CMP.W 
+
+ (null) 
+
+ fbf08f00 
+
+ f1b00f00 
+
+ cmp_reg 
+
+ T3 
+
+ CMP.W 
+
+ (null) 
+
+ fff00f00 
+
+ ebb00f00 
+
+ mov_imm 
+
+ T2 
+
+ MOV.W 
+
+ (null) 
+
+ fbef8000 
+
+ f04f0000 
+
+ mov_imm 
+
+ T3 
+
+ MOVW 
+
+ (null) 
+
+ fbf08000 
+
+ f2408000 
+
+ mov_reg 
+
+ T3 
+
+ MOV.W 
+
+ (null) 
+
+ ffef70f0 
+
+ ea4f0000 
+
+ movt 
+
+ T1 
+
+ MOVT 
+
+ (null) 
+
+ fbf08000 
+
+ f2c00000 
+
+ mul 
+
+ T2 
+
+ MUL 
+
+ (null) 
+
+ fff0f0f0 
+
+ fb00f000 
+
+ pop 
+
+ T2 
+
+ POP.W 
+
+ (null) 
+
+ ffff0000 
+
+ e8bd0000 
+
+ pop 
+
+ T3 
+
+ POP.W 
+
+ (null) 
+
+ ffff0fff 
+
+ f85d0b04 
+
+ push 
+
+ T2 
+
+ PUSH.W 
+
+ (null) 
+
+ ffff0000 
+
+ e92d0000 
+
+ push 
+
+ T3 
+
+ PUSH.W 
+
+ (null) 
+
+ ffff0fff 
+
+ f84d0d04 
+
+ sub_imm 
+
+ T3 
+
+ SUB.W 
+
+ (null) 
+
+ fbe08000 
+
+ f1a00000 
+
+ sub_imm 
+
+ T4 
+
+ SUBW 
+
+ (null) 
+
+ fbf08000 
+
+ f2a00000 
+
+ sub_reg 
+
+ T2 
+
+ SUB.W 
+
+ (null) 
+
+ ffe00000 
+
+ eba00000 
+
+ add_imm 
+
+ T1 
+
+ ADD 
+
+ ADDS 
+
+ 0000fe00 
+
+ 00001c00 
+
+ add_imm 
+
+ T2 
+
+ ADD 
+
+ ADDS 
+
+ 0000f800 
+
+ 00003000 
+
+ add_reg 
+
+ T1 
+
+ ADD 
+
+ ADDS 
+
+ 0000fc00 
+
+ 00001800 
+
+ add_reg 
+
+ T2 
+
+ ADD 
+
+ ADDS 
+
+ 0000ff00 
+
+ 00004400 
+
+ b 
+
+ T1 
+
+ B 
+
+ (null) 
+
+ 0000f000 
+
+ 0000d000 
+
+ b 
+
+ T2 
+
+ B 
+
+ (null) 
+
+ 0000f800 
+
+ 0000e000 
+
+ bx 
+
+ T1 
+
+ BX 
+
+ (null) 
+
+ 0000ff80 
+
+ 00004700 
+
+ cmp_imm 
+
+ T1 
+
+ CMP 
+
+ (null) 
+
+ 0000f800 
+
+ 00002800 
+
+ cmp_reg 
+
+ T1 
+
+ CMP 
+
+ (null) 
+
+ 0000ffc0 
+
+ 00004280 
+
+ cmp_reg 
+
+ T2 
+
+ CMP 
+
+ (null) 
+
+ 0000ff00 
+
+ 00004500 
+
+ it 
+
+ T1 
+
+ IT 
+
+ (null) 
+
+ 0000ff00 
+
+ 0000bf00 
+
+ mov_reg 
+
+ T1 
+
+ MOV 
+
+ (null) 
+
+ 0000ff00 
+
+ 00004600 
+
+ mov_reg 
+
+ T2 
+
+ MOV 
+
+ (null) 
+
+ 0000ffc0 
+
+ 00000000 
+
+ mul 
+
+ T1 
+
+ MUL 
+
+ (null) 
+
+ 0000ffc0 
+
+ 00004340 
+
+ pop 
+
+ T1 
+
+ POP 
+
+ (null) 
+
+ 0000fe00 
+
+ 0000bc00 
+
+ push 
+
+ T1 
+
+ PUSH 
+
+ (null) 
+
+ 0000fe00 
+
+ 0000b400 
+
+ sub_imm 
+
+ T1 
+
+ SUB 
+
+ SUBS 
+
+ 0000fe00 
+
+ 00001e00 
+
+ sub_imm 
+
+ T2 
+
+ SUB 
+
+ SUBS 
+
+ 0000f800 
+
+ 00003800 
+
+ sub_reg 
+
+ T1 
+
+ SUB 
+
+ SUBS 
+
+ 0000fe00 
+
+ 00001a00 
+
+ scv 
+
+ T1 
+
+ SVC 
+
+ (null) 
+
+ 0000ff00 
+
+ 0000df00 

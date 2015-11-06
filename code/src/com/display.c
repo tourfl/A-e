@@ -23,7 +23,7 @@ int dispcmd (interpreteur inter, Memory *mem) {
 	what = get_next_token (inter);
 	where = get_next_token(inter);
 
-	if(strcmp(what, "mem") == 0)
+	if(what != NULL && strcmp(what, "mem") == 0)
 	{
 		if(where != NULL && strcmp(where, "map") == 0 && get_next_token(inter) == NULL)
 		{
@@ -37,7 +37,7 @@ int dispcmd (interpreteur inter, Memory *mem) {
 		}
 	}
 
-	else if(strcmp(what, "reg") == 0)
+	else if(what != NULL && strcmp(what, "reg") == 0)
 	{
 		 if(where != NULL && strcmp(where, "all") == 0)
 		{

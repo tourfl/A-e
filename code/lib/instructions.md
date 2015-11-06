@@ -1,8 +1,8 @@
 # Dictionnaire d'instructions
 
-## Forme
+## Syntaxe
 
-commande/encoding nom_inside_IT_block/nom_outside masque valeurs_du_masque
+commande/encoding nom_inside_IT_block/nom_outside masque valeurs_du_masque nb_params
 
 Exemples :
 

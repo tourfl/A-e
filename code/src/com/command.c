@@ -56,7 +56,7 @@ int execute_cmd(interpreteur inter, Memory *mem, Dic *dic) {
     }
     else if(strcmp(token, "debug") == 0)
         return CMD_DEBUG_RETURN_VALUE;
-    
+
     else if(strcmp(token, "resume") == 0)
         return CMD_RESUME_RETURN_VALUE;
 
@@ -75,7 +75,7 @@ int loadcmd(interpreteur inter, Memory *mem) {
 	name = get_next_token(inter);
 	virt_add = get_next_token(inter);
 
-	if(name == NULL && strcmp(get_next_token(inter), "load") != 0)
+	if(name == NULL)
 	{
 		WARNING_MSG("Problem with tokens");
 		printf("%s", usage);
