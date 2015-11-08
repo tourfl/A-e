@@ -93,8 +93,6 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 	byte *plage = NULL;
 	int i = 0;
 	word mot = 0;
-	Instruction ins;
-	init_ins(&ins); // très important
 	int p = 1;
 
 	// On récupère la plage d'octet si elle est correcte (taille > 1 bytes, va_2 > va_1)
@@ -110,11 +108,13 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 
 	// On charge le dictionnaire si ce n'est pas déjà fait
 
-	if(dic->ins32[0].commande == NULL && load_dic(dic) != 0) // ie si le dictionnaire n'a pas été chargé et ne charge pas
+	if(dic->ins32[0].commande.content == NULL && load_dic(dic) != 0) // ie si le dictionnaire n'a pas été chargé et ne charge pas
 		return 1;
 
 	while (i < va_2 - va_1 - 1) // il reste au moins 2 octets à lire (une instruction sur 16 bits)
 	{
+		Instruction ins;
+		init_ins(&ins); // très important
 		mot = 0;
 
 		if(plage[i] == 0)
@@ -125,7 +125,7 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 			mot = plage[i+1]*pow(16, 2) + plage[i]; // de BIG ENDIAN (segment) vers LITTLE ENDIAN (masque des instructions) (!)
 			ins = get_ins16(mot, dic);
 
-			if(ins.commande != NULL) // C'est une instruction 16
+			if(ins.commande.content != NULL) // C'est une instruction 16
 			{
 				i += 2; // on augment de 2 puisque une instruction de 2 octets a été lue
 				p = 0; // signifie qu'au moins une instruction a été lue
@@ -136,7 +136,7 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 			mot = plage[i+1]*pow(16, 2) + plage[i]; // de BIG ENDIAN (segment) vers LITTLE ENDIAN (masque des instructions) (!)
 			ins = get_ins16(mot, dic);
 
-			if(ins.commande != NULL) // C'est une instruction 16
+			if(ins.commande.content != NULL) // C'est une instruction 16
 			{
 				i += 2; // on augment de 2 puisque une instruction de 2 octets a été lue
 				p = 0;
@@ -148,7 +148,7 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 
 				ins = get_ins32(mot, dic);
 
-				if(ins.commande != NULL) // C'est une instruction 32
+				if(ins.commande.content != NULL) // C'est une instruction 32
 				{
 					i += 4; // on augmente de 4 puisque une instruction de 4 octets a été lue
 					p = 0;
@@ -158,11 +158,10 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 			}
 		}
 
-		if(ins.commande != NULL && strcmp(ins.commande, "") != 0)
+		if(ins.commande.content != NULL && strcmp(ins.commande.content[0], "") != 0)
 		{
 			disp_ins(ins);
 			/* ne surtout pas supprimer le contenu de l'instruction, sinon on le supprime du dic */
-			init_ins(&ins);
 		}
 		else
 			WARNING_MSG("unable to find instruction");

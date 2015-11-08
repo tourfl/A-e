@@ -40,6 +40,18 @@ typedef char string[STRLEN+1];
 #define init_string(s) memset( s, '\0', STRLEN+1 )
 
 
+
+ typedef struct
+ {
+ 	int size;
+ 	char **content;
+
+ } Strlist;
+
+ void init_strlist(Strlist *l);
+ void del_strlist(Strlist *l);
+
+
 typedef enum { UNDEF, LSB, MSB } endianness;
 
 /* Fonctions */

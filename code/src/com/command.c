@@ -52,7 +52,7 @@ int execute_cmd(interpreteur inter, Memory *mem, Dic *dic) {
     }
     else if(strcmp(token, "dic") == 0)
     {
-    	return load_dic(dic);
+    	return disp_dic(dic);
     }
     else if(strcmp(token, "debug") == 0)
         return CMD_DEBUG_RETURN_VALUE;

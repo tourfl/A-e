@@ -24,6 +24,43 @@ int get_type(char* chaine) {
 
 
 
+
+void init_strlist(Strlist *l)
+{
+    l->size = 0;
+    l->content = NULL;
+}
+
+
+
+
+
+
+
+
+void del_strlist(Strlist *l)
+{
+    int i;
+
+    printf("size = %u\n", l->size);
+
+    if(l->content == NULL)
+        return;
+    
+    printf("\n%s", l->content[0]);
+
+    for (i = 0; i < l->size; ++i)
+    {
+        free(l->content[i]); // on libère ce qu'il y a dans les cases du tableau
+        l->content[i] = NULL;
+    }
+
+    free(l->content); // on libère le tableau
+    l->size = 0;
+}
+
+
+
 int is_hexa(char* chaine) {
     DEBUG_MSG("is_hexa entered");
 

@@ -3,23 +3,31 @@
 #define DIC_H
 
 #include <stdio.h>
-#include "com/types.h" // word
+#include "com/types.h" // word et Strlist
 
 #define TAILLE_MAX 1000
 
-#define NB_INS_32 20
-#define NB_INS_16 20
+#define NB_INS_32 2
+#define NB_INS_16 0
+
+/*
+ * Explications & exemples : cf lib/instructions.md
+ *
+ */
+
+ int to_strlist(char *chaine, Strlist *liste); // fonction ultra sécurisée !
 
 typedef struct
 {
-	char *commande;
-	char *encoding; // T1, T2, T3 ou T4
-	char *name_in_IT;
-	char *name_out_IT;
-	word mask;
-	word opcode;
-	int nb_param;
+	Strlist commande; // commande (0) et encoding (1)
+	Strlist names; // inside IT (0) et outisde IT (1)
+	Strlist opcode; // mask (0), opcode (1)
 
+	// Paramètres :
+
+	Strlist reg;
+	Strlist imm;
+	Strlist ext;
 
 } Instruction;
 
@@ -46,7 +54,7 @@ int disp_dic();
 
 int load_dic(Dic *dic);
 
-// fonctions relatives à Instruction nécessitant Dic
+// fonctions relatives à Instruction nécessitant Dic (donc déclarée après dic)
 
 Instruction get_ins32(word in, Dic *dic);
 Instruction get_ins16(word in, Dic *dic);
