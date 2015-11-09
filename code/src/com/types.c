@@ -42,15 +42,14 @@ void del_strlist(Strlist *l)
 {
     int i;
 
-    printf("size = %u\n", l->size);
+    // printf("\nsize : %u", l->size);
 
     if(l->content == NULL)
         return;
-    
-    printf("\n%s", l->content[0]);
 
     for (i = 0; i < l->size; ++i)
     {
+        // printf("\n%s", l->content[i]);
         free(l->content[i]); // on libère ce qu'il y a dans les cases du tableau
         l->content[i] = NULL;
     }

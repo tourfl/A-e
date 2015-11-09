@@ -1,29 +1,4 @@
 4f f0  0  0 4f f0  8  1  a 46  0 eb 41  1  0 f0  3 f8 8a 42  a d0  c e0  1 b5 82 b0 4f f0  0  0  0 eb 51  1 bd e8  1 40  2 b0 70 47 4f f0  0  0  0 
-token 0 : mov_imm/T2
-
-token 1 : 1/MOV.W
-
-token 2 : FBEF8000/F04F0000
-
-token 3 : 1/24:27
-
-token 4 : 3/10/28:30/16:23
-
-token 5 : 1/4
-
-
-token 0 : mov_imm/T3
-
-token 1 : 2/MOV/MOVW
-
-token 2 : FBF08000/F2408000
-
-token 3 : 1/24:27
-
-token 4 : 4/0:3/10/28:30/16:23
-
-token 5 : 0
-
 MOV.W
 
 MOV.W
@@ -31,3 +6,38 @@ MOV.W
 MOV.W
 
 MOV.W
+
+size : 2
+mov_imm
+T2
+size : 1
+MOV.W
+size : 2
+FBEF8000
+F04F0000
+size : 1
+24:27
+size : 3
+10
+28:30
+16:23
+size : 1
+4
+
+size : 2
+mov_imm
+T3
+size : 2
+MOV
+MOVW
+size : 2
+FBF08000
+F2408000
+size : 1
+24:27
+size : 4
+0:3
+10
+28:30
+16:23
+size : 0

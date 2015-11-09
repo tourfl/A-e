@@ -1,2 +1,14 @@
 mov_imm/T2 1/MOV.W FBEF8000/F04F0000 1/24:27 3/10/28:30/16:23 1/4
 mov_imm/T3 2/MOV/MOVW FBF08000/F2408000 1/24:27 4/0:3/10/28:30/16:23 0
+size : 0
+size : 0
+size : 0
+size : 0
+size : 0
+size : 0
+size : 0
+size : 0
+size : 0
+size : 0
+size : 0
+size : 0

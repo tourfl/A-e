@@ -19,19 +19,13 @@ int to_strlist_no_nb(char *chaine, Strlist *l)
 
 
 
-	new_chaine = malloc((strlen(chaine) + 2) * sizeof(char));
-
 	if(chaine == NULL)
-	{
-		DEBUG_MSG("Chaine vide");
 		return 1;
-	}
+
+	new_chaine = calloc((strlen(chaine) + 2), sizeof(char));
 
 	if(new_chaine == NULL)
-	{
-		DEBUG_MSG("Problem with malloc");
 		return 5;
-	}
 
 	new_chaine[0] = '2';
 	new_chaine[1] = '/';
@@ -42,8 +36,6 @@ int to_strlist_no_nb(char *chaine, Strlist *l)
 		return 6;
 	}
 
-	// printf("\nnew_chaine : %s\n", new_chaine);
-
 	return to_strlist(new_chaine, l);
 }
 
@@ -53,60 +45,49 @@ int to_strlist_no_nb(char *chaine, Strlist *l)
 
 int to_strlist(char *chaine, Strlist *l) // p doit être initialisée
 {
-	char *token = NULL;
+	char *token = NULL, *str = NULL, *saveptr = NULL;
 	int i;
 
 
 
 
 
-	if(chaine == NULL)
+	// V2
+	// Nécessite une fonction pour exploiter les valeurs de retour (non-écrite)
+	for (i = 0, str = chaine; ; ++i, str = NULL)
 	{
-		DEBUG_MSG("Chaine vide");
-		return 1;
-	}
+		token = strtok_r(str, "/", &saveptr);
 
-	token = strtok(chaine, "/"); // Que se passe-t-il s'il n'y a pas de / ? On suppose qu'au moins 1 token est trouvé
+		if(token == NULL) // comprend le cas chaine == NULL
+			break;
 
-	if(is_dec(token) != 0)
-	{
-		DEBUG_MSG("Bad value for parameter number");
-		return 2;
-	}
+		if(i == 0) {
+			l->size = strtoul(token, NULL, 10);
 
-	if(strtoul(token, NULL, 10) <= 0)
-	{
-		DEBUG_MSG("0 paramètres");
-		return 3; // En soit il n'y a pas d'erreur... 0 ?
-	}
+			if(l->size >= 0) {
+				l->content = malloc(l->size * sizeof(char *));
 
-	l->size = strtoul(token, NULL, 10); // on le fait après la condition pour le cas où nb < 0
-	l->content = malloc(l->size * sizeof(char *));
+				if(l->content == NULL)
+					return 2;
+			}
 
-	for (i = 0; i < l->size && token != NULL; ++i)
-	{
-		token = strtok(NULL, "/");
-
-		if(token == NULL)
-		{
-			DEBUG_MSG("less token than expected in parameters");
-			return 4;
+			else return 3;
 		}
+		else if (i <= l->size) {
+			l->content[i-1] = calloc(strlen(token), sizeof(char));
 
-		l->content[i] = malloc(strlen(token) * sizeof(char));
+			if(l->content[i-1] == NULL)
+				return 2;
 
-		if(l->content[i] == NULL)
-		{
-			DEBUG_MSG("Problem with malloc");
-			return 5;
+			if(strcpy(l->content[i-1], token) == NULL)
+				return 5;
 		}
-
-		if(strcpy(l->content[i], token) == NULL)
-		{
-			DEBUG_MSG("Problem with strcpy");
-			return 7;
-		}
+		
 	}
+
+	if(i != l->size + 1) // l->size
+		return 4; // Problème dans le nombre de tokens
+
 
 	return 0;
 }
@@ -143,12 +124,8 @@ void del_ins(Instruction *ins) // Les éléments alloués sont libérés
 	// Paramètres :
 
 	del_strlist(&(ins->reg));
-	here_n(0);
 	del_strlist(&(ins->imm));
-	here_n(1);
 	del_strlist(&(ins->ext));
-
-	here_n(2);
 }
 
 
@@ -159,109 +136,59 @@ void del_ins(Instruction *ins) // Les éléments alloués sont libérés
 
 int load_ins(Instruction *ins, char *chaine)
 {
-	/*
-	 * 2 boucles pour que strtok puisse fonctionner correctement
-	 *
-	 */
-
-	char *token = NULL;
-	char **tab_tok = NULL; // Attention aux problèmes de désallocation
-	int i;
-	int j;
+	char *token = NULL, *str = NULL, *saveptr = NULL;
+	int i, p = 0;
 
 
 
 
 
+
+	// V3
 
 	if(chaine == NULL)
 		return 1;
 
-	tab_tok = malloc(6 * sizeof(char *)); // tableau de 6 strings
-
-	// printf("\nchaine : %s\n", chaine);
-
-	token = strtok(chaine, " ");
-
-
-	for(i = 0; token != NULL && i < 6; i++) 
+	for (i = 0, str = chaine; ; ++i, str = NULL)
 	{
-		*(tab_tok + i) = calloc(strlen(token), sizeof(char));
+		token = strtok_r(str, " ", &saveptr);
 
-		if(*(tab_tok + i) == NULL)
-		{
-			DEBUG_MSG("Problem with malloc");
-
-			for(j = 0; j < i; j++)
-				free(*(tab_tok + j));
-
-			free(tab_tok);
-
-			return 5;
-		}
-
-		if(strcpy(*(tab_tok + i), token) == NULL)
-		{
-			DEBUG_MSG("Problem with strcpy");
-
-			for(j = 0; j < i; j++)
-				free(*(tab_tok + j));
-
-			free(tab_tok);
-
-			return 7;
-		}
-
-		printf("\ntoken %u : %s\n", i, tab_tok[i]);
-
-		token = strtok(NULL, " ");
-	}
-
-	if(i != 6)
-	{
-		DEBUG_MSG("%u", i);
-		WARNING_MSG("Not the right number of tokens");
-		return 2;
-	}
-
-	for (i = 0; i < 6; ++i)
-	{
-		printf("token : %s\n", tab_tok[i]);
+		if(token == NULL || i == 6)
+			break;
 
 		switch (i)
 		{
 			case 0:
-			to_strlist_no_nb(tab_tok[i], &(ins->commande)); // (!) utilise strtok
+			p = to_strlist_no_nb(token, &(ins->commande)); // il faut que le contenu de token soit copié (!)
 			break;
 
 			case 1:
-			to_strlist(tab_tok[i], &(ins->names));
+			p = to_strlist(token, &(ins->names));
 			break;
 			
 			case 2:
-			to_strlist_no_nb(tab_tok[i], &(ins->opcode));
+			p = to_strlist_no_nb(token, &(ins->opcode));
 			break;
 			
 			case 3:
-			to_strlist(tab_tok[i], &(ins->reg));
+			p = to_strlist(token, &(ins->reg));
 			break;
 			
 			case 4:
-			to_strlist(tab_tok[i], &(ins->imm));
+			p = to_strlist(token, &(ins->imm));
 			break;
 			
 			case 5:
-			to_strlist(tab_tok[i], &(ins->ext));
+			p = to_strlist(token, &(ins->ext));
 			break;
 		}
+
+		if(p != 0 && p != 3)
+			return p;
+
 	}
 
 	return 0;
-
-	for(j = 0; j < i; j++)
-		free(*(tab_tok + j));
-
-	free(tab_tok);
 }
 
 
