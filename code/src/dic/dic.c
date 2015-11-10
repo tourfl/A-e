@@ -382,26 +382,6 @@ int get_bounds(char* plage, int *start, int *end)
 
 
 
-
-
-void init_dic(Dic *dic)
-{
-
-	int i;
-
-	for (i = 0; i < NB_INS_32 + NB_INS_16; ++i)
-	{
-		if(i < NB_INS_32)
-			init_ins(dic->ins32 + i); // instructions 32 bits
-
-		else 
-			init_ins(dic->ins16 + i - NB_INS_32); // instructions 16 bits
-	}
-}
-
-
-
-
 void del_dic(Dic *dic)
 {
 	int i;
@@ -516,7 +496,7 @@ int load_dic(Dic *dic)
 
 	// On suppose qu'il n'y a pas d'erreurs dans le fichier instructions.dic
 
-	while (fgets(chaine, TAILLE_MAX, fd) != NULL && j < NB_INS_32 + NB_INS_16) // les premières instructions sont en 32 bits (il y en a NB_INS_32)
+	while (fgets(chaine, TAILLE_MAX, fd) != NULL) // les premières instructions sont en 32 bits (il y en a NB_INS_32)
 	{
 		if(j < NB_INS_32 && load_ins(dic->ins32 + j, chaine) != 0) // instructions 32 bits
 			return 1; // l'instruction n'a pas correctement été chargée
