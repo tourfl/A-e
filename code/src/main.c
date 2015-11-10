@@ -15,10 +15,14 @@ int main ( int argc, char *argv[] ) {
     // On initialise la mémoire
     
     Memory mem;
+    
     Dic dic;
-
+    if (load_dic (&dic)!= 0) {
+	ERROR_MSG ("Dictionnaire non chargé");
+    }
     init_mem(&mem);
-    init_dic(&dic);
+    
+
 
     DEBUG_MSG("Memory initialized");
 

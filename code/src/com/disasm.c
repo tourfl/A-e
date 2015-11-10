@@ -108,7 +108,7 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 
 	// On charge le dictionnaire si ce n'est pas déjà fait
 
-	if(dic->ins32[0].commande.content == NULL && load_dic(dic) != 0) // ie si le dictionnaire n'a pas été chargé et ne charge pas
+	if(dic->ins32[0].commande == NULL && load_dic(dic) != 0) // ie si le dictionnaire n'a pas été chargé et ne charge pas
 		return 1;
 
 	while (i < va_2 - va_1 - 1) // il reste au moins 2 octets à lire (une instruction sur 16 bits)
@@ -125,7 +125,7 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 		mot = plage[i+1]*pow(16, 2) + plage[i]; // de BIG ENDIAN (segment) vers LITTLE ENDIAN (masque des instructions) (!)
 		ins = get_ins16(mot, dic);
 
-		if(ins.commande.content != NULL) // C'est une instruction 16
+		if(ins.commande != NULL) // C'est une instruction 16
 			i += 2; // on augment de 2 puisque une instruction de 2 octets a été lue
 
 		else if(i <= va_2 - va_1 - 3) // il reste au moins un mot à lire
@@ -135,18 +135,18 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 
 			ins = get_ins32(mot, dic);
 
-			if(ins.commande.content != NULL) // C'est une instruction 32
+			if(ins.commande != NULL) // C'est une instruction 32
 				i += 4; // on augmente de 4 puisque une instruction de 4 octets a été lue
 
 			else i++;
 		}
 		else i++; // S'il reste 3 octets
 
-		printf("\n content : %s\n", ins.commande.content[0]);
+		
 
-		if(ins.commande.content != NULL /*&& strcmp(ins.commande.content[0], "") != 0*/)
+		if(ins.commande != NULL )
 		{
-here;
+
 			Ins_disasmd ins_d;
 
 			init_ins_d(&ins_d, &ins);

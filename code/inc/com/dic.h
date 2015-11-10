@@ -63,7 +63,7 @@ int get_bounds(char* plage, int *start, int *end);
  } Dic;
 
 
-void init_dic(Dic *dic);
+
 void del_dic(Dic *dic);
 
 int disp_dic();
