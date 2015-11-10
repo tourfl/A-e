@@ -1,6 +1,7 @@
 #include "com/dic.h"
 #include <stdlib.h> // Pour free
 #include <string.h> // Pour strtok
+#include "com/bits.h" // flip_endianness
 #include "com/notify.h"
 #include <math.h> // pow
 
@@ -95,7 +96,6 @@ int to_strlist(char *chaine, Strlist *l) // p doit être initialisée
 
 
 
-
 void init_ins(Instruction *ins) // pour éviter les bugs lors de la désallocation
 {
 	init_strlist(&(ins->commande));
@@ -138,10 +138,6 @@ int load_ins(Instruction *ins, char *chaine)
 {
 	char *token = NULL, *str = NULL, *saveptr = NULL;
 	int i, p = 0;
-
-
-
-
 
 
 	// V3
@@ -197,8 +193,33 @@ int load_ins(Instruction *ins, char *chaine)
 
 void disp_ins(Instruction ins)
 {
+	int i;
+	char imm[33] = {0};
+
+
+
 	if(ins.names.size != 0)
-		printf("\n%s\n", ins.names.content[0]);
+		printf("\n%s ", ins.names.content[0]);
+
+	for(i = 0; i < ins.reg.size; i++)
+	{
+		if(i != 0)
+			printf(",");
+
+		// printf("\n %s\n", ins.reg.content[i]);
+
+		printf(" r%lu", strtoul(ins.reg.content[i], NULL, 2));
+	}
+
+	for(i = 0; i < ins.imm.size; i++)
+		strcat(imm, ins.imm.content[i]);
+
+	if(ins.imm.size >= 0)
+	{
+		// printf("\n %s\n", imm);
+		printf(", #%lu", strtoul(imm, NULL, 2));
+	}
+	printf("\n");
 }
 
 
@@ -231,6 +252,7 @@ Instruction get_ins (word in, Instruction ins[], int taille) // retourne l'instr
 
 
 	cin = int_to_bin(in, taille);
+	// printf("\n in : %s \n", cin);
 
 	while (i<NB_INS_32 && ins[i].commande.content != NULL) {
 
@@ -261,6 +283,102 @@ Instruction get_ins (word in, Instruction ins[], int taille) // retourne l'instr
 
 	return ins_vide;
 }
+
+
+
+
+
+void init_ins_d(Ins_disasmd *ins_d, Instruction *ins)
+{
+	init_ins(ins_d);
+
+	ins_d->commande = ins->commande;
+	ins_d->names = ins->names;
+	ins_d->opcode = ins->opcode;
+}
+
+
+
+
+
+int parse_params(word mot, Strlist *strl, Strlist *strl_d)
+{
+	int i;
+
+
+
+
+	if(strl->size == 0)
+		return 3;
+
+	strl_d->content = calloc(strl->size, sizeof(char *));
+
+	if(strl_d == NULL)
+		return 1;
+
+	strl_d->size = strl->size;
+
+	for(i = 0; i < strl->size; i++)
+	{
+		parse_param(mot, strl->content[i], &(strl_d->content[i])); // Valeur de retour non-utilisée
+		// printf("\ncontent[%u] = %s", i, strl_d->content[i]);
+	}
+
+	return 0;
+}
+
+
+
+
+int parse_param(word mot, char *plage, char **value_d)
+{
+	int i, r, start = 0, end = 0;
+	char *word_bin = int_to_bin(mot, 32); // Problème avec la taille...
+
+	// printf("\n %s \n", word_bin);
+	flip_endianness(&word_bin);
+	// printf("\nAfter flip: %s \n", word_bin);
+
+	r = get_bounds(plage, &start, &end);
+	// printf("\nr : %u et [%u:%u]\n", r, start, end);
+
+	if(r != 2 && r != 1)
+		return 2;
+
+	if(start > end)
+		return 3;
+
+	*value_d = calloc(end - start + 2, sizeof(char));
+
+	if(value_d == NULL)
+		return 1;
+
+	for(i = start; i <= end; i++)
+	{
+		// printf("end - i = %u\n", end - i);
+		(*value_d)[end - i] = word_bin[i]; // A cause de l'endianness
+	}
+
+	// printf("\nvalue_d : %s\n", *value_d);
+
+	return 0;
+}
+
+
+
+
+
+
+int get_bounds(char* plage, int *start, int *end)
+{
+	int r = sscanf(plage, "%u:%u", start, end);
+
+	if(*end == 0)
+		*end = *start;
+
+	return r;
+}
+
 
 
 

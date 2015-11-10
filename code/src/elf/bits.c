@@ -9,6 +9,9 @@
 
 #include "com/types.h"
 #include "com/bits.h"
+ #include <string.h> // strlen
+ #include <stdlib.h> // calloc
+ #include <stdio.h> // printf
 
 
 /**
@@ -44,4 +47,38 @@ byte * __flip_endianness( byte * blocks, uint sz ) {
     }
 
     return blocks;
+}
+
+int flip_endianness(char **binstr)
+{
+    char *newstr = NULL;
+    int i;
+
+
+
+    newstr = calloc(33, sizeof(char)); // Un de plus pour le caractère de fin
+
+    if(newstr == NULL)
+        return 1;
+
+    for (i = 0 ; (*binstr)[i] != 0; i++)
+    {
+        if(i < 16) {
+            // printf("%c", (*binstr)[15 - i]);
+            newstr[i] = (*binstr)[15 - i];
+        }
+
+        else if(i < 32) {
+            // printf("%c", (*binstr)[47 - i]);
+            newstr[i] = (*binstr)[47 - i];
+        }
+
+        else break;
+    }
+
+    free(*binstr);
+
+    *binstr = newstr;
+
+    return 0;
 }

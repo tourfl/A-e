@@ -46,5 +46,7 @@ int assert_bte(vaddr32 va, unsigned int val, Memory *mem);
 // Disasm
 
 int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic);
+int disasm_ins(word mot, Instruction *ins, Ins_disasmd *ins_d);
+
 
 #endif

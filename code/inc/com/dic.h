@@ -17,6 +17,8 @@
 
  int to_strlist(char *chaine, Strlist *liste); // fonction ultra sécurisée !
 
+// Ins_disasmd = instruction désassemblée, les Strlist contiennent les valeurs extraites du (demi-)mot lu
+
 typedef struct
 {
 	Strlist commande; // commande (0) et encoding (1)
@@ -29,7 +31,7 @@ typedef struct
 	Strlist imm;
 	Strlist ext;
 
-} Instruction;
+} Instruction, Ins_disasmd;
 
 void init_ins(Instruction *ins);
 void del_ins(Instruction *ins);
@@ -38,6 +40,13 @@ int load_ins(Instruction *ins, char *chaine);
 void disp_ins(Instruction ins);
 
 Instruction get_ins(word in, Instruction ins[], int taille);
+
+void init_ins_d(Ins_disasmd *ins_d, Instruction *ins);
+
+int parse_params(word mot, Strlist *strl, Strlist *strl_d);
+int parse_param(word mot, char *plage, char **value_d);
+
+int get_bounds(char* plage, int *start, int *end);
 
  typedef struct 
  {

@@ -91,9 +91,8 @@ int disasm(interpreteur inter, Memory *mem, Dic *dic)
 int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppose va_1 < va_2
 {
 	byte *plage = NULL;
-	int i = 0;
+	int i = 0, j, p = 1;
 	word mot = 0;
-	int p = 1;
 
 	// On récupère la plage d'octet si elle est correcte (taille > 1 bytes, va_2 > va_1)
 
@@ -102,9 +101,10 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 
 	plage = get_plage(va_1, va_2, mem->map);
 
-	int j;
+	printf("\nplage : ");
 	for (j = 0; j < va_2 - va_1 +1; ++j)
 		printf("%2x ", plage[j]);
+	printf("\n");
 
 	// On charge le dictionnaire si ce n'est pas déjà fait
 
@@ -120,52 +120,81 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 		if(plage[i] == 0)
 			i ++;
 
-		else if(i > va_2 - va_1 - 3) // il reste moins d'un mot à lire
-		{
-			mot = plage[i+1]*pow(16, 2) + plage[i]; // de BIG ENDIAN (segment) vers LITTLE ENDIAN (masque des instructions) (!)
-			ins = get_ins16(mot, dic);
+		// On essaye de désassembler une insruction sur 16 bits
 
-			if(ins.commande.content != NULL) // C'est une instruction 16
-			{
-				i += 2; // on augment de 2 puisque une instruction de 2 octets a été lue
-				p = 0; // signifie qu'au moins une instruction a été lue
-			}
+		mot = plage[i+1]*pow(16, 2) + plage[i]; // de BIG ENDIAN (segment) vers LITTLE ENDIAN (masque des instructions) (!)
+		ins = get_ins16(mot, dic);
+
+		if(ins.commande.content != NULL) // C'est une instruction 16
+			i += 2; // on augment de 2 puisque une instruction de 2 octets a été lue
+
+		else if(i <= va_2 - va_1 - 3) // il reste au moins un mot à lire
+		{
+			mot = mot * pow(16, 4); // Little Endian ALIGNE (!)
+			mot += plage[i+3]*pow(16, 2) + plage[i+2]; // On ajoute les 2 octets suivants de BIG ENDIAN (segment) vers LITTLE ENDIAN (masque des instructions) (!)
+
+			ins = get_ins32(mot, dic);
+
+			if(ins.commande.content != NULL) // C'est une instruction 32
+				i += 4; // on augmente de 4 puisque une instruction de 4 octets a été lue
+
 			else i++;
 		}
-		else {
-			mot = plage[i+1]*pow(16, 2) + plage[i]; // de BIG ENDIAN (segment) vers LITTLE ENDIAN (masque des instructions) (!)
-			ins = get_ins16(mot, dic);
-
-			if(ins.commande.content != NULL) // C'est une instruction 16
-			{
-				i += 2; // on augment de 2 puisque une instruction de 2 octets a été lue
-				p = 0;
-			}
-
-			else {
-				mot = mot * pow(16, 4); // Little Endian ALIGNE (!)
-				mot += plage[i+3]*pow(16, 2) + plage[i+2]; // On ajoute les 2 octets suivants de BIG ENDIAN (segment) vers LITTLE ENDIAN (masque des instructions) (!)
-
-				ins = get_ins32(mot, dic);
-
-				if(ins.commande.content != NULL) // C'est une instruction 32
-				{
-					i += 4; // on augmente de 4 puisque une instruction de 4 octets a été lue
-					p = 0;
-				}
-
-				else i++;
-			}
-		}
+		else i++; // S'il reste 3 octets
 
 		if(ins.commande.content != NULL && strcmp(ins.commande.content[0], "") != 0)
 		{
-			disp_ins(ins);
-			/* ne surtout pas supprimer le contenu de l'instruction, sinon on le supprime du dic */
+			Ins_disasmd ins_d;
+			init_ins_d(&ins_d, &ins);
+
+			p = 0; // signifie qu'au moins une instruction a été lue
+			disasm_ins(mot, &ins, &ins_d);
+			disp_ins(ins_d);
+			/* ne surtout pas supprimer le contenu des instructions (ins, ins_d), sinon on le supprime du dic */
 		}
 		else
 			WARNING_MSG("unable to find instruction");
 	}
 
 	return p;
+}
+
+
+
+
+
+
+
+int disasm_ins(word mot, Instruction *ins, Ins_disasmd *ins_d)
+{
+	int i, r = 0;
+	Strlist *strl = NULL, *strl_d = NULL;
+
+
+
+	for(i = 0; i < 3; i++)
+	{
+		if(i == 0) {
+			strl = &(ins->reg);
+			strl_d = &(ins_d->reg);
+		}
+
+		else if(i == 1) {
+			strl = &(ins->imm);
+			strl_d = &(ins_d->imm);
+		}
+
+		else if(i == 2) {
+			strl = &(ins->ext);
+			strl_d = &(ins_d->ext);
+		}
+
+		r = parse_params(mot, strl, strl_d);
+
+		if(r != 0 && r != 3)
+			return r;
+
+	}
+
+	return 0;
 }

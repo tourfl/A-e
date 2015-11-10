@@ -20,6 +20,8 @@ extern "C" {
 unsigned int get_host_endianness( void );
 byte *__flip_endianness( byte * block, uint sz );
 
+int flip_endianness(char **binstr);
+
 
 #define FLIP_ENDIANNESS( x ) __flip_endianness( (byte*)&(x), sizeof(x) )
 
