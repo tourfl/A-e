@@ -21,6 +21,7 @@
 
 typedef struct
 {
+	// Général:
 	char* commande;
 	char* encoding;
 	char* name_in;
@@ -33,6 +34,9 @@ typedef struct
 	Strlist reg;
 	Strlist imm;
 	Strlist ext;
+	
+	// Pointeur de fonction: 		
+
 
 } Instruction, Ins_disasmd;
 
