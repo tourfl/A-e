@@ -1,18 +1,5 @@
 Virtual memory map (4 segments)
-	rwx	Vaddr: 0x00000000	Size: 0 bytes
-	rwx	Vaddr: 0x00000000	Size: 0 bytes
-	rwx	Vaddr: 0x00000000	Size: 0 bytes
-	rwx	Vaddr: 0x00000000	Size: 0 bytes
-
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
+8	rwx	Vaddr: 0x20a1fed0	Size: 0 bytes
+8	rwx	Vaddr: 0x20c0fba0	Size: 0 bytes
+	rwx	Vaddr: 0x000007f9	Size: 0 bytes
+8	rwx	Vaddr: 0x20a21188	Size: 0 bytes

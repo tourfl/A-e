@@ -266,8 +266,9 @@ int load_elf_in_mem(FILE *fo, Segment map[NB_SEC], unsigned int va)
 
     		int j;
 
-    		for(j = 0; j < map[i].size; j++)
+    		for(j = 0; j < map[i].size; j++) {
     			*(map[i].content+j) = *(content+j);
+		}
 
     		map[i].va = next_segment_start;
     		next_segment_start += (map[i].size/4096 + 1) * 4096;

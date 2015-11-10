@@ -91,13 +91,16 @@ int loadcmd(interpreteur inter, Memory *mem) {
         return 2;
     }
 
-    if(virt_add != NULL && is_hexa(virt_add) == 0)
+    if(virt_add != NULL && is_hexa(virt_add) == 0) {
     	va = strtoul(virt_add, NULL, 0);
+    }
+    else {
+   	WARNING_MSG("No or bad address specified");
+    }
 
-    else WARNING_MSG("No or bad address specified");
-
-    if(va % 4096 != 0) // on arrondit au ko supérieur
+    if(va % 4096 != 0) { // on arrondit au ko supérieur
         va = (va/4096 + 1) * 4096;
+    }
 
     // On récupère le contenu du fichier ELF puis on le charge en mémoire
     load_elf_in_mem(fo, mem->map, va);

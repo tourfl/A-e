@@ -1,16 +1,3 @@
 Usage : assert reg <registre> <valeur>
 	assert word <adresse> <valeur>
 	assert byte <adresse> <valeur>
-
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0
-size : 0

@@ -21,15 +21,22 @@
 
 typedef struct
 {
-	Strlist commande; // commande (0) et encoding (1)
-	Strlist names; // inside IT (0) et outisde IT (1)
-	Strlist opcode; // mask (0), opcode (1)
+	// Général:
+	char* commande;
+	char* encoding;
+	char* name_in;
+	char* name_out;
+	unsigned int mask;
+	unsigned int opcode;
+ 
 
 	// Paramètres :
-
 	Strlist reg;
 	Strlist imm;
 	Strlist ext;
+	
+	// Pointeur de fonction: 		
+
 
 } Instruction, Ins_disasmd;
 
@@ -50,8 +57,8 @@ int get_bounds(char* plage, int *start, int *end);
 
  typedef struct 
  {
- 	Instruction ins32[NB_INS_32];
- 	Instruction ins16[NB_INS_16];
+ 	Instruction* ins32;
+ 	Instruction* ins16;
 
  } Dic;
 

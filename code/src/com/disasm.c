@@ -142,14 +142,22 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 		}
 		else i++; // S'il reste 3 octets
 
-		if(ins.commande.content != NULL && strcmp(ins.commande.content[0], "") != 0)
+		printf("\n content : %s\n", ins.commande.content[0]);
+
+		if(ins.commande.content != NULL /*&& strcmp(ins.commande.content[0], "") != 0*/)
 		{
+here;
 			Ins_disasmd ins_d;
+
 			init_ins_d(&ins_d, &ins);
 
+
 			p = 0; // signifie qu'au moins une instruction a été lue
+			
 			disasm_ins(mot, &ins, &ins_d);
+
 			disp_ins(ins_d);
+
 			/* ne surtout pas supprimer le contenu des instructions (ins, ins_d), sinon on le supprime du dic */
 		}
 		else
