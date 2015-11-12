@@ -110,9 +110,23 @@ extern "C" {
 #define DEBUG_MSG(...)
 #endif
 
+
+
+
+/*
+ * @author: rdein
+ */
+
 #define here DEBUG_MSG("Able to be here !");
 
 #define here_n(n) DEBUG_MSG("Able to be here n°%i", n);
+
+#define DISP_TOKEN(i, token) printf("token(%u): %s\n",i, token);
+
+
+
+void which_error(int code);
+
 
 #ifdef __cplusplus
 }

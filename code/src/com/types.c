@@ -1,10 +1,26 @@
 /* Fonctions relatives aux types */
 
 #include "com/types.h"
-#include <string.h> // Pour strtok notamment
+#include <string.h> // Pour strtok, strcat notamment
 #include "com/notify.h" // messages de contrôle
 #include <stdlib.h> // sscanf notamment
 #include <ctype.h> // pour isdigit
+
+
+
+
+
+// On pourrait écrire init_c avec calloc
+
+void *init_m(void *addr, int size)
+{
+    addr = malloc(size * sizeof(*addr));
+
+    return addr;
+}
+
+
+
 
 
 enum {HEXA,OCT,DEC,UNKNOWN};
@@ -21,6 +37,61 @@ int get_type(char* chaine) {
 	return DEC;	
     else return UNKNOWN;
 }
+
+
+
+
+void init_plage(Plage *p)
+{
+    p->start = 0;
+    p->end = 0;
+}
+
+
+
+
+
+void disp_plg(Plage p) {
+    printf("start: %u\tend: %u\n", p.start, p.end);
+}
+
+
+
+
+
+ void init_plgtab(Plgtab *t)
+ {
+    t->size = 0;
+    t->plages = NULL;
+ }
+
+
+
+
+
+
+ void del_plgtab(Plgtab *t) {
+    free(t->plages);
+ }
+
+
+
+
+
+
+ void disp_plgtab(Plgtab t) {
+    int i;
+
+
+    printf("(size=%u)\n", t.size);
+
+    for (i = 0; i < t.size; ++i)
+    {
+        printf("  plage %u:\t", i);
+        disp_plg(t.plages[i]);
+    }
+ }
+
 
 
 
@@ -57,6 +128,52 @@ void del_strlist(Strlist *l)
     free(l->content); // on libère le tableau
     l->size = 0;
 }
+
+
+
+
+
+
+ void disp_strlist(Strlist l)
+ {
+    int i;
+
+
+    for (i = 0; i < l.size; ++i)
+    {
+        printf("\nl.content[%u] : %s", i, l.content[i]);
+    }
+ }
+
+
+ int prepend_2slash(char **str)
+ {
+
+    char *new_chaine =  NULL;
+
+
+
+
+
+    if(str == NULL)
+        return 1;
+
+    new_chaine = calloc((strlen(*str) + 2), sizeof(char));
+
+    if(new_chaine == NULL)
+        return 2;
+
+    new_chaine[0] = '2';
+    new_chaine[1] = '/';
+
+    if(strcat(new_chaine, *str) == NULL) {
+        return 6;
+    }
+
+    *str = new_chaine;
+
+    return 0;
+ }
 
 
 

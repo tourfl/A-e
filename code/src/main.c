@@ -11,25 +11,50 @@
  #include <string.h> // Pour utiliser strcmp notamment
 
 
+
+
+
+
+ int init(Memory *mem, Dic *dic) {
+
+    init_mem(mem);
+
+    return load_dic (dic);
+ }
+
+
+
+
+
+ void del(Memory *mem, Dic *dic, interpreteur inter) {
+    del_inter(inter);
+    del_dic(dic);
+    del_mem(mem);
+ }
+
+
+
+
+
+
 int main ( int argc, char *argv[] ) {
-    // On initialise la mémoire
-    
-    Memory mem;
-    
-    Dic dic;
-    if (load_dic (&dic)!= 0) {
-	ERROR_MSG ("Dictionnaire non chargé");
-    }
-    init_mem(&mem);
-    
 
-
-    DEBUG_MSG("Memory initialized");
-
-    interpreteur inter=init_inter(); /* structure gardant les infos et états de l'interpreteur*/
-
+    int r = 0;
     FILE *fp = NULL; /* le flux dans lequel les commande seront lues : stdin (mode shell) ou un fichier */
     FILE *fd = NULL; // Pour le mode debug, permet de stocker provisoirement le fichier ouvert en mode script
+    Memory mem;
+    Dic dic;
+    interpreteur inter = init_inter(); /* structure gardant les infos et états de l'interpreteur*/
+
+
+
+    r = init(&mem, &dic);
+
+    if(r != 0) {
+        exit(r);
+    }
+
+
 
     if ( argc > 2 ) {
         usage_ERROR_MSG( argv[0] );
@@ -49,8 +74,7 @@ int main ( int argc, char *argv[] ) {
         if ( fp == NULL ) {
             perror( "fopen" );
 
-            del_mem(&mem);
-            del_dic(&dic);
+            del(&mem, &dic, inter);
             exit( EXIT_FAILURE );
         }
         inter->mode = SCRIPT;
@@ -102,9 +126,7 @@ int main ( int argc, char *argv[] ) {
                 else if(inter->mode == DEBUG_MODE) // fd pointe vers le fichier du mode SCRIPT
                     fclose(fd);
 
-                del_inter(inter);
-                del_dic(&dic);
-                del_mem(&mem);
+                
                 exit(EXIT_SUCCESS);
                 break;
             default:
@@ -112,9 +134,7 @@ int main ( int argc, char *argv[] ) {
                 /* En mode "fichier" toute erreur implique la fin du programme afin de récupérer la valeur de retour de la commande */
                 if (inter->mode == SCRIPT) {
                     fclose( fp );
-                    del_dic(&dic);
-                    del_inter(inter);
-                    del_mem(&mem);
+                    del(&mem, &dic, inter);
                     /*macro ERROR_MSG : message d'erreur puis fin de programme ! */
                     ERROR_MSG("ERREUR DETECTEE. Aborts");
                 }
@@ -125,9 +145,7 @@ int main ( int argc, char *argv[] ) {
             /* mode fichier, fin de fichier => sortie propre du programme */
             DEBUG_MSG("FIN DE FICHIER");
             fclose( fp );
-            del_dic(&dic);
-            del_inter(inter);
-            del_mem(&mem);
+            del(&mem, &dic, inter);
             exit(EXIT_SUCCESS);
         }
     }

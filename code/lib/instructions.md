@@ -2,7 +2,7 @@
 
 ## Syntaxe
 
-### commande/encoding nb_nom/nom_inside_IT_block/nom_outside masque_opcode/valeur_opcode nb_params_reg/masque_reg+ nb_imm/masque_imm+ nb_extra_params/masque_extra+
+### commande/encoding nom_inside_IT_block/nom_outside masque_opcode/valeur_opcode nb_params_reg/masque_reg+ nb_imm/masque_imm+ nb_extra_params/masque_extra+
 
 avec :
 
@@ -19,6 +19,8 @@ avec :
 
 ### Spécifier le nombre permet de faire une vérification
 
+- On suppose qu'il y a toujours 2 noms, s'il n'y a pas 2 noms, une chaîne vide est mise dans nom_out
+
 ## Endianness (!) :
 
 - Nous avons commencé le dictionnaire en little endian, tout ce qui concerne l'OPCODE est donc en LITTLE ENDIAN ALIGNE (alors que les fichiers .o sont codés en big endian)
@@ -33,7 +35,7 @@ avec :
 ## Exemples :
 
 ```
-mov_imm/T3 2/MOV/MOVW FBF08000/F2408000 1/24:27 4/0:3/10/28:30/16:23 0
+mov_imm/T3 MOV/MOVW FBF08000/F2408000 1/24:27 4/0:3/10/28:30/16:23 0
 
 Il n'y a pas de paramètres extra, Rd est récupéré de 24 à 27, imm4 de 0 à 3, i en 10, imm3 de 28 à 30 et imm8 de 16 à 23
 ```

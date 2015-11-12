@@ -1,4 +1,4 @@
-#include "com/dic.h"
+#include "com/dic.h" // inclut Strlist et word
 #include <stdlib.h> // Pour free
 #include <string.h> // Pour strtok
 #include "com/bits.h" // flip_endianness
@@ -10,34 +10,63 @@
 
 
 
+// reprise de to_strlist
 
-int to_strlist_no_nb(char *chaine, Strlist *l)
-{
-	char *new_chaine =  NULL;
-
-
-
+int to_strtab(char *chaine, char **tab) {
+	char *token = NULL, *str = NULL, *saveptr = NULL;
+	int i;
 
 
 
-	if(chaine == NULL)
-		return 1;
 
-	new_chaine = calloc((strlen(chaine) + 2), sizeof(char));
-
-	if(new_chaine == NULL)
-		return 5;
-
-	new_chaine[0] = '2';
-	new_chaine[1] = '/';
-
-	if(strcat(new_chaine, chaine) == NULL)
+	for (i = 0, str = chaine; i < 2; ++i, str = NULL)
 	{
-		DEBUG_MSG("Problem with strcat");
-		return 6;
+		token = strtok_r(str, "/", &saveptr);
+
+		// DISP_TOKEN(i, token);
+
+		if (token != NULL) {
+			tab[i] = malloc(strlen(token) * sizeof(char));
+
+			if(tab[i] == NULL)
+				return 2;
+
+			if(strcpy(tab[i], token) == NULL)
+				return 5;
+		}
 	}
 
-	return to_strlist(new_chaine, l);
+	return 0;
+}
+
+
+
+
+
+
+// Même principe que to_wrdtab
+
+int to_wrdtab(char *chaine, word tab[]) {
+	char *token = NULL, *str = NULL, *saveptr = NULL;
+	int i;
+
+
+
+	for (i = 0, str = chaine; i < 2; ++i, str = NULL)
+	{
+		token = strtok_r(str, "/", &saveptr);
+
+		// DISP_TOKEN(i, token);
+
+		if(token == NULL) // comprend le cas chaine == NULL
+			tab[i] = 0; // 0 == '\0'
+
+		else tab[i] = strtoul(token, NULL, 16);
+
+		// printf("tab[%u] = %8x", i, tab[i]);
+	}
+
+	return 0;
 }
 
 
@@ -50,6 +79,8 @@ int to_strlist(char *chaine, Strlist *l) // p doit être initialisée
 	int i;
 
 
+
+	// V3
 
 
 
@@ -83,12 +114,48 @@ int to_strlist(char *chaine, Strlist *l) // p doit être initialisée
 			if(strcpy(l->content[i-1], token) == NULL)
 				return 5;
 		}
-		
 	}
+
+	// disp_strlist(*l);
 
 	if(i != l->size + 1) // l->size
 		return 4; // Problème dans le nombre de tokens
 
+
+	return 0;
+}
+
+int to_plgtab(char *chaine, Plgtab *plgt)
+{
+	Strlist strl;
+	int i, r = 0;
+
+
+	init_strlist(&strl);
+	r = to_strlist(chaine, &strl);
+
+	// disp_strlist(strl);
+
+	if(r != 0)
+		return r;
+
+	plgt->plages = malloc(strl.size * sizeof(Plage));
+
+	if(plgt->plages == NULL)
+		return 1;
+
+	plgt->size = strl.size;
+
+	for (i = 0; i < strl.size; ++i)
+	{
+		if(sscanf(strl.content[i], "%u:%u", &(plgt->plages[i].start), &(plgt->plages[i].end)) == 1)
+			plgt->plages[i].end = plgt->plages[i].start;
+
+
+		// printf("  \nplage %u:\tstart: %u\tend: %u\n", i, plgt->plages[i].start, plgt->plages[i].end);
+	}
+
+	del_strlist(&strl);
 
 	return 0;
 }
@@ -98,15 +165,19 @@ int to_strlist(char *chaine, Strlist *l) // p doit être initialisée
 
 void init_ins(Instruction *ins) // pour éviter les bugs lors de la désallocation
 {
-	init_strlist(&(ins->commande));
-	init_strlist(&(ins->names));  
-	init_strlist(&(ins->opcode)); 
+	ins->commande = NULL;
+	ins->encoding = NULL;
+	ins->name_in = NULL;
+	ins->name_out = NULL;
+
+	ins->mask = 0;
+	ins->opcode = 0;
 
 	// Paramètres :
 
-	init_strlist(&(ins->reg));
-	init_strlist(&(ins->imm));
-	init_strlist(&(ins->ext));
+	init_plgtab(&(ins->reg));
+	init_plgtab(&(ins->imm));
+	init_plgtab(&(ins->ext));
 }
 
 
@@ -116,16 +187,17 @@ void init_ins(Instruction *ins) // pour éviter les bugs lors de la désallocati
 
 void del_ins(Instruction *ins) // Les éléments alloués sont libérés
 {
-	del_strlist(&(ins->commande));
-	del_strlist(&(ins->names));  
-	del_strlist(&(ins->opcode)); 
+	free(ins->commande);
+	free(ins->encoding);
+	free(ins->name_in);
+	free(ins->name_out);
 
 
 	// Paramètres :
 
-	del_strlist(&(ins->reg));
-	del_strlist(&(ins->imm));
-	del_strlist(&(ins->ext));
+	del_plgtab(&(ins->reg));
+	del_plgtab(&(ins->imm));
+	del_plgtab(&(ins->ext));
 }
 
 
@@ -140,48 +212,70 @@ int load_ins(Instruction *ins, char *chaine)
 	int i, p = 0;
 
 
-	// V3
 
-	if(chaine == NULL)
-		return 1;
 
-	for (i = 0, str = chaine; ; ++i, str = NULL)
+	// V4
+
+	init_ins(ins);
+
+
+	for (i = 0, str = chaine; i < 6; ++i, str = NULL)
 	{
 		token = strtok_r(str, " ", &saveptr);
 
-		if(token == NULL || i == 6)
+		// DISP_TOKEN(i, token);
+
+		if(token == NULL) // Comprend le cas chaine == NULL
 			break;
 
 		switch (i)
 		{
-			case 0:
-			p = to_strlist_no_nb(token, &(ins->commande)); // il faut que le contenu de token soit copié (!)
-			break;
+			case 0: {
+				Str str_tab[2]; // tableau de 2 char*
 
-			case 1:
-			p = to_strlist(token, &(ins->names));
+				p = to_strtab(token, str_tab);
+
+				ins->commande = str_tab[0]; // alloué dynamiquement
+				ins->encoding = str_tab[1];
+
+				break;
+			}
+
+			case 1: {
+				Str str_tab[2]; // tableau de 2 char*
+
+				p = to_strtab(token, str_tab);
+
+				ins->name_in = str_tab[0];
+				ins->name_out = str_tab[1]; // juste un \0 s'il n'est pas dans la définition de l'instruction
+				break;
+			}
+			
+			case 2: {
+				word wrd_tab[2];
+
+				p = to_wrdtab(token, wrd_tab);
+
+				ins->mask = wrd_tab[0]; // On suppose qu'il n'y a pas d'erreur
+				ins->opcode = wrd_tab[1];
+				break;
+			}
+			
+			case 3 :
+			p = to_plgtab(token, &(ins->reg));
 			break;
 			
-			case 2:
-			p = to_strlist_no_nb(token, &(ins->opcode));
+			case 4 :
+			p = to_plgtab(token, &(ins->imm));
 			break;
 			
-			case 3:
-			p = to_strlist(token, &(ins->reg));
-			break;
-			
-			case 4:
-			p = to_strlist(token, &(ins->imm));
-			break;
-			
-			case 5:
-			p = to_strlist(token, &(ins->ext));
+			case 5 :
+			p = to_plgtab(token, &(ins->ext));
 			break;
 		}
 
 		if(p != 0 && p != 3)
 			return p;
-
 	}
 
 	return 0;
@@ -191,32 +285,49 @@ int load_ins(Instruction *ins, char *chaine)
 
 
 
+// Pour une instruction extraite du dictionnaire
+
 void disp_ins(Instruction ins)
+{
+	printf("\n\n\n  command: %s\tencoding: %s\n", ins.commande, ins.encoding);
+	printf("  name_in: %s\tname_out: %s\n", ins.name_in, ins.name_out);
+	printf("  mask: %8x\topcode: %8x\n", ins.mask, ins.opcode);
+	printf("\n  reg ");
+	disp_plgtab(ins.reg);
+	printf("\n  imm ");
+	disp_plgtab(ins.imm);
+	printf("\n  ext ");
+	disp_plgtab(ins.ext);
+}
+
+
+
+
+
+// Pour une instruction désassemblée
+
+void disp_insd(Instruction ins)
 {
 	int i;
 	char imm[33] = {0};
 
 
 
-	if(ins.names.size != 0)
-		printf("\n%s ", ins.names.content[0]);
+	printf("\n%s ", ins.name_in);
 
 	for(i = 0; i < ins.reg.size; i++)
 	{
 		if(i != 0)
 			printf(",");
 
-		// printf("\n %s\n", ins.reg.content[i]);
-
-		printf(" r%lu", strtoul(ins.reg.content[i], NULL, 2));
+		printf(" r%u", ins.reg.plages[i].value);
 	}
 
 	for(i = 0; i < ins.imm.size; i++)
-		strcat(imm, ins.imm.content[i]);
+		strcat(imm, int_to_bin(ins.imm.plages[i].value, ins.imm.plages[i].end - ins.imm.plages[i].start));
 
 	if(ins.imm.size >= 0)
 	{
-		// printf("\n %s\n", imm);
 		printf(", #%lu", strtoul(imm, NULL, 2));
 	}
 	printf("\n");
@@ -226,7 +337,24 @@ void disp_ins(Instruction ins)
 
 
 
-Instruction get_ins (word in, Instruction ins[], int taille) // retourne l'instruction en question s'il y a match, NULL sinon;
+
+int get_ins32(word in, Instruction *out, Dic *dic) {
+	return get_ins(in, out, dic->ins32, dic->sz32);
+}
+int get_ins16(word in, Instruction *out, Dic *dic) {
+	return get_ins(in, out, dic->ins16, dic->sz16);
+}
+
+
+/*
+ * in : mot à décoder
+ * out : instruction de sortie
+ * dic : tableau d'instructions
+ * sz_dic : nb d'instructions dans le tableau
+ */
+
+
+int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic) // retourne l'instruction en question s'il y a match, NULL sinon;
 {
 	/*
 	 * Problème : les fichiers .o sont codés en little endian aligné (cf 2.4)
@@ -235,94 +363,63 @@ Instruction get_ins (word in, Instruction ins[], int taille) // retourne l'instr
 	 * ce problème est résolu dans la fonction disasm_plage
 	 */
 
-	char* mask = NULL;
-	char* op_code = NULL;
-	char *cin = NULL;
-	char* a = NULL;
-	char* b = NULL;
 	int i=0;
-	Instruction ins_vide;
-	init_ins(&ins_vide);
 
 
 
-
-
+	//V2
 	// printf("word: %8x\n", in);
 
+	while (i<sz_dic && dic[i].commande != NULL) {
 
-	cin = int_to_bin(in, taille);
-	// printf("\n in : %s \n", cin);
-
-	while (i<NB_INS_32 && ins[i].commande.content != NULL) {
-
-		mask = int_to_bin (strtoul(ins[i].opcode.content[0], NULL, 16) , taille);
-		op_code =  int_to_bin (strtoul(ins[i].opcode.content[1], NULL, 16) , taille);
-		
-		a = bin_x_bin (cin , mask , taille); //on compare l'entrée et le masque;
-		b = bin_x_bin (op_code, mask, taille); //on compare l'op code et le masque;
-
-		if(strcmp (a,b) == 0) {
-			// printf("in: %s\tn°%u\nmask: %s\topcode: %s\na: %s\tb: %s\n",cin, i, mask, op_code, a, b);
-			free(mask);
-			free(op_code);
-			free(a);
-			free(b);
-			free(cin);
-			return ins[i];
+		if((in & dic[i].mask) == (dic[i].opcode & dic[i].mask)) {
+			cpy_ins(out, &(dic[i]));
+			return 0;
 		}
-		free(mask);
-		free(op_code);
-		free(a);
-		free(b);
-		i++;
 
+		i++;
 	}
 
-	free(cin);
-
-	return ins_vide;
+	return 10;
 }
 
 
 
 
 
-void init_ins_d(Ins_disasmd *ins_d, Instruction *ins)
+void cpy_ins(Ins_disasmd *dest, Instruction *src)
 {
-	init_ins(ins_d);
+	dest->commande = src->commande;
+	dest->encoding = src->encoding;
+	dest->name_in = src->name_in;
+	dest->name_out = src->name_out;
+	dest->opcode = src->opcode;
 
-	ins_d->commande = ins->commande;
-	ins_d->names = ins->names;
-	ins_d->opcode = ins->opcode;
+	dest->reg = src->reg;
+	dest->imm = src->imm;
+	dest->ext = src->ext;
 }
 
 
 
 
 
-int parse_params(word mot, Strlist *strl, Strlist *strl_d)
+int parse_params(word mot, Plgtab *tab)
 {
 	int i;
 
 
 
 
-	if(strl->size == 0)
+	if(tab->size == 0)
 		return 3;
 
-	strl_d->content = calloc(strl->size, sizeof(char *));
-
-	if(strl_d == NULL)
-		return 1;
-
-	strl_d->size = strl->size;
-
-	for(i = 0; i < strl->size; i++)
+	for(i = 0; i < tab->size; i++)
 	{
-		parse_param(mot, strl->content[i], &(strl_d->content[i])); // Valeur de retour non-utilisée
-		// printf("\ncontent[%u] = %s", i, strl_d->content[i]);
+		parse_param(mot, &(tab->plages[i])); // Valeur de retour non-utilisée
+		// printf("\nvalue[%u] = %u", i, tab_d->plages[i].value);
 	}
+
 
 	return 0;
 }
@@ -330,36 +427,32 @@ int parse_params(word mot, Strlist *strl, Strlist *strl_d)
 
 
 
-int parse_param(word mot, char *plage, char **value_d)
+int parse_param(word mot, Plage *p) // On utilise un paramètre de sortie pour renvoyer des codes d'erreur en valeur de retour
 {
-	int i, r, start = 0, end = 0;
-	char *word_bin = int_to_bin(mot, 32); // Problème avec la taille...
+	int i;
+	char *word_bin = NULL, *val_bin = NULL;
+
+
+
+	word_bin = int_to_bin(mot, 32);
+	val_bin = calloc(p->end - p->start + 2, sizeof(char));
 
 	// printf("\n %s \n", word_bin);
 	flip_endianness(&word_bin);
 	// printf("\nAfter flip: %s \n", word_bin);
 
-	r = get_bounds(plage, &start, &end);
-	// printf("\nr : %u et [%u:%u]\n", r, start, end);
-
-	if(r != 2 && r != 1)
-		return 2;
-
-	if(start > end)
+	if(p->start > p->end)
 		return 3;
 
-	*value_d = calloc(end - start + 2, sizeof(char));
-
-	if(value_d == NULL)
-		return 1;
-
-	for(i = start; i <= end; i++)
+	for(i = p->start; i <= p->end; i++)
 	{
-		// printf("end - i = %u\n", end - i);
-		(*value_d)[end - i] = word_bin[i]; // A cause de l'endianness
+		// printf("end - i = %u\n", p->end - i);
+		val_bin[p->end - i] = word_bin[i]; // A cause de l'endianness
 	}
 
-	// printf("\nvalue_d : %s\n", *value_d);
+	p->value = strtoul(val_bin, NULL, 2);
+
+	// printf("\nval_bin : %s et value : %u\n", val_bin, p->value);
 
 	return 0;
 }
@@ -369,14 +462,13 @@ int parse_param(word mot, char *plage, char **value_d)
 
 
 
-int get_bounds(char* plage, int *start, int *end)
+void init_dic(Dic *dic)
 {
-	int r = sscanf(plage, "%u:%u", start, end);
+	dic->ins32 = NULL;
+	dic->ins16 = NULL;
 
-	if(*end == 0)
-		*end = *start;
-
-	return r;
+	dic->sz32 = 0;
+	dic->sz16 = 0;
 }
 
 
@@ -386,13 +478,12 @@ void del_dic(Dic *dic)
 {
 	int i;
 
-	for (i = 0; i < NB_INS_32 + NB_INS_16; ++i)
-	{
-		if(i < NB_INS_32)
-			del_ins(dic->ins32 + i); // instructions 32 bits
+	for (i = 0; i < dic->sz32; ++i) {
+		del_ins(dic->ins32 + i); // instructions 32 bits
+	}
 
-		else 
-			del_ins(dic->ins16 + i - NB_INS_32); // instructions 16 bits
+	for (i = 0; i < dic->sz16; ++i) {
+		del_ins(dic->ins16 + i); // instructions 16 bits
 	}
 }
 
@@ -402,21 +493,17 @@ void del_dic(Dic *dic)
 
 
 
-int disp_dic()
+int disp_dic(Dic *dic)
 {
-	FILE *dic = NULL;
-	char chaine[TAILLE_MAX] = "";
+	int i;
 
-	dic = fopen("lib/test.dic", "r");
-
-	if(dic == NULL) return 1;
-
-	while (fgets(chaine, TAILLE_MAX, dic) != NULL)
-	{
-		printf("%s", chaine);
+	for (i = 0; i < dic->sz32; ++i) {
+		disp_ins(*(dic->ins32 + i)); // instructions 32 bits
 	}
 
-	fclose(dic);
+	for (i = 0; i < dic->sz16; ++i) {
+		disp_ins(*(dic->ins16 + i)); // instructions 16 bits
+	}
 
 	return 0;
 }
@@ -463,64 +550,90 @@ char* int_to_bin(unsigned int n, char taille)
 
 
 
-
-char* bin_x_bin(char bin_1[], char bin_2[], int taille)
+int load_dic(Dic *dic)
 {
-	int i;
-	char *bin = NULL;
+	int r = 0;
+	FILE *fd = NULL;
 
-	bin = calloc(taille+1, sizeof(char)); // avec calloc, chaine remplie de '\0'
-	
-	for(i = 0; i < taille; i++)
-	{
-		if(bin_1[i] == '1' && bin_2[i] == '1')
-			bin[i] = '1';
-			
-		else bin[i] = '0';
-	}
-	
-	return bin;
+
+
+	init_dic(dic);
+
+	fd = fopen("lib/test.dic", "r");
+	r = load_ins_tab_from_file(&(dic->ins32), &(dic->sz32), fd);
+
+	// which_error(r);
+
+	fclose(fd);
+
+	return r;
 }
 
 
 
-int load_dic(Dic *dic)
-{
-	FILE *fd = NULL;
-	char chaine[TAILLE_MAX] = "";
-	int j = 0;
 
-	fd = fopen("lib/test.dic", "r");
+
+/*
+ * dic est un pointeur sur un tableau d'instruction
+ * dic_sz est un pointeur sur la future taille de ce tableau
+ */
+
+
+
+int load_ins_tab_from_file(Instruction **dic, int *dic_sz, FILE *fd)
+{
+	char chaine[TAILLE_MAX] = "";
+	char ch = 0;
+	int sz = 0, i, l = 0;
+
+
 
 	if(fd == NULL) return 1;
 
-	// On suppose qu'il n'y a pas d'erreurs dans le fichier instructions.dic
+	sz++;
 
-	while (fgets(chaine, TAILLE_MAX, fd) != NULL) // les premières instructions sont en 32 bits (il y en a NB_INS_32)
+	while(!feof(fd)) // pour connaître la taille
 	{
-		if(j < NB_INS_32 && load_ins(dic->ins32 + j, chaine) != 0) // instructions 32 bits
-			return 1; // l'instruction n'a pas correctement été chargée
+		ch = fgetc(fd);
+		if(ch == '\n')
+		{
+			sz++;
+		}
+	}
+	// printf("\nsz = %u\n", sz);
 
-		else if(j >= NB_INS_32 && load_ins(dic->ins16 + j - NB_INS_32, chaine) != 0) // instructions 16 bits
-			return 1;
+	if(fseek(fd, 0, SEEK_SET) != 0) // On se remet au début du fichier
+		return 8;
 
-		j++;
+	*dic = malloc(sz * sizeof(Instruction));
+
+	if(*dic == NULL) {
+		return 2;
 	}
 
-	fclose(fd);
+	*dic_sz = sz;
+
+	// On suppose qu'il n'y a pas d'erreurs dans le fichier
+
+	for (i = 0; i < sz; i++) // les premières instructions sont en 32 bits (il y en a NB_INS_32)
+	{
+		if (fgets(chaine, TAILLE_MAX, fd) == NULL)
+			return 1;
+
+		// printf("%s\n", chaine);
+
+		l = load_ins(&((*dic)[i]), chaine); // &((*)) = prise de tête !
+
+
+		if(l != 0)
+			return l;
+
+		// disp_ins((*dic)[i]);
+	}
 
 	return 0;
 }
 
-
-
-
-
-
-
-
-Instruction get_ins32(word in, Dic *dic) { return get_ins(in, dic->ins32, 32); }
-Instruction get_ins16(word in, Dic *dic) { return get_ins(in, dic->ins16, 16); }
 
 			
 			

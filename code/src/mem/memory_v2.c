@@ -11,6 +11,8 @@
 
 
 
+
+
 int realloc_seg(int size, int i, Segment map[NB_SEC])
 {
     void *p = realloc(map[i].content, size * sizeof(byte));
