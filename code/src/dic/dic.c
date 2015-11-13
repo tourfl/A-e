@@ -34,6 +34,12 @@ int to_strtab(char *chaine, char **tab) {
 			if(strcpy(tab[i], token) == NULL)
 				return 5;
 		}
+		else {
+			tab[i] = calloc(1, sizeof(char));
+
+			if(tab[i] == NULL)
+				return 2;
+		}
 	}
 
 	return 0;
@@ -142,7 +148,7 @@ int to_plgtab(char *chaine, Plgtab *plgt)
 	plgt->plages = malloc(strl.size * sizeof(Plage));
 
 	if(plgt->plages == NULL)
-		return 1;
+		return 2;
 
 	plgt->size = strl.size;
 
@@ -313,24 +319,49 @@ void disp_insd(Instruction ins)
 
 
 
-	printf("\n%s ", ins.name_in);
+	printf("\n%s", ins.name_in);
+	// printf("(%s/%s)", ins.commande, ins.encoding);
 
 	for(i = 0; i < ins.reg.size; i++)
 	{
 		if(i != 0)
 			printf(",");
 
-		printf(" r%u", ins.reg.plages[i].value);
+		switch (ins.reg.plages[i].value)
+		{
+			case 13: {
+				printf(" sp");
+				break;
+			}
+			case 14: {
+				printf(" lr");
+				break;
+			}
+			case 15: {
+				printf(" pc");
+				break;
+			}
+			case 16: {
+				printf(" apsr");
+				break;
+			}
+			default: {
+				printf(" r%u", ins.reg.plages[i].value);				
+				break;
+			}
+		}
 	}
 
 	for(i = 0; i < ins.imm.size; i++)
 		strcat(imm, int_to_bin(ins.imm.plages[i].value, ins.imm.plages[i].end - ins.imm.plages[i].start));
 
-	if(ins.imm.size >= 0)
+	// printf("\nimm:%s\n", imm);
+
+	if(ins.imm.size > 0)
 	{
 		printf(", #%lu", strtoul(imm, NULL, 2));
 	}
-	printf("\n");
+	// printf("\n");
 }
 
 
@@ -368,7 +399,6 @@ int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic) // retourn
 
 
 	//V2
-	// printf("word: %8x\n", in);
 
 	while (i<sz_dic && dic[i].commande != NULL) {
 
@@ -429,16 +459,17 @@ int parse_params(word mot, Plgtab *tab)
 
 int parse_param(word mot, Plage *p) // On utilise un paramètre de sortie pour renvoyer des codes d'erreur en valeur de retour
 {
-	int i;
+	int i, t = 16;
 	char *word_bin = NULL, *val_bin = NULL;
 
+	if(mot > pow(2, 16))
+		t = 32;
 
 
-	word_bin = int_to_bin(mot, 32);
+	word_bin = int_to_bin(mot, t);
 	val_bin = calloc(p->end - p->start + 2, sizeof(char));
 
-	// printf("\n %s \n", word_bin);
-	flip_endianness(&word_bin);
+	to_good_endianness(&word_bin, t);
 	// printf("\nAfter flip: %s \n", word_bin);
 
 	if(p->start > p->end)
@@ -446,7 +477,6 @@ int parse_param(word mot, Plage *p) // On utilise un paramètre de sortie pour r
 
 	for(i = p->start; i <= p->end; i++)
 	{
-		// printf("end - i = %u\n", p->end - i);
 		val_bin[p->end - i] = word_bin[i]; // A cause de l'endianness
 	}
 
@@ -559,11 +589,16 @@ int load_dic(Dic *dic)
 
 	init_dic(dic);
 
-	fd = fopen("lib/test.dic", "r");
+	fd = fopen("lib/instructions_32bits.dic", "r");
 	r = load_ins_tab_from_file(&(dic->ins32), &(dic->sz32), fd);
 
-	// which_error(r);
+	which_error(r);
+	fclose(fd);
 
+	fd = fopen("lib/instructions_16bits.dic", "r");
+	r = load_ins_tab_from_file(&(dic->ins16), &(dic->sz16), fd);
+
+	which_error(r);
 	fclose(fd);
 
 	return r;
@@ -588,7 +623,7 @@ int load_ins_tab_from_file(Instruction **dic, int *dic_sz, FILE *fd)
 
 
 
-	if(fd == NULL) return 1;
+	if(fd == NULL) return 9;
 
 	sz++;
 

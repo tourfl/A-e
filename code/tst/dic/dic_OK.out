@@ -1,2 +1,34 @@
-mov_imm/T2 1/MOV.W FBEF8000/F04F0000 1/24:27 3/10/28:30/16:23 1/4
-mov_imm/T3 2/MOV/MOVW FBF08000/F2408000 1/24:27 4/0:3/10/28:30/16:23 0
+
+
+
+  command: mov_imm	encoding: T2
+  name_in: MOV.W	name_out: (null)
+  mask: fbef8000	opcode: f04f0000
+
+  reg (size=1)
+  plage 0:	start: 24	end: 27
+
+  imm (size=3)
+  plage 0:	start: 10	end: 10
+  plage 1:	start: 28	end: 30
+  plage 2:	start: 16	end: 23
+
+  ext (size=1)
+  plage 0:	start: 4	end: 4
+
+
+
+  command: mov_imm	encoding: T3
+  name_in: MOV	name_out: MOVW
+  mask: fbf08000	opcode: f2408000
+
+  reg (size=1)
+  plage 0:	start: 24	end: 27
+
+  imm (size=4)
+  plage 0:	start: 0	end: 3
+  plage 1:	start: 10	end: 10
+  plage 2:	start: 28	end: 30
+  plage 3:	start: 16	end: 23
+
+  ext (size=0)

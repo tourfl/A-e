@@ -112,11 +112,6 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 		mot = 0;
 		r = 1; // pas d'instruction lue dans ce tour de boucle
 
-		if(plage[i] == 0)
-			i ++;
-
-		// On essaye de désassembler une insruction sur 16 bits
-
 		mot = plage[i+1]*pow(16, 2) + plage[i]; // de BIG ENDIAN (segment) vers LITTLE ENDIAN (masque des instructions) (!)
 		
 		r = get_ins16(mot, &ins, dic);
@@ -126,6 +121,8 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 
 		else if(i <= va_2 - va_1 - 3) // il reste au moins un mot à lire
 		{
+			// printf("unfound word: %8x\t%s\n", mot, int_to_bin(mot, 16));
+
 			mot = mot * pow(16, 4); // Little Endian ALIGNE (!)
 			mot += plage[i+3]*pow(16, 2) + plage[i+2]; // On ajoute les 2 octets suivants de BIG ENDIAN (segment) vers LITTLE ENDIAN (masque des instructions) (!)
 
@@ -149,8 +146,10 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 
 			/* ne surtout pas supprimer le contenu des instructions (ins, ins_d), sinon on le supprime du dic */
 		}
-		else
+		else {
+			printf("unfound word: %8x\t%s\n", mot, int_to_bin(mot, 32));
 			WARNING_MSG("unable to find instruction");
+		}
 	}
 
 	return p;

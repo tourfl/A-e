@@ -38,6 +38,12 @@ void which_error(int code)
 			break;
 		}
 
+		case 4:
+		{
+			DEBUG_MSG("Uncorrect size of parameters");
+			break;
+		}
+
 		case 5:
 		{
 			DEBUG_MSG("Error with strcpy");
@@ -55,9 +61,16 @@ void which_error(int code)
 			DEBUG_MSG("Error with fseek");
 			break;
 		}
+
+		case 9:
+		{
+			DEBUG_MSG("Unable to open file");
+			break;
+		}
+
 		default:
 		{
-			DEBUG_MSG("Untracked error");
+			DEBUG_MSG("Untracked error %u", code);
 			break;
 		}
 	}

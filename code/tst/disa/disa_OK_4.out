@@ -1,0 +1,10 @@
+
+plage : 4f f0  0  0 4f f0  8  1  a 46  0 eb 41  1  0 f0  3 f8 8a 42  a d0  c e0  1 b5 82 b0 4f f0  0  0  0 eb 51  1 bd e8  1 40  2 b0 70 47 4f f0  0  0  0 
+
+MOV.W  r0, #0
+
+MOV.W  r1, #8
+
+MOV.W  r0, #0
+
+MOV.W  r0, #0

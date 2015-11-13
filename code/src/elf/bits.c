@@ -12,6 +12,7 @@
  #include <string.h> // strlen
  #include <stdlib.h> // calloc
  #include <stdio.h> // printf
+ #include "com/notify.h" // here
 
 
 /**
@@ -49,31 +50,19 @@ byte * __flip_endianness( byte * blocks, uint sz ) {
     return blocks;
 }
 
-int flip_endianness(char **binstr)
+int to_good_endianness(char **binstr, int taille)
 {
     char *newstr = NULL;
     int i;
 
-
-
-    newstr = calloc(33, sizeof(char)); // Un de plus pour le caractère de fin
+    newstr = calloc(taille + 1, sizeof(char)); // Un de plus pour le caractère de fin
 
     if(newstr == NULL)
         return 1;
 
-    for (i = 0 ; (*binstr)[i] != 0; i++)
+    for (i = 0 ; (*binstr)[i] != 0 && i < taille; i++)
     {
-        if(i < 16) {
-            // printf("%c", (*binstr)[15 - i]);
-            newstr[i] = (*binstr)[15 - i];
-        }
-
-        else if(i < 32) {
-            // printf("%c", (*binstr)[47 - i]);
-            newstr[i] = (*binstr)[47 - i];
-        }
-
-        else break;
+        newstr[taille - 1 - i] = (*binstr)[i];
     }
 
     free(*binstr);

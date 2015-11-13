@@ -4,4 +4,4 @@
 #-------
 
 load pile.o
-disasm 0x1000:0x1030
+disasm 0x1000:0x1038
