@@ -2,6 +2,7 @@
 #define INTERPRETEUR_H
 
 #include <stdio.h>
+#include "com/types.h" // uint
 
 /* prompt du mode shell interactif */
 #define PROMPT_STRING "ARMShell> "
@@ -46,7 +47,11 @@ typedef struct {
 
  interpreteur init_inter(void);
  void del_inter(interpreteur inter);
+
  char* get_next_token(interpreteur inter);
+ int get_next_if_hexa(interpreteur inter, uint *out);
+
+
  void string_standardise( char* in, char* out );
  int  acquire_line(FILE *fp, interpreteur inter);
  void usage_ERROR_MSG( char *command );

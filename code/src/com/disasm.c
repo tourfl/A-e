@@ -52,7 +52,7 @@ int disasm(interpreteur inter, Memory *mem, Dic *dic)
 			else
 				p = disasm_plage(virt_ad, virt_ad_2, mem, dic);
 		}
-		else if (strcmp(ponc, "+") == 0 && is_dec(v2) == 0) // Ce nombre peut-être en base 8, 10 ou 16
+		else if (strcmp(ponc, "+") == 0 && is_figure(v2) == 0) // Ce nombre peut-être en base 8, 10 ou 16
 		{
 			size = strtoul(v2, NULL, 0);
 
@@ -151,6 +151,8 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 			WARNING_MSG("unable to find instruction");
 		}
 	}
+
+	printf("\n\n");
 
 	return p;
 }

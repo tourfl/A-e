@@ -6,7 +6,7 @@
 #include "com/dic.h" // Pour lire le dictionnaire pardi
 
 
-int exitcmd(interpreteur inter) {
+int exitcmd() {
     INFO_MSG("Bye bye !");
     return CMD_EXIT_RETURN_VALUE;
 }
@@ -31,7 +31,7 @@ int execute_cmd(interpreteur inter, Memory *mem, Dic *dic) {
     char * token = get_next_token(inter);
 
     if(strcmp(token, "exit") == 0) {
-        return exitcmd(inter);
+        return exitcmd();
     }
     else if(strcmp(token, "load") == 0) {
         return loadcmd(inter, mem);
@@ -53,6 +53,10 @@ int execute_cmd(interpreteur inter, Memory *mem, Dic *dic) {
     else if(strcmp(token, "dic") == 0)
     {
     	return disp_dic(dic);
+    }
+    else if(strcmp(token, "run") == 0)
+    {
+        return run_cmd(inter, mem);
     }
     else if(strcmp(token, "debug") == 0)
         return CMD_DEBUG_RETURN_VALUE;

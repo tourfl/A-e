@@ -1,12 +1,12 @@
 
 plage : 4f f0  0  0 4f f0  8  1  a 
 
-MOV.W  r0, #0
+MOV.W r0, #0
+MOV.W r1, #8
 
-MOV.W  r1, #8
 
 plage : 4f f0  0  0 4f f0  8  1  a 
 
-MOV.W  r0, #0
+MOV.W r0, #0
+MOV.W r1, #8
 
-MOV.W  r1, #8

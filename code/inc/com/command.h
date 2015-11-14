@@ -7,7 +7,9 @@
 
  /* Commandes */
 
-int exitcmd(interpreteur inter);
+// Ces fonctions font principalement de l'analyse syntaxique
+
+int exitcmd();
 
 int loadcmd(interpreteur inter, Memory *mem);
 int dispcmd (interpreteur inter, Memory *mem);
@@ -15,6 +17,7 @@ int setcmd (interpreteur inter, Memory *mem);
 int execute_cmd(interpreteur inter, Memory *mem, Dic *dic);
 int assert(interpreteur inter, Memory *mem);
 int disasm(interpreteur inter, Memory *mem, Dic *dic);
+int run_cmd(interpreteur inter, Memory *mem/* autres paramètres à ajouter */);
 
 //int disasmcmd(interpreteur inter);
 

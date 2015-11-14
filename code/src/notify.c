@@ -68,6 +68,18 @@ void which_error(int code)
 			break;
 		}
 
+		case 11:
+		{
+			DEBUG_MSG("Value is not hexadecimal");
+			break;
+		}
+
+		case 12:
+		{
+			DEBUG_MSG("Bad number of tokens");
+			break;
+		}
+
 		default:
 		{
 			DEBUG_MSG("Untracked error %u", code);

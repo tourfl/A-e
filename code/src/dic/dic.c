@@ -361,7 +361,6 @@ void disp_insd(Instruction ins)
 	{
 		printf(", #%lu", strtoul(imm, NULL, 2));
 	}
-	// printf("\n");
 }
 
 

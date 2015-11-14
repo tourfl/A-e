@@ -1,8 +1,8 @@
 TARGET=emul-arm
 
 # noms des executables utilisés durant la compilation/edition des liens
-CC=`which gcc`
-LD=`which gcc`
+CC=`which gcc` -Wall -Wextra -Wunreachable-code -Wwrite-strings -Wstrict-prototypes
+LD=`which gcc` -Wall -Wextra -Wunreachable-code -Wwrite-strings -Wstrict-prototypes
 RM=`which rm` -f
 
 #options de compilation/edition des liens

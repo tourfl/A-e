@@ -30,7 +30,7 @@ interpreteur init_inter(void) {
 char* get_next_token(interpreteur inter) {
 
     char       *token = NULL;
-    char       *delim = " \t\n";
+    char       delim[] = " \t\n";
 
     if ( inter->first_token == 0 ) {
         token = strtok_r( inter->input, delim, &(inter->from) );
@@ -46,6 +46,22 @@ char* get_next_token(interpreteur inter) {
 
     return token;
 }
+
+
+int get_next_if_hexa(interpreteur inter, uint *out) {
+
+    char *token = get_next_token(inter);
+
+    if(token == NULL)
+        return 1;
+
+    if(is_hexa(token) != 0)
+        return 11;
+
+    *out = strtoul(token, NULL, 16);
+
+    return 0;
+ }
 
 
 
