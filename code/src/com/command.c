@@ -58,6 +58,10 @@ int execute_cmd(interpreteur inter, Memory *mem, Dic *dic) {
     {
         return run_cmd(inter, mem);
     }
+    else if(strcmp(token, "step") == 0)
+    {
+        return step_cmd(inter, mem);
+    }
     else if(strcmp(token, "debug") == 0)
         return CMD_DEBUG_RETURN_VALUE;
 

@@ -49,7 +49,10 @@ typedef struct {
  void del_inter(interpreteur inter);
 
  char* get_next_token(interpreteur inter);
+ int get_last_token(interpreteur inter, char **out);
+
  int get_next_if_hexa(interpreteur inter, uint *out);
+ int get_last_if_hexa(interpreteur inter, uint *out);
 
 
  void string_standardise( char* in, char* out );

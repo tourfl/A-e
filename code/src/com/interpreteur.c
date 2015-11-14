@@ -48,6 +48,28 @@ char* get_next_token(interpreteur inter) {
 }
 
 
+
+
+/*
+* get_next_token + vérifie que c'est le dernier token
+*
+*/
+
+
+ int get_last_token(interpreteur inter, char **out)
+ {
+    *out = get_next_token(inter);
+
+    if(*out == NULL)
+        return 1;
+
+    else if(get_next_token(inter) != NULL)
+        return 12;
+
+    return 0;
+ }
+
+
 /*
 *   out : paramètre de sortie, la valeur en hexa
 *   retourne 0 si cela a fonctionné
@@ -69,6 +91,29 @@ int get_next_if_hexa(interpreteur inter, uint *out) {
 
     return 0;
  }
+
+
+/*
+* get_next_if_hexa + vérifie que c'est le dernier token
+*
+*/
+
+
+
+int get_last_if_hexa(interpreteur inter, uint *out)
+{
+    int r = 1;
+
+    r = get_next_if_hexa(inter, out);
+
+    if(r == 1 || r == 11)
+        return r;
+
+    else if(get_next_token(inter) != NULL)
+        return 12;
+
+    return 0;
+}
 
 
 

@@ -5,6 +5,10 @@
 #include "mem/memory_v2.h" // pour Memory et Registre
 #include "com/dic.h"
 
+// Macro
+
+#define INTO -1
+
  /* Commandes */
 
 // Ces fonctions font principalement de l'analyse syntaxique
@@ -18,6 +22,7 @@ int execute_cmd(interpreteur inter, Memory *mem, Dic *dic);
 int assert(interpreteur inter, Memory *mem);
 int disasm(interpreteur inter, Memory *mem, Dic *dic);
 int run_cmd(interpreteur inter, Memory *mem/* autres paramètres à ajouter */);
+int step_cmd(interpreteur inter, Memory *mem/* dic ?*/);
 
 //int disasmcmd(interpreteur inter);
 
