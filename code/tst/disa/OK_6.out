@@ -1,0 +1,24 @@
+
+plage : 4f f0  0  0 4f f0  8  1  a 46  0 eb 41  1  0 f0  3 f8 8a 42  a d0  c e0  1 b5 82 b0 4f f0  0  0  0 eb 51  1 bd e8  1 40  2 b0 70 47 4f f0  0  0  0 df 4f f0  1  0  0 df  0  0  0 
+
+MOV.W r0, #0
+MOV.W r1, #8
+MOV r2, r1
+ADD.W r1, r0, r1, #1
+BL, #3
+CMP r2, r1
+B, #10
+B, #12
+PUSH r1, r0, #0
+SUB,sp,sp, #2
+MOV.W r0, #0
+ADD.W r1, r0, r1, #1
+POP.W r1, r0, r0, #0
+ADD,sp,sp, #2
+BX lr
+MOV.W r0, #0
+B, #0
+MOV.W r0, #1
+B, #0
+MOVS r0, r0
+

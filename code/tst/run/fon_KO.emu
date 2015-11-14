@@ -1,0 +1,7 @@
+#-------
+#TEST_RETURN_CODE=FAIL      
+#TEST_COMMENT="Teste run"
+#-------
+
+# Aucun fichier n'est chargé, cela ne doit pas marcher
+run 0x1000
