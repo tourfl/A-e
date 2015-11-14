@@ -48,6 +48,13 @@ char* get_next_token(interpreteur inter) {
 }
 
 
+/*
+*   out : paramètre de sortie, la valeur en hexa
+*   retourne 0 si cela a fonctionné
+*
+*/
+
+
 int get_next_if_hexa(interpreteur inter, uint *out) {
 
     char *token = get_next_token(inter);

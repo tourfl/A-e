@@ -70,7 +70,7 @@ void which_error(int code)
 
 		case 11:
 		{
-			DEBUG_MSG("Value is not hexadecimal");
+			DEBUG_MSG("Invalid token");
 			break;
 		}
 
