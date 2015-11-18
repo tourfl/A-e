@@ -27,21 +27,44 @@ interpreteur init_inter(void) {
 }
 
 
+
+
+int reset_pos(interpreteur inter, int pos)
+{
+    int cur_pos = inter->pos;
+
+    while(inter->pos != pos - 1) // sinon on dépasse la position
+    {
+        get_next_token(inter);
+
+        if(inter->pos == cur_pos) // boucle infinie (!)
+            return 13;
+    }
+
+    return 0;
+}
+
+
 char* get_next_token(interpreteur inter) {
 
-    char       *token = NULL;
-    char       delim[] = " \t\n";
+    char *token = NULL, *str = NULL;
+    char delim[] = " \t\n";
 
-    if ( inter->first_token == 0 ) {
-        token = strtok_r( inter->input, delim, &(inter->from) );
-        inter->first_token = 1;
+    if ( inter->pos == 0 ) {
+        str = malloc(strlen(inter->input) * sizeof(char));
+
+        if(str == NULL)
+            return NULL;
+
+        if(strcpy(str, inter->input) == NULL)
+            return NULL;
     }
-    else {
-        token = strtok_r( NULL, delim, &(inter->from) );
-    }
+
+    token = strtok_r(str, delim, &(inter->from) );
+    inter->pos++;
 
     if ( NULL == token ) {
-        inter->first_token = 0;
+        inter->pos = 0;
     }
 
     return token;
@@ -71,6 +94,31 @@ char* get_next_token(interpreteur inter) {
 
 
 /*
+*   out : paramètre de sortie
+*   retourne 0 si cela a fonctionné
+*
+*/
+
+
+int get_next_if_addr(interpreteur inter, uint *out) {
+
+    char *token = get_next_token(inter);
+
+    printf("%s\n", token);
+
+    if(token == NULL)
+        return 1;
+
+    if(is_addr(token) != 0)
+        return 11;
+
+    *out = strtoul(token, NULL, 16);
+
+    return 0;
+ }
+
+
+/*
 *   out : paramètre de sortie, la valeur en hexa
 *   retourne 0 si cela a fonctionné
 *
@@ -94,6 +142,29 @@ int get_next_if_hexa(interpreteur inter, uint *out) {
 
 
 /*
+* get_next_if_addr + vérifie que c'est le dernier token
+*
+*/
+
+
+
+int get_last_if_addr(interpreteur inter, uint *out)
+{
+    int r = 1;
+
+    r = get_next_if_addr(inter, out);
+
+    if(r == 1 || r == 11)
+        return r;
+
+    else if(get_next_token(inter) != NULL)
+        return 12;
+
+    return 0;
+}
+
+
+/*
 * get_next_if_hexa + vérifie que c'est le dernier token
 *
 */
@@ -111,6 +182,24 @@ int get_last_if_hexa(interpreteur inter, uint *out)
 
     else if(get_next_token(inter) != NULL)
         return 12;
+
+    return 0;
+}
+
+
+
+
+int get_next_if_fig(interpreteur inter, uint *out)
+{
+    char *token = get_next_token(inter);
+
+    if(token == NULL)
+        return 1;
+
+    if(is_figure(token) != 0)
+        return 11;
+
+    *out = strtoul(token, NULL, 0);
 
     return 0;
 }
@@ -191,7 +280,7 @@ int  acquire_line(FILE *fp, interpreteur inter) {
     char* chunk =NULL;
 
     memset(inter->input, '\0', MAX_STR );
-    inter->first_token =0;
+    inter->pos =0;
     if (inter->mode==SCRIPT) {
         // mode fichier
         // acquisition d'une ligne dans le fichier

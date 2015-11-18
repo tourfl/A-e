@@ -36,7 +36,7 @@ typedef struct {
     inter_mode mode;
     char input[MAX_STR];
     char * from;
-    char first_token;
+    int pos;
 } *interpreteur;
 
 /*
@@ -48,11 +48,17 @@ typedef struct {
  interpreteur init_inter(void);
  void del_inter(interpreteur inter);
 
- char* get_next_token(interpreteur inter);
- int get_last_token(interpreteur inter, char **out);
+ int reset_pos(interpreteur inter, int pos);
 
+ char* get_next_token(interpreteur inter);
  int get_next_if_hexa(interpreteur inter, uint *out);
+ int get_next_if_addr(interpreteur inter, uint *out);
+int get_next_if_fig(interpreteur inter, uint *out);
+
+ int get_last_token(interpreteur inter, char **out);
+ int get_last_if_addr(interpreteur inter, uint *out);
  int get_last_if_hexa(interpreteur inter, uint *out);
+
 
 
  void string_standardise( char* in, char* out );

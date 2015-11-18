@@ -24,16 +24,23 @@ int disasm(interpreteur inter, Memory *mem, Dic *dic);
 int run_cmd(interpreteur inter, Memory *mem/* autres paramètres à ajouter */);
 int step_cmd(interpreteur inter, Memory *mem/* dic ?*/);
 
-//int disasmcmd(interpreteur inter);
+// Général
+
+int parse_plage(interpreteur inter, Plage *p);
+
+
+// Chargement fichier
+
+int load_elf_in_mem(FILE *fo, Segment map[NB_SEC], unsigned int va);
+
 
 // Affichage
 
 void print_section_raw_content(char* name, unsigned int start, byte* content, unsigned int taille);
 
-int disp_some_mem(char *token, interpreteur inter, Memory *mem);
 
 void disp_map(Segment map[NB_SEC]);
-void disp_plage(unsigned int va, unsigned int va_2, Memory *mem); //Pour la fonction discmd
+void disp_plage(Plage plg, Memory *mem); //Pour la fonction discmd
 void disp_oct(unsigned int va, Memory *mem);
 
 int disp_some_reg(char *token, interpreteur inter, Registre reg[NB_REG]);
@@ -53,7 +60,7 @@ int assert_bte(vaddr32 va, unsigned int val, Memory *mem);
 
 // Disasm
 
-int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic);
+int disasm_plage(Plage p, Memory *mem, Dic *dic);
 int disasm_ins(word mot, Instruction *ins);
 
 

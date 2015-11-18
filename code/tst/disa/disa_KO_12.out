@@ -1,0 +1,7 @@
+.text
+.rodata
+.data
+.bss
+0x1000
+0x1000
+(null)

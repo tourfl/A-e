@@ -5,6 +5,7 @@
 #include "com/notify.h" // messages de contrôle
 #include <stdlib.h> // sscanf notamment
 #include <ctype.h> // pour isdigit
+#include <CUnit/CUnit.h>
 
 
 
@@ -177,17 +178,29 @@ void del_strlist(Strlist *l)
 
 
 
+
+
+
+int is_addr(char* chaine) 
+{
+    DEBUG_MSG("is_addr entered");
+
+    if(strlen(chaine) < 3 || *chaine != '0' || *(chaine +1) != 'x')
+        return 1;
+
+    return is_hexa(chaine + 2);
+}
+
+
+
+
+
 int is_hexa(char* chaine) {
     DEBUG_MSG("is_hexa entered");
 
     int i;
 
     // V3
-
-    if(strlen(chaine) < 3 || *chaine != '0' || *(chaine +1) != 'x')
-        return 1;
-
-    chaine += 2; // Offset de 2 pour enlever 0x
 
     for(i = 0; i < NB_CHIFFRES_MAX_32h && *chaine != '\0'; i++) // Tant que le caractère n'est pas le caractère de fin
     {
@@ -239,9 +252,21 @@ int is_dec(char* chaine){
     return 0;
 }
 
+void cu_is_dec(void)
+{
+    CU_ASSERT(is_dec("12") == 0);
+}
+
+
+
+
+
+
+
 int is_figure (char *chaine){
 
-    if(is_hexa(chaine) == 0
+    if(is_addr(chaine) == 0
+    || is_hexa(chaine) == 0
     || is_oct(chaine) == 0
     || is_dec(chaine) == 0)
         return 0;

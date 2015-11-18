@@ -1,7 +1,6 @@
 #include "mem/memory_v2.h" // inclut la mémoire
 #include "com/notify.h" // messages de contrôle, inclut stdio, stdlib
-#include <string.h> // pour strcpy notamment
-#include "elf/elf.h" // Pour assert_elf_file entre autres, inclut scntab, stdio, etc.
+#include <string.h> // pour strcpy notamments
 #include <math.h> // pow
 #include "com/command.h" // pour print_section_raw_content
 
@@ -220,80 +219,6 @@ int set_reg(char *name, word value, Registre reg[NB_REG])
 
 
 
-
-
-int load_elf_in_mem(FILE *fo, Segment map[NB_SEC], unsigned int va)
-{
-	char* section_names[NB_SEC]= {TEXT_SECTION_STR,RODATA_SECTION_STR,DATA_SECTION_STR,BSS_SECTION_STR};
-	scntab section_table;
-	unsigned int nsegments;
-	int i=0;
-	unsigned int type_machine;
-    unsigned int endianness;   //little ou big endian
-    unsigned int bus_width;    // 32 bits ou 64bits
-    unsigned int next_segment_start = va; // compteur pour designer le début de la prochaine section
-
-    stab symtab= new_stab(0); // table des symboles
-
-    if (!assert_elf_file(fo))
-    	ERROR_MSG("this is not an ELF file");
-
-
-    // recuperation des info de l'architecture
-    elf_get_arch_info(fo, &type_machine, &endianness, &bus_width);
-    elf_load_scntab(fo, bus_width, &section_table);
-    // et des symboles
-    elf_load_symtab(fo, bus_width, endianness, &symtab);
-
-    nsegments=0;
-    byte *ehdr    = __elf_get_ehdr(fo );    
-    for (i=0; i<NB_SEC; i++) {
-
-    	INFO_MSG("Processing section named %s", section_names[i]); 
-
-    	strcpy(map[i].name, section_names[i]);
-
-    	map[i].size = 0;
-    	byte *content = elf_extract_scn_by_name(ehdr, fo, section_names[i], &(map[i].size), NULL );
-
-    	if(content != NULL && map[i].size != 0)
-    	{
-    		map[i].content = malloc(map[i].size * sizeof(byte));
-
-    		if(map[i].content == NULL)
-    		{
-    			ERROR_MSG("Unable to allocate memory");
-    			return 1;
-    		}
-
-    		int j;
-
-    		for(j = 0; j < map[i].size; j++) {
-    			*(map[i].content+j) = *(content+j);
-		}
-
-    		map[i].va = next_segment_start;
-    		next_segment_start += (map[i].size/4096 + 1) * 4096;
-    	}
-
-    	else {
-    		DEBUG_MSG("section %s not present in the elf file", section_names[i]);
-    	}
-    }
-    free(ehdr); 
-
-    // on fait le ménage avant de partir
-    del_stab( symtab );
-    del_scntab( section_table );
-    return 0;
-}
-
-
-
-
-
-
-
 byte get_byte(vaddr32 va, Segment map[NB_SEC])
 {
 	vaddr32 va_start;
@@ -463,17 +388,17 @@ int set_word(vaddr32 va_1, word value, Segment map[NB_SEC])
 	return 1;
 }
 
-byte *get_plage(vaddr32 va_1, vaddr32 va_2, Segment map[NB_SEC]) // on suppose va_2 >= va_1
+byte *get_plage(Plage p, Segment map[NB_SEC]) // on suppose va_2 >= va_1
 {
-    if(va_1 > va_2)
+    if(p.end < p.end)
     {
         WARNING_MSG("va_2 < va_1");
         return NULL;
     }
 
-    byte *plage = malloc((va_2 - va_1 + 1) * sizeof(byte));
+    byte *plage = malloc((p.end - p.start + 1) * sizeof(byte));
 
-    vaddr32 va = va_1;
+    vaddr32 va = p.start;
     vaddr32 va_start;
     vaddr32 va_end;
     vaddr32 size;
@@ -490,9 +415,9 @@ byte *get_plage(vaddr32 va_1, vaddr32 va_2, Segment map[NB_SEC]) // on suppose v
 
         while (va < va_start)
         {
-            plage[va - va_1] = 0;
+            plage[va - p.start] = 0;
 
-            if (va == va_2)
+            if (va == p.end)
                 return plage;
 
             va++;
@@ -504,9 +429,9 @@ byte *get_plage(vaddr32 va_1, vaddr32 va_2, Segment map[NB_SEC]) // on suppose v
 
             while (va <= va_end)
             {
-                plage[va - va_1] = *(map[i].content + va - va_start);
+                plage[va - p.start] = *(map[i].content + va - va_start);
 
-                if (va == va_2)
+                if (va == p.end)
                     return plage;
 
                 va++;
@@ -514,9 +439,9 @@ byte *get_plage(vaddr32 va_1, vaddr32 va_2, Segment map[NB_SEC]) // on suppose v
         }
     }
 
-    while (va <= va_2)
+    while (va <= p.end)
     {
-        plage[va - va_1] = 0;
+        plage[va - p.start] = 0;
 
         va++;
     }

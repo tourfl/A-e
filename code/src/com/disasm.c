@@ -11,71 +11,26 @@
 
 int disasm(interpreteur inter, Memory *mem, Dic *dic)
 {
-	char *va = NULL;
-	char *ponc = NULL;
-	char *v2 = NULL;
-	vaddr32 virt_ad = 0;
-	vaddr32 virt_ad_2 = 0;
-	uint32_t size = 0;
-	char usage[] = "Usage : disasm <plage>+\n";
-	int p = 1;
+	char usage[] = "Usage : disasm <plage>+";
+	int p = 1, r = 0;
+	Plage plg;
 
-	va = get_next_token(inter);
-	ponc = get_next_token(inter);
-	v2 = get_next_token(inter);
 
-	// printf("va : %s \n ponc : %s \n v2 : %s", va, ponc, v2);
+	r = parse_plage(inter, &plg);
 
-	if(va == NULL || ponc == NULL || v2 == NULL)
+	while (r == 0)
 	{
-		WARNING_MSG("Problem with tokens");
-		printf("%s", usage);	
+		// printf("start: 0x%08x;\tend: 0x%08x\n", plg.start, plg.end);
+
+		p = disasm_plage(plg, mem, dic);
+
+		r = parse_plage(inter, &plg);
 	}
 
-	while(va != NULL && ponc != NULL && v2 != NULL) // C'est un peu le else de la condition précédente
+	if(r == 11) // équivalent à un else pour le while
 	{
-		if(is_hexa(va) != 0)
-		{
-			WARNING_MSG("first address must be hexadecimal");
-			break;
-		}
-
-		virt_ad = strtoul(va, NULL, 16);
-
-		if (strcmp(ponc, ":") == 0 && is_hexa(v2) == 0) // Une adresse doit être hexadécimal
-		{
-			virt_ad_2 = strtoul(v2, NULL, 16);
-
-			if(virt_ad_2 < virt_ad)
-				p = disasm_plage(virt_ad_2, virt_ad, mem, dic);
-
-			else
-				p = disasm_plage(virt_ad, virt_ad_2, mem, dic);
-		}
-		else if (strcmp(ponc, "+") == 0 && is_figure(v2) == 0) // Ce nombre peut-être en base 8, 10 ou 16
-		{
-			size = strtoul(v2, NULL, 0);
-
-
-			if(size < (0xffffffff - virt_ad)) // On évite les dépassements de mémoire
-					virt_ad_2 = virt_ad + size;
-
-			else {
-				WARNING_MSG("second value is too big");
-				break;
-			}
-
-			p = disasm_plage(virt_ad, virt_ad_2, mem, dic);
-		}
-		else {
-			WARNING_MSG("invalid second value");
-			break;
-		}
-
-
-		va = get_next_token(inter);
-		ponc = get_next_token(inter);
-		v2 = get_next_token(inter);	
+		printf("%s\n", usage);
+		return 11;
 	}
 
 	return p;  // renvoie la valeur de retour de la dernière plage lue
@@ -88,25 +43,25 @@ int disasm(interpreteur inter, Memory *mem, Dic *dic)
 
 
 
-int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppose va_1 < va_2
+int disasm_plage(Plage plg, Memory *mem, Dic *dic) // On suppose va_1 < va_2
 {
 	byte *plage = NULL;
-	int i = 0, j, p = 1, r;
+	uint i = 0, j, p = 1, r;
 	word mot;
 
 	// On récupère la plage d'octet si elle est correcte (taille > 1 bytes, va_2 > va_1)
 
-	if(va_2 <= va_1)
+	if(plg.end <= plg.start)
 		return 1;
 
-	plage = get_plage(va_1, va_2, mem->map);
+	plage = get_plage(plg, mem->map);
 
 	printf("\nplage : ");
-	for (j = 0; j < va_2 - va_1 +1; ++j)
+	for (j = 0; j < plg.end - plg.start +1; ++j)
 		printf("%2x ", plage[j]);
 	printf("\n");
 
-	while (i < va_2 - va_1 - 1) // il reste au moins 2 octets à lire (une instruction sur 16 bits)
+	while (i < plg.end - plg.start - 1) // il reste au moins 2 octets à lire (une instruction sur 16 bits)
 	{
 		Instruction ins;
 		mot = 0;
@@ -119,7 +74,7 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 		if (r == 0) // C'est une instruction 16 bits
 			i += 2;
 
-		else if(i <= va_2 - va_1 - 3) // il reste au moins un mot à lire
+		else if(i <= plg.end - plg.start - 3) // il reste au moins un mot à lire
 		{
 			// printf("unfound word: %8x\t%s\n", mot, int_to_bin(mot, 16));
 
@@ -145,6 +100,10 @@ int disasm_plage(vaddr32 va_1, vaddr32 va_2, Memory *mem, Dic *dic) // On suppos
 			disp_insd(ins);
 
 			/* ne surtout pas supprimer le contenu des instructions (ins, ins_d), sinon on le supprime du dic */
+		}
+		else if (r == 1)
+		{
+			WARNING_MSG("word is null");
 		}
 		else {
 			printf("unfound word: %8x\t%s\n", mot, int_to_bin(mot, 32));

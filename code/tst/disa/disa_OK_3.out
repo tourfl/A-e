@@ -1,12 +1,21 @@
+.text
+.rodata
+.data
+.bss
+0x1000
+0x1008
 
 plage : 4f f0  0  0 4f f0  8  1  a 
 
-MOV.W r0, #0
-MOV.W r1, #8
+MOV.W r0, #0 (       0)
+MOV.W r1, #8 (       8)
 
+0x2000
 
-plage : 4f f0  0  0 4f f0  8  1  a 
+plage : 59 6f 75 70 69  0  0  0  0 
 
-MOV.W r0, #0
-MOV.W r1, #8
+LDR r1, r3, #5 (       5)unfound word: 70750069	01110000011101010000000001101001
 
+LDR r0, r6, #5 (       5)
+
+(null)

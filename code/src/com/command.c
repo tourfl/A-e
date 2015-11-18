@@ -72,48 +72,78 @@ int execute_cmd(interpreteur inter, Memory *mem, Dic *dic) {
     return CMD_UNKOWN_RETURN_VALUE;
 }
 
-int loadcmd(interpreteur inter, Memory *mem) {
 
-	char * name=NULL;
-	char *virt_add=NULL;
-	vaddr32 va = START_MEM; // virt_add en unsigned int
-    FILE *fo = NULL;
-    char usage[] = "Usage : load <nom_du_fichier> {<adresse>}\n";
 
-	name = get_next_token(inter);
-	virt_add = get_next_token(inter);
+/*
+* valeur de retour : 0 succès, 1 : un argment nul, 11 mauvaises valeurs, 2 une seule adresse
+* 
+*
+*/
 
-	if(name == NULL)
-	{
-		WARNING_MSG("Problem with tokens");
-		printf("%s", usage);
-		return 1;
-	}
+int parse_plage(interpreteur inter, Plage *p)
+{
+    int r = 0;
+    vaddr32 va = 0;
+    char *ponc = NULL;
 
-    fo = fopen(name, "r" );
 
-    if ( fo == NULL ) 
+
+    
+
+    r = get_next_if_addr(inter, &(p->start));
+
+    if(r == 1 || r == 11)
+        return r;
+
+    ponc = get_next_token(inter);
+
+    if(ponc == NULL)
     {
-        perror( "fopen" );
-        WARNING_MSG("file doesn't exist");
+        return 1;
+    }
+    else if(is_addr(ponc) == 0)
+    {
+        p->end = p->start;
+
+        reset_pos(inter, inter->pos - 1);
+
         return 2;
     }
+    if (strcmp(ponc, ":") == 0)
+    {
+        r = get_next_if_addr(inter, &va);
 
-    if(virt_add != NULL && is_hexa(virt_add) == 0) {
-    	va = strtoul(virt_add, NULL, 0);
+        if (r == 1 || r == 11)
+            return r;
+
+        if(p->start > va)
+        {
+            p->end = p->start;
+            p->start = va;
+        }
+
+        else
+        {
+            p->end = va;
+        }
     }
-    else {
-   	WARNING_MSG("No or bad address specified");
+    else if (strcmp(ponc, "+") == 0)
+    {
+        r = get_next_if_fig(inter, &va);
+
+        if (r == 1 || r == 11)
+            return r;
+
+        if(va < (0xffffffff - p->start)) // On évite les dépassements de mémoire
+        {
+            p->end = p->start + va;
+        }
+
+        else {
+            return 11;
+        }
     }
-
-    if(va % 4096 != 0) { // on arrondit au ko supérieur
-        va = (va/4096 + 1) * 4096;
-    }
-
-    // On récupère le contenu du fichier ELF puis on le charge en mémoire
-    load_elf_in_mem(fo, mem->map, va);
-
-    fclose(fo);
+    else return 11;
 
     return 0;
 }

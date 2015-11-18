@@ -47,8 +47,8 @@ typedef char string[STRLEN+1];
 #define init_string(s) memset( s, '\0', STRLEN+1 )
 
 typedef struct {
-	int start;
-	int end;
+	unsigned int start;
+	unsigned int end;
 	int value;
 
 } Plage;
@@ -89,6 +89,7 @@ typedef enum { UNDEF, LSB, MSB } endianness;
 /* Fonctions */
 
 int get_type(char* chaine);
+int is_addr(char* chaine);
 int is_hexa(char* chaine);
 int is_oct(char* chaine);
 int is_dec (char* chaine);

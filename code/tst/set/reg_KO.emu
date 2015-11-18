@@ -3,4 +3,4 @@
 #TEST_COMMENT="Teste set"
 #-------
 
-set reg r3 a
+set reg r3 azerty

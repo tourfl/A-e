@@ -1,6 +1,0 @@
-#-------
-#TEST_RETURN_CODE=FAIL      
-#TEST_COMMENT="Teste set"
-#-------
-
-set reg r0 ae

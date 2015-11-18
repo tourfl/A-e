@@ -72,8 +72,6 @@ typedef struct
 void init_mem(Memory *mem);
 void del_mem(Memory *mem);
 
-int load_elf_in_mem(FILE *fo, Segment map[NB_SEC], unsigned int va);
-
 // Les fonctions suivantes risquent d'être assez compliquées
 
 byte get_byte(vaddr32 va, Segment map[NB_SEC]);
@@ -82,6 +80,6 @@ int set_byte(vaddr32 va, byte value, Segment map[NB_SEC]);
 word get_word(vaddr32 va_1, Memory *mem);
 int set_word(vaddr32 va_1, word value, Segment map[NB_SEC]);
 
-byte *get_plage(vaddr32 va_1, vaddr32 va_2, Segment map[NB_SEC]);
+byte *get_plage(Plage p, Segment map[NB_SEC]);
 
 #endif

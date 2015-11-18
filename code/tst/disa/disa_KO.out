@@ -1,1 +1,5 @@
-Usage : disasm <plage>+
+.text
+.rodata
+.data
+.bss
+(null)

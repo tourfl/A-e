@@ -2,6 +2,7 @@
 #include "com/command.h"
 #include "com/notify.h" // messages de contrôle
 #include <string.h> // strcmp
+#include <CUnit/CUnit.h>
 
 /*
 * cf notify.c pour les erreurs
@@ -11,13 +12,14 @@
 
 int run_cmd(interpreteur inter, Memory *mem/* autres paramètres à ajouter */) 
 {
-	int r = 0;
+	int r = 1;
 	char usage[] = "Usage: run {address}";
 	vaddr32 va = mem->reg[15]; // valeur courante du PC
 
 
 
-	r = get_last_if_hexa(inter, &va);
+	// Analyse syntaxique
+	r = get_last_if_addr(inter, &va); // cf interpreteur.c
 
 	if (r ==  11 || r == 12) {
 		printf("%s\n", usage);
@@ -41,8 +43,10 @@ int step_cmd(interpreteur inter, Memory *mem/* dic ?*/)
 	char *token = NULL;
 	char usage[] = "Usage: step\n\tstep into";
 
-	r = get_last_token(inter, &token);
 
+
+	// Analyse syntaxique
+	r = get_last_token(inter, &token);
 
 	if(r == 0) // step into
 	{

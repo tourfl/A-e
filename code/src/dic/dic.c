@@ -359,7 +359,7 @@ void disp_insd(Instruction ins)
 
 	if(ins.imm.size > 0)
 	{
-		printf(", #%lu", strtoul(imm, NULL, 2));
+		printf(", #%lu (%8lx)", strtoul(imm, NULL, 2), strtoul(imm, NULL, 2));
 	}
 }
 
@@ -394,6 +394,11 @@ int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic) // retourn
 	 */
 
 	int i=0;
+
+	if(in == 0)
+	{
+		return 1;
+	}
 
 
 
@@ -458,7 +463,8 @@ int parse_params(word mot, Plgtab *tab)
 
 int parse_param(word mot, Plage *p) // On utilise un paramètre de sortie pour renvoyer des codes d'erreur en valeur de retour
 {
-	int i, t = 16;
+	uint i;
+	int t = 16;
 	char *word_bin = NULL, *val_bin = NULL;
 
 	if(mot > pow(2, 16))

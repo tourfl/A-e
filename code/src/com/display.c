@@ -16,30 +16,59 @@ int dispcmd (interpreteur inter, Memory *mem) {
 
 	// V2 (3 niveaux de conditions max)
 
-	char* what = NULL;
-	char *where = NULL;
-	char usage[] = "Usage : disp mem <plage>+\n\tdisp mem map\n\tdisp reg <registre>+\n";
+	int r = 0;
+	char* what = get_next_token (inter);
+	char *where = get_next_token(inter);
+	char usage[] = "Usage : disp mem <plage>+\n\tdisp mem map\n\tdisp reg <registre>+";
+	Plage plg;
 
-	what = get_next_token (inter);
-	where = get_next_token(inter);
+
+
 
 	if(what != NULL && strcmp(what, "mem") == 0)
 	{
-		if(where != NULL && strcmp(where, "map") == 0 && get_next_token(inter) == NULL)
+		if(where != NULL && strcmp(where, "map") == 0)
 		{
+			if(get_next_token(inter) != NULL)
+			{
+				printf("%s\n", usage);
+				return 11;
+			}
+
 			disp_map(mem->map);
 			return 0;
 		}
 
-		else if(is_figure(where) == 0)
+		else
 		{
-			return disp_some_mem(where, inter, mem);
+			reset_pos(inter, inter->pos);
+
+			r = parse_plage(inter, &plg);
+
+			while (r == 0)
+			{
+				printf("start: 0x%08x;\tend: 0x%08x\n", plg.start, plg.end);
+
+				disp_plage(plg, mem);
+
+				r = parse_plage(inter, &plg);
+			}
+
+			if(r == 11) // équivalent à un else pour le while
+			{
+				printf("%s\n", usage);
+				return 11;
+			}
+			else
+			{
+				return 0;
+			}
 		}
 	}
 
 	else if(what != NULL && strcmp(what, "reg") == 0)
 	{
-		 if(where != NULL && strcmp(where, "all") == 0)
+		if(where != NULL && strcmp(where, "all") == 0)
 		{
 			if(get_next_token(inter) == NULL)
 			{
@@ -55,57 +84,15 @@ int dispcmd (interpreteur inter, Memory *mem) {
 			return disp_some_reg(where, inter, mem->reg);			
 	}
 
-	WARNING_MSG("Problem with tokens");
 	printf("%s", usage);
-	return 1;
+	return 11;
 }
 
 
-int disp_some_mem(char *token, interpreteur inter, Memory *mem)
-{
-	int p = 0; // pour les plages
-	unsigned int va = 0;
-
-	while(token != NULL)
-	{
-
-		if(is_figure(token) == 0)
-		{
-			if(p != 0) // il faut afficher une plage.
-			{
-				unsigned int va_2 = strtoul(token, NULL, 0);
-				if(va < va_2) disp_plage(va, va_2, mem);
-				else {
-
-					WARNING_MSG("Second address must be superior");
-					return 1;
-				}
-				p = 0;
-				va = 0;
-			}
-			else {
-				if(va != 0) disp_oct(va, mem); // Si va est non-nulle, on affiche son contenu
-
-				va = strtoul(token, NULL, 0); // va prend la valeur du token courant
-			}
-		}
-
-		else if(strcmp(token, ":") == 0) p++; // on va afficher une plage
-
-		else 
-		{
-			WARNING_MSG("invalid token (%s)", token);
-			return 1;
-		}
 
 
-		token = get_next_token(inter);
-	}
 
-	if(va != 0) disp_oct(va, mem);
 
-	return 0;
-}
 
 int disp_some_reg(char *token, interpreteur inter, Registre reg[NB_REG])
 {
@@ -131,7 +118,7 @@ void print_section_bytes(int start, byte *content)
 }
 
 void print_section_raw_content(char* name, unsigned int start, byte* content, unsigned int taille) {
-	int k;
+	uint k;
 	unsigned char octet =0;
 	printf("\n section %s loaded at %x :\n",name,start); 
 	if (content!=NULL && taille>0) {
@@ -157,23 +144,23 @@ void disp_map(Segment map[NB_SEC])
 		printf("%s\trwx\tVaddr: 0x%08x\tSize: %u bytes\n", map[i].name, map[i].va, map[i].size);
 }
 
-void disp_plage (unsigned int va_1, unsigned int va_2, Memory *mem) // on suppose va_1 > va_2
+void disp_plage (Plage plg, Memory *mem) // on suppose va_1 > va_2
 {
   /* Les octets sont dans des segments sinon ils sont nuls 
   */
 
-	vaddr32 va = va_1;
+	vaddr32 va = plg.start;
 	byte *plage = NULL;
 	int k = 0;
 
-	plage = get_plage(va_1, va_2, mem->map);
+	plage = get_plage(plg, mem->map);
 
-	while(va <= va_2)
+	while(va <= plg.end)
 	{
 		if (k % 16 == 0)
 			printf("\n  0x%08x ", va);
 
-		printf("%02x ", plage[va - va_1]);
+		printf("%02x ", plage[va - plg.start]);
 
 		va ++;
 		k ++;
