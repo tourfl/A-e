@@ -10,8 +10,10 @@ RM=`which rm` -f
 INCLUDE=-I$(INCDIR)
 CFLAGS=-Wall $(INCLUDE)
 LFLAGS=-lreadline -lm -lcurses
-CFLAGS_DBG=$(CFLAGS) -g -DDEBUG -DVERBOSE
-CFLAGS_RLS=$(CFLAGS)
+
+ifeq ($(MODE),debug)
+	CFLAGS+= -g -DDEBUG -DVERBOSE
+endif
 
 # definition des repertoires de source/destination
 SRCDIR=src
@@ -35,24 +37,42 @@ export OBJ=$(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 # 1er target (celui executé par défaut quand make est lancé sans nom de cible) 
 # affiche l'aide
 
-all :
-	@echo $(OBJDIRS)
-	@echo ""
-	@echo "Usage:"
-	@echo ""
-	@echo "make objdir 	=> create obj sub directories"
-	@echo "make unit	=> build UNIT TEST target"
-	@echo "make debug   => build DEBUG   version"
-	@echo "make release => build RELEASE version"
-	@echo "make clean   => clean everything"
-	@echo "make archive => produce archive .tar.gz in ../ directory"
-	@echo $(LD_LIBRARY_PATH)
+all:
+	@echo "make help for help :)"
+	@($(MAKE) $(TARGET))
 
+$(TARGET): $(OBJ)
+	$(LD) $^ $(LFLAGS) -o $@
+
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) -o $@ -c $< $(CFLAGS)
 
 # utilisation d'un Makefile "esclave"
 
 unit:
 	@(cd $(UNTDIR) && $(MAKE))
+
+clean : 
+	$(RM) $(TARGET) $(GARBAGE) $(OBJ)
+
+# créé l'archive à envoyer à votre tuteur (pas de rar SVP! et interdiction absolu d'envoyer autre chose qu'une archive, il ne doit y avoir qu'un seul fichier joint dans l'e-mail !)
+archive : 
+	make clean 
+	tar -czvf ../$(notdir $(PWD) )-ZEGGAI_DEIN-`date +%d-%m-%H-%M`.tgz .
+	echo "Fichier archive ../emulARM-ZEGGAI_DEIN-`date +%d-%m-%H-%M`.tgz genere"
+
+
+help:
+	@echo ""
+	@echo "Usage:"
+	@echo ""
+	@echo "make              => build DEBUG   version"
+	@echo "make MODE=release => build RELEASE version"
+	@echo "make unit         => build UNIT TEST target"
+	@echo "make clean        => clean everything"
+	@echo "make archive      => produce archive .tar.gz in ../ directory"
+
 
 
 unit_clean:
@@ -64,33 +84,5 @@ unit_srcdirs:
 unit_objdirs:
 	@(cd $(UNTDIR) && $(MAKE) objdirs)
 
-
-debug   : 
-	MODE=debug
-	make $(TARGET)
-
-release : 
-	MODE=release
-	make $(TARGET)
-
-$(TARGET): $(OBJ)
-	$(LD) $^ $(LFLAGS) -o $@
-
 objdirs :
 	mkdir -p $(OBJDIRS)
-
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
-ifeq ($(MODE),debug)
-	$(CC) -o $@ -c $< $(CFLAGS_DBG)
-else
-	$(CC) -o $@ -c $< $(CFLAGS_RLS)
-endif
-
-clean : 
-	$(RM) $(TARGET) $(GARBAGE) $(OBJ)
-
-# créé l'archive à envoyer à votre tuteur (pas de rar SVP! et interdiction absolu d'envoyer autre chose qu'une archive, il ne doit y avoir qu'un seul fichier joint dans l'e-mail !)
-archive : 
-	make clean 
-	tar -czvf ../$(notdir $(PWD) )-ZEGGAI_DEIN-`date +%d-%m-%H-%M`.tgz .
-	echo "Fichier archive ../emulARM-ZEGGAI_DEIN-`date +%d-%m-%H-%M`.tgz genere"
