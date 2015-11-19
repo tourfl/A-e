@@ -11,6 +11,7 @@
 
 
 
+
 // On pourrait écrire init_c avec calloc
 
 void *init_m(void *addr, int size)
@@ -250,11 +251,6 @@ int is_dec(char* chaine){
     }
 
     return 0;
-}
-
-void cu_is_dec(void)
-{
-    CU_ASSERT(is_dec("12") == 0);
 }
 
 
