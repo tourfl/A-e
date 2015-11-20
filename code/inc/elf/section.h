@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-#include "com/types.h"
+#include "types.h"
 
 typedef union {
     uint32_t  _32;

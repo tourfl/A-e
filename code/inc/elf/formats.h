@@ -19,7 +19,6 @@ extern "C" {
 /* Forward declaration */
 struct process_t;
 
-#include "com/types.h"
 #include "elf/elf.h"
 
 #define MACH_T_UNDEF    0x00

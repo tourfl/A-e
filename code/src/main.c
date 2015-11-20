@@ -4,33 +4,12 @@
  *
  */
 
- #include "mem/memory_v2.h"
- #include "com/notify.h" // Pour mettre des messages de warning et de debugs, inclut stdio (utile pour fp)
- #include "com/interpreteur.h"
- #include "com/command.h" // pour execute_command, inclut dic.h
- #include <string.h> // Pour utiliser strcmp notamment
+#include "emulator.h"
 
-
-
-
-
-
- int init(Memory *mem, Dic *dic) {
-
-    init_mem(mem);
-
-    return load_dic (dic);
- }
-
-
-
-
-
- void del(Memory *mem, Dic *dic, interpreteur inter) {
-    del_inter(inter);
-    del_dic(dic);
-    del_mem(mem);
- }
+#include <string.h> // Pour utiliser strcmp notamment
+#include "inter/notify.h" // Messages de contrôle
+#include <stdlib.h>
+#include "simul/dic.h"
 
 
 
@@ -42,19 +21,17 @@ int main ( int argc, char *argv[] ) {
     int r = 0;
     FILE *fp = NULL; /* le flux dans lequel les commande seront lues : stdin (mode shell) ou un fichier */
     FILE *fd = NULL; // Pour le mode debug, permet de stocker provisoirement le fichier ouvert en mode script
-    Memory mem;
-    Dic dic;
-    interpreteur inter = init_inter(); /* structure gardant les infos et états de l'interpreteur*/
+    Emulator *emul = init_emul();
+    interpreteur inter = emul->inter;
 
 
 
-    r = init(&mem, &dic);
 
-    if(r != 0) {
+    if(emul == NULL) {
         exit(r);
     }
 
-
+    load_dic(emul->dic);
 
     if ( argc > 2 ) {
         usage_ERROR_MSG( argv[0] );
@@ -74,7 +51,7 @@ int main ( int argc, char *argv[] ) {
         if ( fp == NULL ) {
             perror( "fopen" );
 
-            del(&mem, &dic, inter);
+            del(emul);
             exit( EXIT_FAILURE );
         }
         inter->mode = SCRIPT;
@@ -88,7 +65,7 @@ int main ( int argc, char *argv[] ) {
         if (acquire_line( fp,  inter)  == 0 ) {
             /* Une nouvelle ligne a ete acquise dans le flux fp*/
 
-            int res = execute_cmd(inter, &mem, &dic); /* execution de la commande */
+            int res = execute_cmd(emul); /* execution de la commande */
 
             // traitement des erreurs
             switch(res) {
@@ -134,7 +111,7 @@ int main ( int argc, char *argv[] ) {
                 /* En mode "fichier" toute erreur implique la fin du programme afin de récupérer la valeur de retour de la commande */
                 if (inter->mode == SCRIPT) {
                     fclose( fp );
-                    del(&mem, &dic, inter);
+                    del(emul);
                     /*macro ERROR_MSG : message d'erreur puis fin de programme ! */
                     ERROR_MSG("ERREUR DETECTEE. Aborts");
                 }
@@ -145,7 +122,7 @@ int main ( int argc, char *argv[] ) {
             /* mode fichier, fin de fichier => sortie propre du programme */
             DEBUG_MSG("FIN DE FICHIER");
             fclose( fp );
-            del(&mem, &dic, inter);
+            del(emul);
             exit(EXIT_SUCCESS);
         }
     }

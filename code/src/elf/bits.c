@@ -7,12 +7,12 @@
  * Bit twiddling.
  */
 
-#include "com/types.h"
-#include "com/bits.h"
+#include "elf/bits.h"
+
  #include <string.h> // strlen
  #include <stdlib.h> // calloc
  #include <stdio.h> // printf
- #include "com/notify.h" // here
+ #include "inter/notify.h" // here
 
 
 /**
