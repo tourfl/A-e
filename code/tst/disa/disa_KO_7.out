@@ -2,5 +2,4 @@
 .rodata
 .data
 .bss
-:
 Usage : disasm <plage>+

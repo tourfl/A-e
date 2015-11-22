@@ -44,7 +44,6 @@ int step_cmd(Emulator *emul)
 	char usage[] = "Usage: step\n\tstep into";
 
 
-
 	// Analyse syntaxique
 	r = get_last_token(emul->inter, &token);
 
@@ -64,7 +63,7 @@ int step_cmd(Emulator *emul)
 		return r;
 	}
 
-	// step(flag, emul);
+	step(flag, emul);
 
 	return 0;
 }
@@ -73,12 +72,19 @@ int step_cmd(Emulator *emul)
 
 
 
-// flag: INTO or not
+// flag= INTO or 0
 
 int step(int flag, Emulator *emul)
 {
+	word in = get_word(emul->reg[15], emul->map);
+	Ins_disas *out = init_ins();
+
+
+	
 	if(flag == INTO)
 	{
+		find_and_disasm(in, out, emul->dic);
+		disp_insd(*out);
 		return 0;
 	}
 	else

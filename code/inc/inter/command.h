@@ -2,6 +2,7 @@
 #define COMMAND_H
 
 #include "emulator.h"
+#include "simul/ins_disas.h"
 
 // Macro
 
@@ -58,7 +59,10 @@ int assert_bte(vaddr32 va, unsigned int val, Segment map[NB_SEC]);
 // Disasm
 
 int disasm_plage(Plage p, Emulator *emul);
-int disasm_ins(word mot, Instruction *ins);
+
+// Step
+
+int step(int flag, Emulator *emul);
 
 
 #endif

@@ -7,7 +7,6 @@
 #include <stdlib.h> // sscanf notamment
 #include <ctype.h> // pour isdigit
 #include <math.h> // pow
-#include "elf/bits.h"
 
 
 
@@ -332,64 +331,6 @@ int to_plgtab(char *chaine, Plgtab *plgt)
     }
 
     del_strlist(strl);
-
-    return 0;
-}
-
-
-
-
-
-int parse_params(word mot, Plgtab *tab)
-{
-    int i;
-
-
-
-
-    if(tab->size == 0)
-        return 3;
-
-    for(i = 0; i < tab->size; i++)
-    {
-        parse_param(mot, &(tab->plages[i])); // Valeur de retour non-utilisée
-        // printf("\nvalue[%u] = %u", i, tab_d->plages[i].value);
-    }
-
-
-    return 0;
-}
-
-
-
-
-int parse_param(word mot, Plage *p) // On utilise un paramètre de sortie pour renvoyer des codes d'erreur en valeur de retour
-{
-    uint i;
-    int t = 16;
-    char *word_bin = NULL, *val_bin = NULL;
-
-    if(mot > pow(2, 16))
-        t = 32;
-
-
-    word_bin = int_to_bin(mot, t);
-    val_bin = calloc(p->end - p->start + 2, sizeof(char));
-
-    to_good_endianness(&word_bin, t);
-    // printf("\nAfter flip: %s \n", word_bin);
-
-    if(p->start > p->end)
-        return 3;
-
-    for(i = p->start; i <= p->end; i++)
-    {
-        val_bin[p->end - i] = word_bin[i]; // A cause de l'endianness
-    }
-
-    p->value = strtoul(val_bin, NULL, 2);
-
-    // printf("\nval_bin : %s et value : %u\n", val_bin, p->value);
 
     return 0;
 }

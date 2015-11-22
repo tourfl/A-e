@@ -1,6 +1,159 @@
 #include "simul/ins_disas.h"
 #include <string.h> // strcat
+#include <math.h> // pow
+#include "types.h" // intobin
+#include "elf/bits.h" // to_good_endianness
 
+
+
+
+
+// retourne l'offset de lecture de la plage d'octets
+
+
+int find(word in32, Ins_disas *out, Dic *dic)
+{
+	int r = 1;
+	word in16 = in32 >> 16;
+
+
+
+
+
+	r = get_ins16(in16, out, dic);
+
+	if (r == 0) // C'est une instruction 16 bits
+		return 2;
+
+	// printf("unfound word: %8x\t%s\n", mot, int_to_bin(mot, 16));
+
+	r = get_ins32(in32, out, dic);
+
+	if (r == 0) // C'est une instruction 32
+		return 4; // on augmente de 4 puisque une instruction de 4 octets a été lue
+
+	return 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+int disasm_ins(word mot, Instruction *ins)
+{
+	int i, r = 0;
+	Plgtab *p = NULL; // cf types.h
+
+	for(i = 0; i < 3; i++)
+	{
+		if(i == 0) {
+			p = ins->reg;
+		}
+
+		else if(i == 1) {
+			p = ins->imm;
+		}
+
+		else if(i == 2) {
+			p = ins->ext;
+		}
+
+		r = parse_params(mot, p);
+
+		if(r != 0 && r != 3)
+			return r;
+
+	}
+
+	return 0;
+}
+
+
+
+
+int find_and_disasm(word mot, Ins_disas *insd, Dic *dic)
+{
+	int r = 0;
+
+
+	r = find(mot, insd, dic);
+
+
+	if(r != 2 && r != 4)
+		return r;
+
+
+	r = disasm_ins(mot, insd);
+	
+	return r;
+}
+
+
+
+
+
+int parse_params(word mot, Plgtab *tab)
+{
+    int i;
+
+
+
+
+    if(tab->size == 0)
+        return 3;
+
+    for(i = 0; i < tab->size; i++)
+    {
+        parse_param(mot, &(tab->plages[i])); // Valeur de retour non-utilisée
+        // printf("\nvalue[%u] = %u", i, tab_d->plages[i].value);
+    }
+
+
+    return 0;
+}
+
+
+
+
+
+
+int parse_param(word mot, Plage *p) // On utilise un paramètre de sortie pour renvoyer des codes d'erreur en valeur de retour
+{
+    uint i;
+    int t = 16;
+    char *word_bin = NULL, *val_bin = NULL;
+
+    if(mot > pow(2, 16))
+        t = 32;
+
+
+    word_bin = int_to_bin(mot, t);
+    val_bin = calloc(p->end - p->start + 2, sizeof(char));
+
+    to_good_endianness(&word_bin, t);
+    // printf("\nAfter flip: %s \n", word_bin);
+
+    if(p->start > p->end)
+        return 3;
+
+    for(i = p->start; i <= p->end; i++)
+    {
+        val_bin[p->end - i] = word_bin[i]; // A cause de l'endianness
+    }
+
+    p->value = strtoul(val_bin, NULL, 2);
+
+    // printf("\nval_bin : %s et value : %u\n", val_bin, p->value);
+
+    return 0;
+}
 
 
 

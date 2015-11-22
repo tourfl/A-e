@@ -77,7 +77,6 @@ int load_dic(Dic *dic)
 
 	r = load_ins_tab_from_file(dic->ins32, dic->sz32, fd);
 
-	which_error(r);
 	fclose(fd);
 
 
@@ -92,7 +91,6 @@ int load_dic(Dic *dic)
 
 	r = load_ins_tab_from_file(dic->ins16, dic->sz16, fd);
 
-	which_error(r);
 	fclose(fd);
 
 	return r;

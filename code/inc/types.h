@@ -131,11 +131,6 @@ void disp_plg(Plage p);
  int prepend_2slash(char **str); // ajoute "2/" au début de la chaîne
 
 
-
-
-int parse_params(word mot, Plgtab *tab);
-int parse_param(word mot, Plage *p);
-
  int to_strtab(char *chaine, char **tab);
  int to_wrdtab(char *chaine, word tab[]);
 

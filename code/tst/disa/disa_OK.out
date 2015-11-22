@@ -2,12 +2,9 @@
 .rodata
 .data
 .bss
-0x1000
-0x1008
 
   0x00001000 4f f0 00 00 4f f0 08 01 0a 
 
 MOV.W r0, #0 (       0)
 MOV.W r1, #8 (       8)
 
-(null)

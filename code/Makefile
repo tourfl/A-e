@@ -30,6 +30,7 @@ SRC= $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/*/*.c)
 # arborescence des sous-dossiers sources pour créer les sous-dossiers obj
 export SRCDIRS=$(shell find $(SRCDIR) -type d)
 export OBJDIRS=$(SRCDIRS:$(SRCDIR)%=$(OBJDIR)%)
+export INCDIRS=$(SRCDIRS:$(SRCDIR)%=$(INCDIR)%)
 
 # liste des fichiers objets
 export OBJ=$(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
@@ -51,6 +52,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 # utilisation d'un Makefile "esclave"
 
 unit:
+	@($(MAKE) $(TARGET))
 	@(cd $(UNTDIR) && $(MAKE))
 
 clean : 
@@ -80,6 +82,9 @@ unit_clean:
 
 unit_srcdirs:
 	@(cd $(UNTDIR) && $(MAKE) srcdirs)
+
+unit_incdirs:
+	@(cd $(UNTDIR) && $(MAKE) incdirs)
 
 unit_objdirs:
 	@(cd $(UNTDIR) && $(MAKE) objdirs)

@@ -2,4 +2,3 @@
 .rodata
 .data
 .bss
-0x1000

@@ -6,12 +6,15 @@ LD=`which gcc`
 RM=`which rm` -f
 
 #options de compilation/édition des liens
-INCLUDE=-I$(INCDIR)
+INCLUDE=-I$(INCDIR) -I$(DEPINCDIR)
 CFLAGS=-Wall $(INCLUDE)
 LFLAGS=-lreadline -lm -lcurses -lcunit
 
 #définition des répertoires de source/destination
 INCDIR=inc
+DEPINCDIR=../inc
+DEPOBJDIR=../obj
+DEPSRCDIR=../src
 SRCDIR=src
 OBJDIR=obj
 
@@ -21,19 +24,23 @@ CUOBJ=$(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
 #liste des fichiers contenant des fonctions à tester
 DEPOBJ_M=$(OBJ:%.o=../%.o)
-DEPOBJ=$(filter-out ../$(OBJDIR)/main.o, $(DEPOBJ_M))
+DEPOBJ=$(filter-out $(DEPOBJDIR)/main.o, $(DEPOBJ_M))
 
 all:
 	make $(TARGET)
 
-$(TARGET): $(CUOBJ)
-	$(LD) $^ $(DEPOBJ) $(LFLAGS) -o $@
+$(TARGET): $(CUOBJ) $(DEPOBJ)
+	$(LD) $^ $(LFLAGS) -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) -o $@ -c $< $(CFLAGS)
 
+
 srcdirs:
 	mkdir -p $(SRCDIRS)
+
+incdirs :
+	mkdir -p $(INCDIRS)
 
 objdirs :
 	mkdir -p $(OBJDIRS)

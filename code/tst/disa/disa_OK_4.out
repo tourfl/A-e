@@ -2,8 +2,6 @@
 .rodata
 .data
 .bss
-0x1000
-0x1038
 
   0x00001000 4f f0 00 00 4f f0 08 01 0a 46 00 eb 41 01 00 f0 
   0x00001010 03 f8 8a 42 0a d0 0c e0 01 b5 82 b0 4f f0 00 00 
@@ -12,22 +10,21 @@
 
 MOV.W r0, #0 (       0)
 MOV.W r1, #8 (       8)
-MOV r2, r1
+MOV r0, r0
 ADD.W r1, r0, r1, #1 (       1)
 BL, #3 (       3)
 CMP r2, r1
-B, #10 (       a)
 B, #12 (       c)
-PUSH r1, r0, #0 (       0)
-SUB,sp,sp, #2 (       2)
+Battention taille, #0 (       0)
+PUSH r2, r8, #0 (       0)
+SUB,sp,spattention taille, #0 (       0)
 MOV.W r0, #0 (       0)
 ADD.W r1, r0, r1, #1 (       1)
 POP.W r1, r0, r0, #0 (       0)
-ADD,sp,sp, #2 (       2)
-BX lr
+ADD,sp,sp, #16 (      10)
+BX r9
 MOV.W r0, #0 (       0)
-B, #0 (       0)
+B, #79 (      4f)
 MOV.W r0, #1 (       1)
 B, #0 (       0)
 
-(null)

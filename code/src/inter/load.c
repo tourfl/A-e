@@ -41,6 +41,11 @@ int loadcmd(Emulator *emul) {
     // On récupère le contenu du fichier ELF puis on le charge en mémoire
     load_elf_in_mem(fo, emul->map, va);
 
+
+    // l'adresse du PC est mise à l'adresse du segment text
+
+    emul->reg[15] = emul->map[0].va;
+
     fclose(fo);
 
     return 0;
@@ -122,7 +127,7 @@ int load_elf_in_mem(FILE *fo, Segment map[], unsigned int va)
     		INFO_MSG("section %s not present", map[i].name);
     	}
     }
-    free(ehdr); 
+    free(ehdr);
 
     return 0;
 }
