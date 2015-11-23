@@ -20,46 +20,173 @@ exec isn_code [NB_INS];
 
 
 
-/*******************************************ADD_IMM********************************************************/
 
+
+
+int InITBlock () {
+	// Est-on dans un bloc IT?
+}
+
+int LastInITBlock () {
+	// Est-ce le dernier élément d'un bloc IT?
+}
+
+
+
+
+unsigned long ZeroExtend (int i) {
+
+	i = (unsigned long) i;
+	return i;
+	
+}
+
+
+int SInt16 (int x ) {
+
+	int result = 0;
+	int i;
+	for (i = 0; i<=15; i++) {
+		if (x & (1u << i ) ){ 
+			result = result + 2^i;
+	}
+	if (x & (1u << 15) ) {
+		result = result - 2^15;
+	}
+	return result;
+}
+
+long SInt32 (long x) {
+	
+	long result = 0;
+	int i;
+	for (i = 0; i<=31; i++) {
+		if (x & (1u << i ) ){ 
+			result = result + 2^i;
+	}
+	if (x & (1u << 31) ) {
+		result = result - 2^32;
+	}
+	return result;
+}
+
+
+int UInt16 (int x) {
+	
+	int result = 0;
+	int i;
+	for (i = 0 ; i<=15 ; i++) { 
+		if (x & (1u << i) {
+			result = result + 2^i;
+	}
+	return result;
+}
+
+long UInt32 (long x) {
+	
+	long result = 0;
+	int i;
+	for (i = 0 ; i<=31 ; i++) { 
+		if (x & (1u << i) {
+			result = result + 2^i;
+	}
+	return result;
+}
+
+uint32 AddWithCarry (uint32 registre , uint32 imm32 , int* carry , int* overflow) {
+
+
+	long unsigned_summ;
+	long signed_sum;
+	long result;
+	long mask;
+	mask = 0x0000FFFF;
+	
+	unsigned_sum = UInt32 (registre) + UInt32 (imm32) + UInt16 (carry);
+    	signed_sum   = SInt32 (registre) + SInt32 (imm32) + UInt16 (carry);
+    	result       = unsigned_sum & mask ;  // same value as signed_sum<N-1:0>
+    	if (UInt32 (result) == unsigned_sum ) {
+		carry = 0; 
+	}
+	else {
+		carry = 1;
+	}
+    	if (SInt32 (result) == signed_sum ) {
+		overflow = 0;
+	}	
+	else {
+		overflow = 1;
+	}
+	return result;	
+
+
+}
+
+
+
+
+
+
+
+/**********************************************************************************************************/
+/*******************************************ADD_IMM********************************************************/
+/**********************************************************************************************************/
 
 int add_imm (Instruction ins, Memory *mem) {
 
 
 	int n,d;
-	int setflags, imm32, carry, overflow, result;
+	int setflags, imm32, carry, overflow;
+	long result;
 	
 	n = ins.reg[0].value;
 	d = ins.reg[1].value;
 	
 	if (strcmp (ins.encoding, 'T1') == 0 ) {
-		add_imm_T1 (ins, mem, setflags, imm32);
+		if( add_imm_T1 (ins,  &setflags, &imm32)) {
+			return 1;
+		}
 	}
 
 	else if (strcmp (ins.encoding, 'T2') == 0 ) {
-		add_imm_T2 (ins, mem, setflags, imm32);
+		if ( add_imm_T2 (ins,  &setflags, &imm32)) {
+			return 1;
+		}
 	}
 
 	else if (strcmp (ins.encoding, 'T3') == 0 ) {
-		add_imm_T3 (ins, mem, setflags, imm32, d, n);
+		if ( add_imm_T3 (ins,  &setflags, &imm32, d, n) ) {
+			return 1;
+		}
 	}
 
 	else if (strcmp (ins.encoding, 'T4') == 0 ) {
-		add_imm_T4 (ins, mem, setflags, imm32, d, n);
+		if ( add_imm_T4 (ins,  &setflags, &imm32, d, n) ) {
+			return 1;
+		}
 	}
 
-	else 
-		WARNING_MSG ("Cette encodage n'est pas dans le dictionnaire");
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+	
+		
 
-
-	(result, carry, overflow) = AddWithCarry (R[n] , imm32, '0');
+	result = AddWithCarry (R[n] , imm32, &carry , &overflow);
 	R[d] = result;
 	if (setflag) {
-		APSR.N = result<31>;
+		if (result & (1u << 31) ){
+			APSR.N = 1;
+		}
+		else {
+			APSR.N = 0;
+		}
 		APSR.Z = IsZeroBit(result);
 		APSR.C = carry;
 		APSR.V = overflow;
 	}
+	return 0;
 }
 
 
@@ -72,23 +199,23 @@ int add_imm (Instruction ins, Memory *mem) {
 
 
 
-int add_imm_T1(Instruction ins, Memory *mem, int setflags, int imm32) {
+int add_imm_T1(Instruction ins,  int* setflags, int* imm32) {
 		
 	setflags = !InITBlock();
-	imm32 = ZeroExtend( ins.imm , 32); 
-	
+	imm32 = ZeroExtend( ins.imm.value ); 
+	return 0;
 }
 
 
-int add_imm_T2(Instruction ins, Memory *mem, int setflags , int imm32) {
+int add_imm_T2(Instruction ins,  int* setflags , int*imm32) {
 	
 	setflags = !InITBlock();
-	imm32 = ZeroExtend( ins.imm , 32); 
-
+	imm32 = ZeroExtend( ins.imm.value ) ; 
+	return 0;
 }
 
 
-int add_imm_T3(Instruction ins, Memory *mem, int setflags , int imm32 , int n, int d) {
+int add_imm_T3(Instruction ins,  int* setflags , int* imm32 , int* n, int* d) {
 	
 
 	if ( d == 15 && ins.ext.value == 1 ) {
@@ -103,13 +230,15 @@ int add_imm_T3(Instruction ins, Memory *mem, int setflags , int imm32 , int n, i
 	imm32 = ins.imm.value;
 
 	if (d==13 || (d==15 && ins.ext.value == 0) || n==15 ) {
-		//UNPREDICTABLE
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	}
+	return 0;
 
 }
 
 
-int add_imm_T4(Instruction ins, Memory *mem, int setflags , int imm32, int n, int d ) {
+int add_imm_T4(Instruction ins,  int setflags , int imm32, int n, int d ) {
 
 	if (n == 15) {
 		// SEE ADR
@@ -122,9 +251,11 @@ int add_imm_T4(Instruction ins, Memory *mem, int setflags , int imm32, int n, in
 
 	setflags = 0;
 	imm32 = ins.imm.value;
-if ( d == 13 || d == 14 || d == 15) {
-		//UNPREDICTABLE
+	if ( d == 13 || d == 14 || d == 15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	}
+	return 0;
 	
 }
 
@@ -149,20 +280,27 @@ int add_reg (Instruction ins, Memory *mem) {
 	m = ins.reg[2].value;
 
 	if (strcmp (ins.encoding, 'T1') == 0 ) {
-		add_reg_T1 (ins, mem);
+		if ( add_reg_T1 (ins, &setflags, &shift_n, &shift_t )) {
+			return 1;
+		}
 	}
 
 	else if (strcmp (ins.encoding, 'T2') == 0 ) {
-		add_reg_T2 (ins, mem);
+		if ( add_reg_T2 (ins, &setflags, &shift_n, &shift_t, &n, &d, &m)) {
+			return 1;
+		}
 	}
 
 	else if (strcmp (ins.encoding, 'T3') == 0 ) {
-		add_reg_T3 (ins, mem);
+		if ( add_reg_T3 (ins, &setflags, &shift_n, &shift_t, &n, &d, &m) ) {
+			return 1;
+		}
 	}
 
-	else 
-		WARNING_MSG ("Cette encodage n'est pas dans le dictionnaire");
-
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
 
 	shifted = Shift(R[m] , shift_t , shift_n , ASPR.C);
 	(result, carry, overflow) = AddWithCarry (R[n] , shifted, '0');
@@ -172,12 +310,18 @@ int add_reg (Instruction ins, Memory *mem) {
 	else {
 		R[d]=result;
 		if(setflags) {
-			ASPR.N = result<31>;
+			if (result & (1u << 31) ){
+				APSR.N = 1;
+			}
+			else {
+				APSR.N = 0;
+			}
 			ASPR.Z = IsZeroBit(result);
 			ASPR.C = carry;
 			ASPR.V = overflow;
 		}
 	}
+	return 0;
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -185,16 +329,17 @@ int add_reg (Instruction ins, Memory *mem) {
 
 
 
-int add_reg_T1(Instruction ins, Memory *mem, int setflags, int shift_n, int shift_t) {
+int add_reg_T1(Instruction ins,  int* setflags, int* shift_n, int* shift_t) {
 	setflags = !InITBlock();
 	shift_n = 0;
 	shift_t = SRType_LSL;
+	return 0;
 }
 
 
-int add_reg_T2(Instruction ins, Memory *mem, int setflags,int shift_n, int shift_t, int n ,int d ,int m) {
+int add_reg_T2(Instruction ins,  int* setflags, int* shift_n, int* shift_t, int* n ,int* d ,int* m) {
 
-	if ( || m == 13) {
+	if ( concat(ins.ext.value , d) || m == 13) {
 		// SEE ADD
 	}
 	
@@ -203,17 +348,20 @@ int add_reg_T2(Instruction ins, Memory *mem, int setflags,int shift_n, int shift
 	shift_t = SRType_LSL;
 	
 	if ( d==15 && InITBlock() && !LastInITBlock() ) {
-		// UNPREDICTABLE
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	}
 	
 	if (d==15 && m==15) {
-		// UNPREDICTABLE
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	}
+	return 0;
 	  
 }
 
 
-int add_reg_T3(Instruction ins, Memory *mem, int setflags,int shift_n, int shift_t, int n , int d, int m) {
+int add_reg_T3(Instruction ins, int* setflags, int* shift_n, int* shift_t, int* n , int* d, int* m) {
 
 	if ( d==15 && ins.ext[1].value == 1) {
 		// SEE CMN (register)
@@ -227,8 +375,10 @@ int add_reg_T3(Instruction ins, Memory *mem, int setflags,int shift_n, int shift
 	(shift_t, shift_n) = DecodeImmShift (ins.ext[0].value , ins.imm.value);
 	
 	if (d==13 || (d==15 && ins.ext[0].value == 0) || n==15 || m==13 || m==14 || m==15) {
-		// UNPREDICTABLE
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	}
+	return 0;
 
 }
 
@@ -243,44 +393,87 @@ int add_reg_T3(Instruction ins, Memory *mem, int setflags,int shift_n, int shift
 int b (Instruction ins, Memory *mem) {
 
 
+	int imm32; int cond;	
+	
+	imm32 = ins.imm.value;
+	cond = ins.ext.value;
+ 
+
 	if (strcmp (ins.encoding, 'T1') == 0 ) {
-		b_T1 (ins, mem);
+		if ( b_T1 (ins, &cond, &imm32)) {
+			return 1;
+		}
 	}
 
 	else if (strcmp (ins.encoding, 'T2') == 0 ) {
-		b_T2 (ins, mem);
+		if (b_T2 (ins, &imm32)) {
+			return 1;
+		}
 	}
 
-	else if (strcmp (ins.encoding, 'T3') == 0 ) {
-		b_T3 (ins, mem);
+	else if (strcmp (ins.encoding, 'T3') == 0 ) { //on ne fait rien pour l'instant
 	}
 
 	else if (strcmp (ins.encoding, 'T4') == 0 ) {
-		b_T4 (ins, mem);
+		if( b_T4 (ins, &imm32)) {
+			return 1;
+		}
 	}
 
-	else 
-		WARNING_MSG ("Cette encodage n'est pas dans le dictionnaire");
-
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
 
 	BranchWritePC(PC+imm32);
+	return 0;
 }
 
 //---------------------------------------------------------------------------------------------------------//
 
-int b_T1(Instruction ins, Memory *mem) {
+int b_T1(Instruction ins, int* cond , int* imm32) {
+
+	if (cond==14) {
+		WARNING_MSG ("Non défini");
+		return 1;
+	}
+
+	if (cond==15) {
+		// SEE SVC
+	}
+
+	imm32 = SignExtend (imm32:0, 32);
+	
+	if (InITBlock()) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
 }
 
 
-int b_T2(Instruction ins, Memory *mem) {
+int b_T2(Instruction ins,  int* imm32) {
+
+	imm32 = SignExtend(imm11:0 ,32);
+	if (InITBlock() && !LastInITBlock()) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
 }
 
-
-int b_T3(Instruction ins, Memory *mem) {
-}
-
-
-int b_T4(Instruction ins, Memory *mem) {
+int b_T4(Instruction ins,  int* imm32) {
+	
+	int I1,I2;
+	I1 = !(ins.ext[1].value EOR ins.ext[0].value) ; 
+	I2 = !(ins.ext[2].value EOR ins.ext[0].value) ;
+	imm32 = strcat(S,I1,I2,imm32,'0');
+	imm32 = ZeroExtend (imm32 , 32);
+	if(InITBlock() && !LastInITBlock()) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -295,24 +488,41 @@ int b_T4(Instruction ins, Memory *mem) {
 
 int bl (Instruction ins, Memory *mem) {
 
+	vaddr32 next_ins_adrr;
+	int targetInstrSet = CurrentInstrSet();
+	int imm32;
+	
+
 	if (strcmp (ins.encoding, 'T1') == 0 ) {
-		bl_T1 (ins, mem);
+		if ( bl_T1 (ins, &targerInstrSet , &imm32) ) {
+			return 1;
+		}
 	}
 
-	else 
-		WARNING_MSG ("Cette encodage n'est pas dans le dictionnaire");
-
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
 
 	next_instr_addr = PC;
 	LR = next_instr_addr<31:1> : '1';
 	BranchWritePC (PC+imm32);
+	return 0;
 
 }
 
 
 //---------------------------------------------------------------------------------------------------------//
 
-int bl_T1(Instruction ins, Memory *mem) {
+int bl_T1(Instruction ins, int* targetInstrSet, int* imm32) {
+	
+	int I1,I2;
+	I1 = !(ins.ext[1].value EOR ins.ext[0].value) ; 
+	I2 = !(ins.ext[2].value EOR ins.ext[0].value) ;
+	imm32 = strcat(S,I1,I2,imm32,'0');
+	imm32 = ZeroExtend (imm32 );
+	targetInstrSet = CurrentInstrSet();
+	return 0;
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -329,52 +539,1271 @@ int bl_T1(Instruction ins, Memory *mem) {
 
 int bx (Instruction ins, Memory *mem) {
 
+	int m = ins.reg.value;
+
 	if (strcmp (ins.encoding, 'T1') == 0 ) {
-		bx_T1 (ins, mem);
+		if ( bx_T1 (ins, &m) ) {
+			return 1;
+		}
 	}
 
-	else 
-		WARNING_MSG ("Cette encodage n'est pas dans le dictionnaire");
-
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
 
 	EncodingSpecificOperations();
 	BXWritePC (R[m]);
+	return 0;
 
 }
 
-int bx_T1(Instruction ins, Memory *mem) {
+
+
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+int bx_T1(Instruction ins, int* m) {
+
+	if(InITBlock() && !LastInITBlock() ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
 }
 
 
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
 /**********************************************************************************************************/
-/************************************************BX********************************************************/
+/************************************************CMP_IMM***************************************************/
+/**********************************************************************************************************/
+
+
+int cmp_imm (Instruction ins, Mem* mem) {
+
+	int imm32, n;
+	int carry, overflow;
+	long result;
+	n = ins.reg.value;
+	
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if ( cmp_imm_T1 (ins, &n, &imm32)) {
+			return 1;
+		}
+	}
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if ( cmp_imm_T2 (ins, &m) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+	
+	result = AddWithCarry(R[n] , !(imm32) , &carry, &overflow);	
+	
+	if (result & (1u << 31) ){
+		APSR.N = 1;
+	}
+	else {
+		APSR.N = 0;
+	}
+	APSR.Z = IsZeroBit(result);
+	APSR.C = carry;
+	APSR.V = overflow;
+	return 0;
+}
+
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+int cmp_imm_T1 (Instruction ins,int* imm32){
+		
+
+	imm32 = ZeroExtend (imm32);
+	return 0;
+	
+}
+
+
+
+int cmp_imm_T2 (Instruction ins,int n, int imm32){
+		
+
+	imm32 = ZeroExtend (imm32 , 32);
+	if (n==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+	
+}
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+/**********************************************************************************************************/
+/************************************************CMP_REG***************************************************/
+/**********************************************************************************************************/
+
+
+int cmp_reg (Instruction ins, Mem* mem) {
+
+	int n,m;
+	int shift_t, shift_n, shifted;
+	int carry, overflow, result;
+	n = ins.reg[0].value;
+	m = ins.reg[2].value;
+	
+	 
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if (cmp_reg_T1 (ins, &shift_t, &shift_n)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if ( cmp_reg_T2 (ins, &shift_t, &shitf_n, &n, &m){
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T3') == 0 ) {
+		if ( cmp_reg_T3 (ins, &shift_t, &shitf_n, &n, &m) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+	
+	shifted =Shift(R[m], shift_t, shift_n, APSR.C);
+	result = AddWithCarry(R[n] , !(shifted) , &carry, &overflow);
+	if (result & (1u << 31) ){
+		APSR.N = 1;
+	}
+	else {
+		APSR.N = 0;
+	}
+	APSR.Z = IsZeroBit(result);
+	APSR.C = carry;
+	APSR.V = overflow;
+	return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+int cmp_reg_T1(Instruction ins, int* shift_t, int* shift_n) {
+	
+	shift_n = 0;
+	shift_t = SRType_LSL;
+	return 0;
+}
+
+
+int cmp_reg_T2(Instruction ins, int* shift_t, int* shift_n, int* n, int* m) {
+	
+	n = concat (ins.ext.value , n);
+	shift_n = 0;
+	shift_t = SRType_LSL;
+	if (n<8 && m<8) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	if (n==15 || m==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+int cmp_reg_T3(Instruction ins, int* shift_t, int* shift_n, int* n, int* m ) {
+	
+	(shift_t, shift_n) = DecodeImmShift (ins.ext.value, ins.imm.value);
+	if (n==15 || (m==13 || m==14 || m==15) ){
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+/**********************************************************************************************************/
+/************************************************IT***************************************************/
+/**********************************************************************************************************/
+
+int it (Instruction ins, Mem* mem) {
+
+
+	int mask, firscond;
+	mask = ins.ext[0].value;
+	firstcond =  ins.ext[1].value;
+
+
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if (it_T1 (ins, &mask, &firstcond)) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	ITSTATE.IT<7:0> = concat(mask ,firstcond ) ;
+	return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+int it_T1 (Instruction ins, int* mask , int* firstcond) {
+	
+	if (mask == 0) {
+		// SEE "Related encodings"
+	}
+	if (firstcond == 15 || (firstcond == 14 && BitCount(mask) != 1) ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}	
+	if (InITBlock() ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+/**********************************************************************************************************/
+/************************************************LDR_IMM***************************************************/
+/**********************************************************************************************************/
+
+int ldr_imm (Instruction ins, Mem* mem) {
+	
+
+	int t,n, imm32;
+	t = ins.reg[0].value;
+	n = ins.reg[1].value;
+	imm32 = ins.imm.value;
+	
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if (ldr_imm_T1 (ins, &shift_t, &shift_n)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if (ldr_imm_T2 (ins, &shift_t, &shitf_n, &n, &m)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T3') == 0 ) {
+		if ( ldr_imm_T3 (ins, &shift_t, &shitf_n, &n, &m)) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+
+	
+/**********************************************************************************************************/
+/************************************************LDR_LIT***************************************************/
+/**********************************************************************************************************/
+	
+int ldr_lit (Instruction ins, Mem* mem) {
+	
+
+	int t, imm32;
+	int add;
+	t = ins.reg.value;
+	
+	imm32 = ins.imm.value;
+	
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if ( ldr_litt_T1 (ins, &imm32) ) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if (ldr_litt_T2 (ins, &imm32, &t) {
+			return 1;
+		}
+	}
+
+	
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+
+
+	return 0;
+}	
+
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+int ldr_litt_T1 (Instruction ins,int* imm32) {
+
+	imm32 = ZeroExtend (concat(imm32, '00') ) ;
+	return 0;
+
+}
+
+int ldr_litt_T1 (Instruction ins,int* imm32, int* t) {
+
+	imm32 = ZeroExtend (imm32 ) ;
+	 
+	if (ins.ext.value == 1) {
+		add = 1;
+	}
+	
+	if (t==15 && InITBlock() && !LastInITBlock()) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+
+}
+	
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+/**********************************************************************************************************/
+/************************************************MOV_IMM***************************************************/
+/**********************************************************************************************************/
+
+
+int mov_imm (Instruction ins, Mem* mem) {
+
+
+	int d;
+	int carry;
+	long result;
+	int setflags;
+	int imm32;
+	d = ins.reg.value;
+	imm32 = ins.imm.value;
+
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if ( mov_imm_T1 (ins, mem, &setflags, &imm32 , &carry) ) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if (mov_imm_T2 (ins, &seflags, &imm32, &carry, &d)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T3') == 0 ) {
+		if (mov_imm_T3 (ins, &setflags, &imm32, &d)) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	
+	result = imm32;
+	R[d] = result;
+	if (setflags) {
+		if (result & (1u << 31) ){
+			APSR.N = 1;
+		}
+		else {
+			APSR.N = 0;
+		}
+		APSR.Z = IsZeroBit(result);
+		APSR.C = carry;	
+		// APSR.V unchanged
+	}
+	return 0;
+}
+ 
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+int mov_imm_T1 (Instruction ins,Mem* mem, int* setflags, int* imm32, int* carry){
+	
+	setflags = !InITBlock() ;
+	imm32 = ZeroExtend (imm32);
+	carry = ASPR.C;
+	return 0;
+}
+
+
+int mov_imm_T2 (Instruction ins, int* setflags, int* imm32, int* carry, int* d) {
+	
+	if (ins.ext.value==1) {
+		setflags = 1;
+	}
+	
+	(imm32 , carry) = ThumbExpandImm_C (imm32 , 32);
+	if (d==13 || d==14 || d==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+	
+int mov_imm_T3 (Instruction ins, int* setflags, int* imm32, int* d) {
+
+	setflags = 0;
+	imm32 = ZeroExtend (imm32, 32);
+	if (d==13 || d==14 || d==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0; 
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+/**********************************************************************************************************/
+/************************************************MOV_REG***************************************************/
+/**********************************************************************************************************/
+
+int mov_reg (Instruction ins, Mem* mem) {
+	
+	
+	int d, m;
+	int setflags;
+	long result;
+	d = ins.reg[0].value;
+	n = ins.reg[1].value;
+
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if ( mov_reg_T1 (ins,  &setflags, &d)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if (mov_reg_T2 (ins, &seflags)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T3') == 0 ) {
+		if (mov_reg_T3 (ins, &setflags, &d, &m)) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+	
+	result = R[m];
+	if (d==15) {
+		ALUWritePC (result); //setflags is always false here
+	}
+	else {
+		R[d] = result;
+		if (setflags) {
+			if (result & (1u << 31) ){
+				APSR.N = 1;
+			}
+			else {
+				APSR.N = 0;
+			}
+			APSR.Z = IsZeroBit (result);
+			// APSR.C & APSR.V unchanged
+		}
+	}
+	return 0;
+}
+
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+int mov_reg_T1 (Instruction ins, int* setflags,int* d){
+
+	d = concat (ins.ext.value, d);
+	setflags = 0;
+	if (d==15 && InITBlock() && !LastInITBlock() ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+int mov_reg_T2 (Instruction ins, int setflags){
+
+	setflags = 1;
+	if (InITBlock() ){
+		// UNPREDICTABLE
+	}
+}
+
+int mov_reg_T1 (Instruction ins, int setflags,int d, int m){
+
+	
+	if (ins.ext.value == 1) {
+		setflags = 1;
+	}
+	
+	if (setflags && ( (d==13 || d==14 || d==15 ) || (n==13 || n==14 || n==15) ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}	
+	
+	if (!setflags && (d==15 || m== 15 || (d==13 && m==13) ) ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+/**********************************************************************************************************/
+/************************************************MOVT***************************************************/
+/**********************************************************************************************************/
+	
+int movt (Instruction ins , Mem* mem) {
+	
+
+	int d, imm16;
+	d = ins.reg.value;
+	
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if (movt_T1 (ins, &d)) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+	ZeroExtend (imm16) ;
+	R[d] = R[d] & 0x0000FFFF
+	R[d] = R[d] + imm16;
+	// R[d]<0:15> reste inchangé
+	return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+int movt_T1 (Instruction ins, int d){
+
+	if (d==13 || d==14 || d==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}	
+	return 0;
+}
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+/**********************************************************************************************************/
+/************************************************MUL***************************************************/
 /**********************************************************************************************************/
 
 
 
+int mul (Instruction ins, Mem* mem ) {
+
+	int d,n,m;
+	int setflags; 
+	long result, operand1, operand2;
+	d = ins.reg[0].value;
+	n = ins.reg[1].value;
+
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if (mul_T1 (ins, &d, &m, &setflags)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if ( mul_T2 (ins, &d, &n, &m, &setflags)) {
+			return 1;
+		}
+	}
+	
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+	
+
+	operand1 = R[n];
+	operand2 = R[m];
+	result = operand1 * operand2;
+	result = result & 0xFFFFFFE;
+	R[d] = R[d] & 0x00000001;
+	R[d] = result + R[d];
+	if (setflags) {
+		if (result & (1u << 31) ){
+			APSR.N = 1;
+		}
+		else {
+			APSR.N = 0;
+		}
+		APSR.Z = IsZeroBit(result);
+		// APSR.V & APSR.C unchanged
+	}
+	return 0;
+}
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+int mul_T1 (Instruction ins,int* d,int* m, int* setflags){
+
+	m = d;
+	setflags = !InITBlock();
+	return 0;
+}
+
+
+int mul_T2 (Instruction ins, int* d, int* n, int* m, int* setflags){
+
+	setflags = 0;
+	if ( (n==13 || n==14 || n==15) || (d==13 || d==14 || d==15) || (m==13 || m==14 || m==15) ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+/**********************************************************************************************************/
+/************************************************POP***************************************************/
+/**********************************************************************************************************/
+	
+int pop (Instruction ins, Mem* mem) {
+	
+
+	int t;
+	long registers;
+	vaddr32 adress;
+
+
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if (pop_T1 (ins, &registers)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if (pop_T2 (ins, &registers)) {
+			return 1;
+		}
+	}
+	
+	else if (strcmp (ins.encoding, 'T3') == 0 ) {
+		if (pop_T3 (ins, &registers, &t)) {
+			return 1;
+		}
+	}
+	
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	adress = SP;
+	for (i = 0 ; i<=14 ; i++) {
+		if (registers & (1u << i )) {
+			R[i] = MemA(adress, 4);
+			adress = adress +4;
+		}
+	}
+	if (registers & (1u << 15 ) ) {
+		LoadWritePC(MemA(adress, 4));
+	}
+	SP = SP + 4*BitCount(registers);
+	return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+int pop_T1 (Instruction ins, long* registers) {
+
+	registers = concat (ins.ext.value , '0000000' , ins.reg.value);
+	if (BitCount(registers)<1){
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+int pop_T2 (Instruction ins, long* registers){
+
+	registers = concat (ins.ext[0].value, ins.ext[1].value, ins.reg.value);
+	if (BitCount (registers)<2 || (ins.ext[0].value == 1 && ins.ext[1].value == 1 ) ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+
+	if (registers<15> == 1 && InITBlock() && !LastInITBlock ()) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+int pop_T3 (Instruction ins , long* registers , int* t){
+
+	long mask;
+	t = ins.reg.value;
+	registers = Zeros(16);
+	mask = (1u << t);
+	registers = registers & (~mask);
+	registers = registers + mask;
+	if (t==13 || (t==15 && InITBlock() && !LastInITBlock() ) ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+} 
+	
+//---------------------------------------------------------------------------------------------------------//						 
+
+
+/**********************************************************************************************************/
+/************************************************PUSH***************************************************/
+/**********************************************************************************************************/
+
+
+int push (Instruction ins, Mem* mem) {
+	
+	int t;
+	long registers;
+	vaddr32 adress
+
+
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if (push_T1 (ins, &registers)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if (push_T2 (ins, &registers)) {
+			return 1;
+		}
+	}
+	
+	else if (strcmp (ins.encoding, 'T3') == 0 ) {
+		if (push_T3 (ins, &registers, &t)) {
+			return 1;
+		}
+	}
+	
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	return 0;
+}
+
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+int push_T1 (Instruction ins, int* registers) {
+
+	registers = concat (ins.ext.value , '000000' , ins.reg.value);
+	if (BitCount(registers)<1){
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+
+}
+
+int push_T2 (Instruction ins, int* registers){
+
+	registers = concat ('0', ins.ext.value, '0', ins.reg.value);
+	if (BitCount (registers)<2 ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+int push_T3 (Instruction ins , int* registers , int* t){
+
+	t = ins.reg.value;
+	registers = Zeros(16);
+	mask = (1u << t);
+	registers = registers & (~mask);
+	registers = registers + mask;
+	if (t==13 || t==14 || t==15 ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+} 
+	
+//---------------------------------------------------------------------------------------------------------//						 
+
+
+
+/**********************************************************************************************************/
+/************************************************STR_IMM***************************************************/
+/**********************************************************************************************************/
+
+
+int str_imm (Instruction ins, Mem* mem) {
+	
+
+	int t,n, imm32;
+	int index, add, wback;
+	t = ins.reg[0].value;
+	
+	imm32 = ins.imm.value;
+	
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if (str_imm_T1 (ins,&imm32, &index, &add, &wback, &n )) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if ( str_imm_T2 (ins, &imm32, &index, &add, &wback, &n )) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T3') == 0 ) {
+		if (ldr_imm_T3 (ins, &imm32, &index, &add, &wback, &n )) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	return 0;
+}
+
+
+
+//---------------------------------------------------------------------------------------------------------//	
+
+int str_imm_T1 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n ){
+
+	n = ins.reg[1].value;
+	imm32 = ZeroExtend (concat (imm32 , '00') , 32);
+	index = 1;
+	add = 1;
+	wback = 0;
+	return 0;
+
+}
+
+int str_imm_T2 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n ){
+
+	n = 13;
+	imm32 = ZeroExtend (concat (imm32 , '00') );
+	index = 1;
+	add = 1;
+	wback = 0;
+	return 0;
+
+}
+
+int str_imm_T1 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n ){
+
+	n = ins.reg[1].value;
+	if (n==15) {
+		WARNING_MSG ("Non défini");
+		return 1;
+	}
+
+	imm32 = ZeroExtend (imm32, 32);
+	index = 1;
+	add = 1;
+	wback = 0;
+	if (t==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+	
+}
+
+
+//---------------------------------------------------------------------------------------------------------//	
+
+
+
+/**********************************************************************************************************/
+/************************************************STR_REG***************************************************/
+/**********************************************************************************************************/
+
+
+int str_reg (Instruction ins, Mem* mem) {
+	
+
+	int t,n, m;
+	int index, add, wback;
+	int shift_t, shift_n;
+	vaddr32 offset , adress, data;
+
+	t = ins.reg[0].value;
+	n = ins.reg[1].value;
+	m = ins.reg[2].value;
+	
+	
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if (str_reg_T1 (ins, &index, &add, &wback, &shitf_t, &shift_n )) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if (str_imm_T2 (ins, &index, &add, &wback, &shift_t, &shift_n , &t, &n, &m )) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	offset = Shift (R[m] , shift_t , shift_n, APSR.C);
+	adress = R[n] + offset;
+	data = R[t];
+	MemU[adress +4] = data;
+	return 0;
+}
+
+
+//---------------------------------------------------------------------------------------------------------//	
+
+int str_reg_T1 (Instruction ins,int* index,int* add,int* wback,int* shitf_t,int* shift_n ) {
+
+	index = 1;
+	add = 1;
+	wback = 0;
+	shift_t = SRType_LSL;
+	shift_n = 0;
+	return 0;
+}
+
+int str_imm_T2 (Instruction ins, int* index,int* add, int* wback, int* shift_t, int* shift_n ,int* t, int* n, int* m ) {
+
+	if (n==15) {
+		WARNING_MSG ("Non défini");
+		return 1;
+	}	
+
+	index = 1;
+	add = 1;
+	wback = 0;
+	shift_t = SRType_LSL;
+	shift_n = ins.imm.value) ;
+	
+	if (t==15 || (m==13 || m==14 || m==15) ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+/**********************************************************************************************************/
+/************************************************SUB_IMM***************************************************/
+/**********************************************************************************************************/
+
+
+
+int sub_imm (Instruction ins, Mem* mem) {
+	
+
+	
+	int n,d;
+	int setflags, imm32, carry, overflow;
+	long result;
+	
+	n = ins.reg[0].value;
+	d = ins.reg[1].value;
+	
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if (sub_imm_T1 (ins,  &setflags, &imm32)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if (sub_imm_T2 (ins,  &setflags, &imm32)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T3') == 0 ) {
+		if (sub_imm_T3 (ins,  &setflags, &imm32, &d, &n)) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T4') == 0 ) {
+		if (sub_imm_T4 (ins,  &setflags, &imm32, &d, &n)) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+
+	result = AddWithCarry (R[n] , !imm32, &carry, &overflow);
+	R[d] = result;
+	if (setflag) {
+		if (result & (1u << 31) ){
+			APSR.N = 1;
+		}
+		else {
+			APSR.N = 0;
+		}
+		APSR.Z = IsZeroBit(result);
+		APSR.Z = IsZeroBit(result);
+		APSR.C = carry;
+		APSR.V = overflow;
+	}
+	return 0;
+}
 
 
 
 
 
+//------------------------------------------------------------------------------------------------------//
 
 
 
 
 
+int sub_imm_T1(Instruction ins,  int* setflags, int* imm32) {
+		
+	setflags = !InITBlock();
+	imm32 = ZeroExtend( ins.imm.value); 
+	return 0;
+	
+}
+
+
+int sub_imm_T2(Instruction ins,  int* setflags , int* imm32) {
+	
+	setflags = !InITBlock();
+	imm32 = ZeroExtend( ins.imm.value); 
+	return 0;
+
+}
+
+
+int sub_imm_T3(Instruction ins,  int* setflags , int* imm32 , int* n, int* d) {
+	
+
+	if ( d == 15 && ins.ext.value == 1 ) {
+		// SEE CMP (immmediate)
+	} 
+
+	if ( n == 13 ) {
+		// SEE SUB (SP minus immediate)
+	}
+
+	if (ins.ext.value == 1 ) {
+		setflags = 1;
+	} 
+	imm32 = ins.imm.value;
+
+	if (d==13 || (d==15 && ins.ext.value == 0) || n==15 ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+
+}
+
+
+int sub_imm_T4(Instruction ins,  int* setflags , int* imm32, int* n, int* d ) {
+
+	if (n == 15) {
+		// SEE ADR
+	}
+
+
+	if (n == 13) {
+		// SEE ADD
+	}
+
+	setflags = 0;
+	imm32 = ins.imm.value;
+	if ( d == 13 || d == 14 || d == 15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+//------------------------------------------------------------------------------------------------------//
+
+
+/**********************************************************************************************************/
+/************************************************SUB_IMM***************************************************/
+/**********************************************************************************************************/
+
+
+
+int sub_reg (Instruction ins, Mem* mem ) {
+	
+	int n,d,m;
+	int setflags, imm32, carry, overflow;
+	long result;
+	int shift_n, shift_t;
+	
+	n = ins.reg[0].value;
+	d = ins.reg[1].value;
+	m = ins.reg[2].value;
+
+	if (strcmp (ins.encoding, 'T1') == 0 ) {
+		if (sub_reg_T1 (ins, &setflags, &shift_n, &shift_t )) {
+			return 1;
+		}
+	}
+
+	else if (strcmp (ins.encoding, 'T2') == 0 ) {
+		if (sub_reg_T2 (ins, &setflags, &shift_n, &shift_t, &n, &d, &m)) {
+			return 1;
+		}
+	}
+
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	shifted = Shift(R[m] , shift_t , shift_n , ASPR.C);
+	result = AddWithCarry (R[n] , !shifted, &carry, &overflow);
+	id (d==15) {
+		ALUWritePC(result);
+	}
+	else {
+		R[d]=result;
+		if(setflags) {
+		if (result & (1u << 31) ){
+			APSR.N = 1;
+		}
+		else {
+			APSR.N = 0;
+		}
+		APSR.Z = IsZeroBit(result);
+		ASPR.C = carry;
+		ASPR.V = overflow;
+		}
+	}
+	return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------//
 
 
 
 
+int sub_reg_T1(Instruction ins,  int* setflags, int* shift_n, int* shift_t) {
+	setflags = !InITBlock();
+	shift_n = 0;
+	shift_t = SRType_LSL;
+	return 0;
+}
+
+
+int sub_reg_T2(Instruction ins,  int* setflags,int* shift_n, int* shift_t, int* n ,int* d ,int* m) {
+
+	if ( d == 15 && ins.ext.value == 1) {
+		// SEE CMP (register)
+	}
+	
+	if (n==13) {
+		// SEE SUB (SP minus register)
+	}
+	
+	if (ins.ext.value == 1) {
+		setflags = 1;
+	}
+	
+	(shift_t, shift_n) = DecodeImmShift (type, imm32);
+	if (d==13 || (d==15 && ins.ext.value ==0) || n==15 || (m==13 || m==14 || m==15) ){
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+
+
+//---------------------------------------------------------------------------------------------------------//
 
 
 
 
-
-
-
-
-
-
-
-
+	
