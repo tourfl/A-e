@@ -7,18 +7,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 int InITBlock () {
 	// Est-on dans un bloc IT?
 }
