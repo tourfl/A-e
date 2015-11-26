@@ -42,7 +42,7 @@ int get_nb_ins(FILE *fd);
 int load_ins_tab_from_file(Instruction *dic, int dic_sz, FILE *fd);
 
 int find(word in, Instruction *out, Dic *dic);
-int find_and_disasm(word mot, Instruction *out, Dic *dic);
+int find_and_decode(word mot, Instruction *out, Dic *dic);
 
 int get_ins32(word in, Instruction *out, Dic *dic);
 int get_ins16(word in, Instruction *out, Dic *dic);

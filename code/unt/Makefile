@@ -27,6 +27,7 @@ DEPOBJ_M=$(OBJ:%.o=../%.o)
 DEPOBJ=$(filter-out $(DEPOBJDIR)/main.o, $(DEPOBJ_M))
 
 all:
+	@echo $(SRC)
 	make $(TARGET)
 
 $(TARGET): $(CUOBJ) $(DEPOBJ)

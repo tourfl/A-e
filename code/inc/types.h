@@ -35,6 +35,7 @@ extern "C" {
 	
 typedef uint32_t uint, word;
 typedef uint8_t  byte;
+typedef uint16_t Half_word;
 
 typedef uint32_t vaddr32;
 typedef uint64_t vaddr64;
@@ -118,13 +119,13 @@ void disp_plg(Plage p);
  Plgtab* init_plgtab();
  void del_plgtab(Plgtab *t);
 
- Plgtab* calloc_and_plgtabcpy(Plgtab *src);
+ Plgtab* plgtabclone(Plgtab *src);
 
  void disp_plgtab(Plgtab t);
 
 
 
-char* calloc_and_strcpy(char *src);
+char* strclone(char *src);
 
  Strlist* init_strlist();
  void del_strlist(Strlist *l);

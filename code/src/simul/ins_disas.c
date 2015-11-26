@@ -39,7 +39,7 @@ int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic) // retourn
 	while (i<sz_dic && dic[i].commande != NULL) {
 
 		if((in & dic[i].mask) == (dic[i].opcode & dic[i].mask)) {
-			cpy_ins(out, &(dic[i]));
+			insclone(out, &(dic[i]));
 
 			return 0;
 		}
@@ -60,7 +60,7 @@ int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic) // retourn
 
 
 
-int disasm_ins(word mot, Instruction *ins)
+int decode(word mot, Instruction *ins)
 {
 	int i, r = 0;
 	Plgtab *p = NULL; // cf types.h

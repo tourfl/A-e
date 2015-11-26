@@ -6,6 +6,8 @@
 #include "simul/instruction.h"
 #include <string.h>
 
+#include <CUnit/CUnit.h>
+
 
 
 
@@ -51,7 +53,7 @@ void CUfind()
 
 	CU_ASSERT(find(mot, ins, dic) == 4);
 
-	disasm_ins(mot, ins);
+	decode(mot, ins);
 
 	disp_insd(*ins);
 
@@ -71,7 +73,7 @@ void CUfind_and_disasm()
 
 
 
-	CU_ASSERT(find_and_disasm(mot, ins, dic) == 0);
+	CU_ASSERT(find_and_decode(mot, ins, dic) == 0);
 
 	disp_insd(*ins);
 

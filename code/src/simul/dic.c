@@ -3,6 +3,7 @@
 #include <stdlib.h> // calloc
 #include "inter/notify.h"
 #include "simul/ins_disas.h"
+#include "elf/bits.h" // wrd_good_endianness
 
 
 
@@ -205,22 +206,37 @@ int find(word in32, Ins_disas *out, Dic *dic)
 
 
 
+/*
 
-int find_and_disasm(word mot, Ins_disas *insd, Dic *dic)
+	valeurs de retour :
+	1 : introuvable
+	2 ou 4 : offset pour le prochain mot
+	3 : problème lors du décodage
+
+*/
+
+
+int find_and_decode(word mot, Ins_disas *insd, Dic *dic)
 {
-	int r = 0;
+	int r1, r2;
 
 
-	r = find(mot, insd, dic);
+	mot = wrd_good_endianness(mot);
+
+	r1 = find(mot, insd, dic);
 
 
-	if(r != 2 && r != 4)
-		return r;
+	if(r1 == 1)
+		return 1;
 
 
-	r = disasm_ins(mot, insd);
+	r2 = decode(mot, insd);
 	
-	return r;
+	if (r2 == 0)
+		return r1;
+	else
+		return 3;
+
 }
 
 

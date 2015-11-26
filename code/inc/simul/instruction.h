@@ -54,7 +54,7 @@ typedef struct i
 
 Instruction* init_ins();
 void del_ins(Instruction *ins);
-void cpy_ins(Instruction *dest, Instruction *src);
+void insclone(Instruction *dest, Instruction *src);
 
 int load_ins(Instruction *ins, char *chaine);
 

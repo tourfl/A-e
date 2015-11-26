@@ -55,7 +55,7 @@ Il accepte une dizaine de commandes et analyse leur syntaxe.
 ### Commandes acceptées par l'interpréteur
 
 {} : facultatif
-+  : l'argument doit être donné au moins une fois
+"+" : l'argument doit être donné au moins une fois
 
 - charger un fichier : 				 "load <nom_de_fichier> {<adresse>}"
 - quitter : 						 "exit"

@@ -13,6 +13,7 @@
  #include <stdlib.h> // calloc
  #include <stdio.h> // printf
  #include "inter/notify.h" // here
+ #include <math.h> // pow
 
 
 /**
@@ -49,6 +50,47 @@ byte * __flip_endianness( byte * blocks, uint sz ) {
 
     return blocks;
 }
+
+
+
+word wrd_good_endianness(word in)
+{
+    word out = 0;
+    Half_word hwd = 0;
+
+
+
+    hwd = hwd_good_endianness((Half_word) in);
+    out = (word) hwd;
+
+    hwd = hwd_good_endianness((Half_word) (in >> 16));
+    out += ((word) hwd) << 16;
+
+    return out;
+}
+
+
+
+
+
+
+Half_word hwd_good_endianness(Half_word in)
+{
+    Half_word out = 0;
+
+
+
+    out = (in >> 8) + (in << 8);
+
+    return out;
+}
+
+
+
+
+
+
+
 
 int to_good_endianness(char **binstr, int taille)
 {

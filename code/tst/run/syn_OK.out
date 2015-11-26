@@ -2,3 +2,23 @@
 .rodata
 .data
 .bss
+
+MOV.W r0, #0 (       0)
+MOV.W r1, #8 (       8)
+MOV r0, r0
+ADD.W r1, r0, r1, #1 (       1)
+BL, #3 (       3)
+CMP r2, r1
+B, #12 (       c)
+Battention taille, #0 (       0)
+PUSH r2, r8, #0 (       0)
+SUB,sp,spattention taille, #0 (       0)
+MOV.W r0, #0 (       0)
+ADD.W r1, r0, r1, #1 (       1)
+POP.W r1, r0, r0, #0 (       0)
+ADD,sp,sp, #16 (      10)
+BX r9
+MOV.W r0, #0 (       0)
+B, #79 (      4f)
+MOV.W r0, #1 (       1)
+B, #0 (       0)

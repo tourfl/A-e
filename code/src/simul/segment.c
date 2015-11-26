@@ -132,6 +132,13 @@ int set_byte(vaddr32 va, byte value, Segment map[NB_SEC])
     return 1; // On ne fait rien si l'octet n'appartient pas au map
 }
 
+
+
+
+
+
+
+
 word get_word(vaddr32 va_1, Segment map[NB_SEC])
 {
 

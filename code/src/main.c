@@ -30,7 +30,14 @@ int main ( int argc, char *argv[] ) {
         exit(r);
     }
 
-    load_dic(emul->dic);
+    if (load_dic(emul->dic) != 0 
+        || emul->dic->ins32 == NULL 
+        || emul->dic->ins32[0].commande == NULL)
+    {
+        del(emul);
+        ERROR_MSG("unable to load dic");
+    }
+
 
     if ( argc > 2 ) {
         usage_ERROR_MSG( argv[0] );

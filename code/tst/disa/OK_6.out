@@ -8,23 +8,21 @@
   0x00001020 00 eb 51 01 bd e8 01 40 02 b0 70 47 4f f0 00 00 
   0x00001030 00 df 4f f0 01 00 00 df 00 00 00 
 
-MOV.W r0, #0 (       0)
-MOV.W r1, #8 (       8)
-MOV r0, r0
-ADD.W r1, r0, r1, #1 (       1)
-BL, #3 (       3)
-CMP r2, r1
-B, #12 (       c)
+ADD.W r0, r0, #79 (      4f)
+ADD.W r1, r8, #10 (       a)
+MOV r1, r8
+BL, #3210 (     c8a)
+B, #1 (       1)
 Battention taille, #0 (       0)
-PUSH r2, r8, #0 (       0)
-SUB,sp,spattention taille, #0 (       0)
-MOV.W r0, #0 (       0)
-ADD.W r1, r0, r1, #1 (       1)
-POP.W r1, r0, r0, #0 (       0)
-ADD,sp,sp, #16 (      10)
-BX r9
-MOV.W r0, #0 (       0)
-B, #79 (      4f)
-MOV.W r0, #1 (       1)
+PUSH pc, r4, #0 (       0)
+ADD,sp,sp, #0 (       0)
+ADD.W r0, r0, #0 (       0)
+STR r0, r5, r7
+POP r0, r4, #0 (       0)
+ADD,sp,spattention taille, #0 (       0)
+BX r0
+ADD.W r0, r0, #0 (       0)
+B, #1 (       1)
+ADD.W r0, r1, #0 (       0)
 B, #0 (       0)
 

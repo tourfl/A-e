@@ -1,8 +1,10 @@
 
 #include "inter/command.h"
+
 #include "inter/notify.h" // messages de contrôle
 #include <string.h> // strcmp
 #include <CUnit/CUnit.h>
+#include "elf/bits.h" // wrd_good_endianness
 
 /*
 * cf notify.c pour les erreurs
@@ -12,7 +14,7 @@
 
 int run_cmd(Emulator *emul) 
 {
-	int r = 1;
+	int r = 1, s = 0;
 	char usage[] = "Usage: run {address}";
 	vaddr32 va = emul->reg[15]; // valeur courante du PC
 
@@ -26,7 +28,14 @@ int run_cmd(Emulator *emul)
 		return r;
 	}
 
-	// while()
+	s = step(INTO, emul);
+
+	if(s != 2 && s != 4)
+		return 1;
+
+	while(s == 2 || s == 4) {
+		s = step(INTO, emul);
+	} 
 
 	return 0;
 }
@@ -76,25 +85,34 @@ int step_cmd(Emulator *emul)
 
 int step(int flag, Emulator *emul)
 {
+	int r = 0;
 	word in = get_word(emul->reg[15], emul->map);
 	Ins_disas *out = init_ins();
 
 
-	
+
+
 	if(flag == INTO)
 	{
-		find_and_disasm(in, out, emul->dic);
-		disp_insd(*out);
-		return 0;
+		r = find_and_decode(in, out, emul->dic); // retourne l'offset (2 : instruction 16 bits, 4 : 32 bits)
+
+		if (r == 3)
+			return r;
+
+		else if (r == 2 || r == 4)
+		{
+			disp_insd(*out);
+			// exec(*out);
+		}
+
+		emul->reg[15] += r;
+
+		return r;
 	}
 	else
 	{
 		return 2;
 	}
 }
-
-
-
-// int TONAME(vaddr32 address, Emulator *emul)
 
 

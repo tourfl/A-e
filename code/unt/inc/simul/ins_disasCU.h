@@ -2,10 +2,6 @@
 #define INS_DISASCU_H
 
 
-#include "simul/dic.h"
-#include <CUnit/CUnit.h>
-
-
 
 
 int CU_init_ins_disa_suite();

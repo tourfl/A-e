@@ -1,0 +1,8 @@
+#-------
+#TEST_RETURN_CODE=PASS       
+#TEST_COMMENT="Teste step"
+#-------
+
+load pile.o 0x1000
+set reg pc 0x1000
+step into

@@ -82,7 +82,7 @@ Plgtab* init_plgtab()
 
 
 
-Plgtab* calloc_and_plgtabcpy(Plgtab *src)
+Plgtab* plgtabclone(Plgtab *src)
 {
     Plgtab *dest = init_plgtab();
     int i;
@@ -131,7 +131,7 @@ Plgtab* calloc_and_plgtabcpy(Plgtab *src)
 
 // return an newly-allocated str
 
-char* calloc_and_strcpy(char *src)
+char* strclone(char *src)
 {
     char *dest = calloc(strlen(src), sizeof(*dest));
 

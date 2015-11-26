@@ -20,6 +20,9 @@ extern "C" {
 unsigned int get_host_endianness( void );
 byte *__flip_endianness( byte * block, uint sz );
 
+word wrd_good_endianness(word in);
+Half_word hwd_good_endianness(Half_word in);
+
 int to_good_endianness(char **binstr, int taille);
 
 
