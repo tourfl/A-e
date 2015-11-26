@@ -1,0 +1,258 @@
+#include "mem/memory_v2.h" // Mem
+#include <string.h>
+#include "com/dic.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int InITBlock () {
+	// Est-on dans un bloc IT?
+}
+
+int LastInITBlock () {
+	// Est-ce le dernier élément d'un bloc IT?
+}
+
+
+
+
+unsigned long ZeroExtend (int i) {
+
+	i = (unsigned long) i;
+	return i;
+	
+}
+
+
+int SInt16 (int x ) {
+
+	int result = 0;
+	int i;
+	for (i = 0; i<=15; i++) {
+		if (x & (1u << i ) ){ 
+			result = result + 2^i;
+	}
+	if (x & (1u << 15) ) {
+		result = result - 2^15;
+	}
+	return result;
+}
+
+long SInt32 (long x) {
+	
+	long result = 0;
+	int i;
+	for (i = 0; i<=31; i++) {
+		if (x & (1u << i ) ){ 
+			result = result + 2^i;
+	}
+	if (x & (1u << 31) ) {
+		result = result - 2^32;
+	}
+	return result;
+}
+
+
+int UInt16 (int x) {
+	
+	int result = 0;
+	int i;
+	for (i = 0 ; i<=15 ; i++) { 
+		if (x & (1u << i) {
+			result = result + 2^i;
+	}
+	return result;
+}
+
+long UInt32 (long x) {
+	
+	long result = 0;
+	int i;
+	for (i = 0 ; i<=31 ; i++) { 
+		if (x & (1u << i) {
+			result = result + 2^i;
+	}
+	return result;
+}
+
+uint32 AddWithCarry (uint32 registre , uint32 imm32 , int* carry , int* overflow) {
+
+
+	long unsigned_summ;
+	long signed_sum;
+	long result;
+	long mask;
+	mask = 0x0000FFFF;
+	
+	unsigned_sum = UInt32 (registre) + UInt32 (imm32) + UInt16 (carry);
+    	signed_sum   = SInt32 (registre) + SInt32 (imm32) + UInt16 (carry);
+    	result       = unsigned_sum & mask ;  // same value as signed_sum<N-1:0>
+    	if (UInt32 (result) == unsigned_sum ) {
+		carry = 0; 
+	}
+	else {
+		carry = 1;
+	}
+    	if (SInt32 (result) == signed_sum ) {
+		overflow = 0;
+	}	
+	else {
+		overflow = 1;
+	}
+	return result;	
+
+
+}
+
+
+
+
+int IsZeroBit (long result) {
+	
+	if (!result) {
+		return 0;
+	}
+	else {
+		return 1;
+	}
+
+}
+
+
+
+long Shift (long value, SRType type, int amount , int* carry) {
+
+	long result;
+	result = Shift_C (value, type, amount, &carry);
+	return result;
+
+}
+
+
+long Shift (long value, SRType type, int amount , int* carry) {
+		
+
+	long result;
+	assert !(type == SRType_RXX && amount !=1) ;
+	if (amount == 0) {
+		result = value;
+	}
+	switch (type) {
+
+	        case SRType_LSL :
+
+                	result = LSL_C(value, amount, &carry);
+
+		case SRType_LSR :
+
+                	result = LSR_C(value, amount, &carry);
+
+		case SRType_ASR :
+ 
+                	result = ASR_C(value, amount, &carry);
+
+		case SRType_ROR :
+ 
+                	result = ROR_C(value, amount, &carry);
+
+		case SRType_RRX :
+
+                	result = RRX_C(value, &carry);
+
+	}
+
+       return result;
+
+}
+	 
+
+long LSL_C (long x, &carry) {
+
+	long result;
+	if (shift<0) {
+		return 0;
+	}
+	result = x & 0x7fffffff;
+	if (x & 0x10000000) {
+		carry = 1;
+	}
+	else {
+		carry = 0;
+	}
+	return result;
+
+}
+	
+
+long LSR_C (long x, int shift, int* carry) {
+
+	long long extended_x;
+	long long mask = 0;
+	long long mask2 =0 ;
+	int i;
+	long long n = 0;
+	long result; 
+	if (shift<0) {
+		return 0;
+	}
+	extended_x = (long long) x;
+	// On fabrique le masque 
+	for (i=shift ; i<=shift+31 ; i++) { 	
+		n = 1u << i
+		mask = mask + n;
+	}	
+	result 	= mask & extended_x;
+	mask2 = 1u << shift-1;
+	if (mask2 & extended_x) {
+		carry = 1;
+	}
+	else {
+		carry = 2;
+	}
+	return result;
+}
+		
+	
+	
+long ASR_C (long x , int shift, int* carry) {
+	
+	long result;	
+	result = LSR_C (x,shift,&carry);
+
+}
+
+long RRX_C (long x,  int* carry) {
+	
+	long result;
+	if (!carry) {
+		result = (x & 0xFFFFFFFE );
+	}
+	else {
+		result =  x & 0xFFFFFFFE + 1;
+	}
+	if (!(x & 0x00000001) ) {
+		carry = 0;
+	}
+	else {
+		carry = 1;
+	}
+	return result;
+}
+
+	
+		
+	
