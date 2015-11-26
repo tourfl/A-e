@@ -33,6 +33,7 @@ int SInt16 (int x ) {
 	for (i = 0; i<=15; i++) {
 		if (x & (1u << i ) ){ 
 			result = result + 2^i;
+		}
 	}
 	if (x & (1u << 15) ) {
 		result = result - 2^15;
@@ -62,6 +63,7 @@ int UInt16 (int x) {
 	for (i = 0 ; i<=15 ; i++) { 
 		if (x & (1u << i) {
 			result = result + 2^i;
+		}
 	}
 	return result;
 }
@@ -73,6 +75,7 @@ long UInt32 (long x) {
 	for (i = 0 ; i<=31 ; i++) { 
 		if (x & (1u << i) {
 			result = result + 2^i;
+		}
 	}
 	return result;
 }
