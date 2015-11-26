@@ -3,7 +3,6 @@
 
 #include "inter/notify.h" // messages de contrôle
 #include <string.h> // strcmp
-#include <CUnit/CUnit.h>
 #include "elf/bits.h" // wrd_good_endianness
 
 /*
