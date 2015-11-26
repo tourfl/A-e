@@ -1,40 +1,54 @@
 #include "simul/ins_disas.h"
 #include <string.h> // strcat
 #include <math.h> // pow
+#include <stdlib.h> // calloc
+#include "inter/notify.h" // printf notamment
 #include "types.h" // intobin
 #include "elf/bits.h" // to_good_endianness
 
 
 
+/*
+ * in : mot à décoder
+ * out : instruction de sortie
+ * dic : tableau d'instructions
+ * sz_dic : nb d'instructions dans le tableau
+ */
 
 
-// retourne l'offset de lecture de la plage d'octets
-
-
-int find(word in32, Ins_disas *out, Dic *dic)
+int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic) // retourne l'instruction en question s'il y a match, NULL sinon;
 {
-	int r = 1;
-	word in16 = in32 >> 16;
+	/*
+	 * Problème : les fichiers .o sont codés en little endian aligné (cf 2.4)
+	 * Les masques sont en big endian
+	 *
+	 * ce problème est résolu dans la fonction disasm_plage
+	 */
+
+	int i=0;
+
+	if(in == 0)
+	{
+		return 1;
+	}
 
 
 
+	//V2
 
+	while (i<sz_dic && dic[i].commande != NULL) {
 
-	r = get_ins16(in16, out, dic);
+		if((in & dic[i].mask) == (dic[i].opcode & dic[i].mask)) {
+			cpy_ins(out, &(dic[i]));
 
-	if (r == 0) // C'est une instruction 16 bits
-		return 2;
+			return 0;
+		}
 
-	// printf("unfound word: %8x\t%s\n", mot, int_to_bin(mot, 16));
+		i++;
+	}
 
-	r = get_ins32(in32, out, dic);
-
-	if (r == 0) // C'est une instruction 32
-		return 4; // on augmente de 4 puisque une instruction de 4 octets a été lue
-
-	return 1;
+	return 10;
 }
-
 
 
 
@@ -73,26 +87,6 @@ int disasm_ins(word mot, Instruction *ins)
 	}
 
 	return 0;
-}
-
-
-
-
-int find_and_disasm(word mot, Ins_disas *insd, Dic *dic)
-{
-	int r = 0;
-
-
-	r = find(mot, insd, dic);
-
-
-	if(r != 2 && r != 4)
-		return r;
-
-
-	r = disasm_ins(mot, insd);
-	
-	return r;
 }
 
 
@@ -210,76 +204,4 @@ void disp_insd(Ins_disas ins)
 	{
 		printf(", #%lu (%8lx)", strtoul(imm, NULL, 2), strtoul(imm, NULL, 2));
 	}
-}
-
-
-/*
- * in : mot à décoder
- * out : instruction de sortie
- * dic : tableau d'instructions
- * sz_dic : nb d'instructions dans le tableau
- */
-
-
-int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic) // retourne l'instruction en question s'il y a match, NULL sinon;
-{
-	/*
-	 * Problème : les fichiers .o sont codés en little endian aligné (cf 2.4)
-	 * Les masques sont en big endian
-	 *
-	 * ce problème est résolu dans la fonction disasm_plage
-	 */
-
-	int i=0;
-
-	if(in == 0)
-	{
-		return 1;
-	}
-
-
-
-	//V2
-
-	while (i<sz_dic && dic[i].commande != NULL) {
-
-		if((in & dic[i].mask) == (dic[i].opcode & dic[i].mask)) {
-			cpy_ins(out, &(dic[i]));
-
-			return 0;
-		}
-
-		i++;
-	}
-
-	return 10;
-}
-
-
-
-
-
-
-int get_ins32(word in, Instruction *out, Dic *dic) {
-	return get_ins(in, out, dic->ins32, dic->sz32);
-}
-int get_ins16(word in, Instruction *out, Dic *dic) {
-	return get_ins(in, out, dic->ins16, dic->sz16);
-}
-
-
-
-
-
-void cpy_ins(Ins_disas *dest, Instruction *src)
-{
-	dest->commande = src->commande;
-	dest->encoding = src->encoding;
-	dest->name_in = src->name_in;
-	dest->name_out = src->name_out;
-	dest->opcode = src->opcode;
-
-	dest->reg = src->reg;
-	dest->imm = src->imm;
-	dest->ext = src->ext;
 }

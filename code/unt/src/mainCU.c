@@ -7,9 +7,6 @@
 
 
 
-
-
-
 int main(int argc, char *argv[])
 {
 	CU_Suite *suite;
@@ -21,7 +18,7 @@ int main(int argc, char *argv[])
 	if(CU_initialize_registry() != CUE_SUCCESS)
 		return CU_get_error();
 
-	suite = CU_add_suite("test suite", NULL, NULL);
+	suite = CU_add_suite("instruction suite", CU_init_ins_disa_suite, CU_del_ins_disa_suite);
 
 	if(suite == NULL)
 		return CU_get_error();

@@ -8,7 +8,10 @@
 #include "inter/interpreteur.h"
 
 
-typedef struct
+
+
+
+typedef struct emulator
 {
 	Segment map[NB_SEC];
 	Registre reg[NB_REG];

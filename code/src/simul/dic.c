@@ -2,6 +2,7 @@
 
 #include <stdlib.h> // calloc
 #include "inter/notify.h"
+#include "simul/ins_disas.h"
 
 
 
@@ -170,6 +171,70 @@ int load_ins_tab_from_file(Instruction *dic, int dic_sz, FILE *fd)
 
 	return 0;
 }
+
+
+
+
+
+// retourne l'offset de lecture de la plage d'octets
+
+
+int find(word in32, Ins_disas *out, Dic *dic)
+{
+	int r = 1;
+	word in16 = in32 >> 16;
+
+
+
+
+
+	r = get_ins16(in16, out, dic);
+
+	if (r == 0) // C'est une instruction 16 bits
+		return 2;
+
+	// printf("unfound word: %8x\t%s\n", mot, int_to_bin(mot, 16));
+
+	r = get_ins32(in32, out, dic);
+
+	if (r == 0) // C'est une instruction 32
+		return 4; // on augmente de 4 puisque une instruction de 4 octets a été lue
+
+	return 1;
+}
+
+
+
+
+int find_and_disasm(word mot, Ins_disas *insd, Dic *dic)
+{
+	int r = 0;
+
+
+	r = find(mot, insd, dic);
+
+
+	if(r != 2 && r != 4)
+		return r;
+
+
+	r = disasm_ins(mot, insd);
+	
+	return r;
+}
+
+
+
+
+
+
+int get_ins32(word in, Instruction *out, Dic *dic) {
+	return get_ins(in, out, dic->ins32, dic->sz32);
+}
+int get_ins16(word in, Instruction *out, Dic *dic) {
+	return get_ins(in, out, dic->ins16, dic->sz16);
+}
+
 
 
 			

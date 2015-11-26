@@ -9,9 +9,7 @@
 #include <string.h> // Pour utiliser strcmp notamment
 #include "inter/notify.h" // Messages de contrôle
 #include <stdlib.h>
-#include "simul/dic.h"
 #include "inter/command.h"
-
 
 
 

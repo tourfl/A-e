@@ -8,9 +8,10 @@
 
 
 
+int CU_init_ins_disa_suite();
+int CU_del_ins_disa_suite();
 
-
-CU_TestFunc CUfind();
-CU_TestFunc CUfind_and_disasm();
+void CUfind();
+void CUfind_and_disasm();
 
 #endif

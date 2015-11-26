@@ -13,9 +13,7 @@
  *
  */
 
-// Ins_disasmd = instruction désassemblée, les Strlist contiennent les valeurs extraites du (demi-)mot lu
-
-typedef struct
+typedef struct i
 {
 	// Général:
 	char* commande;
@@ -31,7 +29,9 @@ typedef struct
 	Plgtab *imm;
 	Plgtab *ext;
 	
-	// Pointeur de fonction: 		
+	// Pointeur de fonction :
+
+	void (*run)(void);
 
 
 } Instruction;
@@ -54,7 +54,11 @@ typedef struct
 
 Instruction* init_ins();
 void del_ins(Instruction *ins);
+void cpy_ins(Instruction *dest, Instruction *src);
+
 int load_ins(Instruction *ins, char *chaine);
+
+
 
 Instruction* init_instab(int sz);
 

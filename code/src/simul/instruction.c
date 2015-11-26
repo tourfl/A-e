@@ -49,6 +49,27 @@ void del_ins(Instruction *ins) // Les éléments alloués sont libérés
 
 
 
+
+void cpy_ins(Instruction *dest, Instruction *src)
+{
+	dest->commande = calloc_and_strcpy(src->commande);
+	dest->encoding = calloc_and_strcpy(src->encoding);
+	dest->name_in = calloc_and_strcpy(src->name_in);
+	dest->name_out = calloc_and_strcpy(src->name_out);
+	dest->mask = src->mask;
+	dest->opcode = src->opcode;
+
+	dest->reg = calloc_and_plgtabcpy(src->reg);
+	dest->imm = calloc_and_plgtabcpy(src->imm);
+	dest->ext = calloc_and_plgtabcpy(src->ext);
+}
+
+
+
+
+
+
+
 int load_ins(Instruction *ins, char *chaine)
 {
 	char *token = NULL, *str = NULL, *saveptr = NULL;

@@ -27,6 +27,10 @@ GARBAGE=*~ $(SRCDIR)/*~ $(SRCDIR)/*/*~ $(INCDIR)/*~ $(INCDIR)/*/*~ $(TESTDIR)/*~
 # ou se trouve les sources (i.e., les *.c)
 SRC= $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/*/*.c)
 
+# liste des headers
+INC= $(wildcard $(INCDIR)/*.h) $(wildcard $(INCDIR)/*/*.h)
+
+
 # arborescence des sous-dossiers sources pour créer les sous-dossiers obj
 export SRCDIRS=$(shell find $(SRCDIR) -type d)
 export OBJDIRS=$(SRCDIRS:$(SRCDIR)%=$(OBJDIR)%)

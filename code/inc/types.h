@@ -118,10 +118,13 @@ void disp_plg(Plage p);
  Plgtab* init_plgtab();
  void del_plgtab(Plgtab *t);
 
+ Plgtab* calloc_and_plgtabcpy(Plgtab *src);
+
  void disp_plgtab(Plgtab t);
 
 
 
+char* calloc_and_strcpy(char *src);
 
  Strlist* init_strlist();
  void del_strlist(Strlist *l);

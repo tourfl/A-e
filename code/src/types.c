@@ -81,6 +81,38 @@ Plgtab* init_plgtab()
 
 
 
+
+Plgtab* calloc_and_plgtabcpy(Plgtab *src)
+{
+    Plgtab *dest = init_plgtab();
+    int i;
+
+
+
+
+
+    if(dest == NULL)
+        return NULL;
+
+    dest->size = src->size;
+    dest->plages = calloc(dest->size, sizeof(Plage));
+
+    if(dest->plages == NULL)
+    {
+        free(dest);
+        return NULL;
+    }
+
+    for(i = 0; i < dest->size; i++)
+    {
+        dest->plages[i] = src->plages[i];
+    }
+
+    return dest;
+}
+
+
+
  void disp_plgtab(Plgtab t) {
     int i;
 
@@ -94,6 +126,20 @@ Plgtab* init_plgtab()
     }
  }
 
+
+
+
+// return an newly-allocated str
+
+char* calloc_and_strcpy(char *src)
+{
+    char *dest = calloc(strlen(src), sizeof(*dest));
+
+    if(dest == NULL)
+        return NULL;
+
+    return strcpy(dest, src);
+}
 
 
 
