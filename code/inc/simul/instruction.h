@@ -2,6 +2,7 @@
 #define INSTRUCTION_H
 
 #include "types.h" // Plgtab
+#include "emulator.h"
 
 
 
@@ -13,7 +14,13 @@
  *
  */
 
-typedef struct i
+// pour le problème d'inclusions circulaires
+struct emulator;
+typedef struct emulator Emulator;
+
+
+
+struct ins
 {
 	// Général:
 	char* commande;
@@ -31,10 +38,12 @@ typedef struct i
 	
 	// Pointeur de fonction :
 
-	void (*run)(void);
+	void (*run)(Emulator *emul);
 
 
-} Instruction;
+};
+
+typedef struct ins Instruction;
 
 
 

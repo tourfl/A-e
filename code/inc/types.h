@@ -1,7 +1,7 @@
 
 /**
  * @file types.h
- * @author François Cayre <francois.cayre@grenoble-inp.fr>
+ * @author Raphaël Dein
  * @date Thu Oct 31 19:09:31 2013
  * @brief Types.h
  *

@@ -65,6 +65,11 @@ int decode(word mot, Instruction *ins)
 	int i, r = 0;
 	Plgtab *p = NULL; // cf types.h
 
+
+
+
+	mot = wrd_good_endianness(mot);
+
 	for(i = 0; i < 3; i++)
 	{
 		if(i == 0) {
@@ -202,6 +207,6 @@ void disp_insd(Ins_disas ins)
 
 	if(ins.imm->size > 0)
 	{
-		printf(", #%lu (%8lx)", strtoul(imm, NULL, 2), strtoul(imm, NULL, 2));
+		printf(", #%lu (%08lx)", strtoul(imm, NULL, 2), strtoul(imm, NULL, 2));
 	}
 }

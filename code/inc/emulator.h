@@ -9,9 +9,13 @@
 
 
 
+// pour le problème d'inclusions circulaires
+struct dic;
+typedef struct dic Dic;
 
 
-typedef struct emulator
+
+struct emulator
 {
 	Segment map[NB_SEC];
 	Registre reg[NB_REG];
@@ -20,7 +24,10 @@ typedef struct emulator
 
 	interpreteur inter;
 
-} Emulator;
+};
+
+typedef struct emulator Emulator;
+
 
 
 

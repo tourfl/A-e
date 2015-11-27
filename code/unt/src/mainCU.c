@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	
 	CU_basic_set_mode(CU_BRM_VERBOSE);
 
-	CU_basic_run_suite(seg_suite);
+	CU_basic_run_suite(id_suite);
 	// CU_console_run_tests();
 
 	CU_cleanup_registry();

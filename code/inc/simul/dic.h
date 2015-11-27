@@ -12,18 +12,22 @@
 
 
 
+// pour le problème d'inclusions circulaires
+struct ins;
+typedef struct ins Instruction;
 
 
 
-
- typedef struct 
+ struct dic
  {
  	Instruction* ins32;
  	Instruction* ins16;
  	int sz32;
  	int sz16;
 
- } Dic;
+ };
+
+ typedef struct dic Dic;
 
 
 

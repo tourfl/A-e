@@ -25,7 +25,7 @@ static word mot;
 int CU_init_ins_disa_suite()
 {
 	dic = init_dic();
-	mot = 0xF04F0108;
+	mot = 0x4ff00801;
 
 	return load_dic(dic);
 }
@@ -73,7 +73,7 @@ void CUfind_and_disasm()
 
 
 
-	CU_ASSERT(find_and_decode(mot, ins, dic) == 0);
+	CU_ASSERT(find_and_decode(mot, ins, dic) == 4);
 
 	disp_insd(*ins);
 

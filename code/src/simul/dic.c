@@ -183,11 +183,13 @@ int load_ins_tab_from_file(Instruction *dic, int dic_sz, FILE *fd)
 int find(word in32, Ins_disas *out, Dic *dic)
 {
 	int r = 1;
-	word in16 = in32 >> 16;
+	word in16 = 0;
 
 
 
 
+	in32 = wrd_good_endianness(in32);
+	in16 = in32 >> 16;
 
 	r = get_ins16(in16, out, dic);
 
@@ -219,9 +221,6 @@ int find(word in32, Ins_disas *out, Dic *dic)
 int find_and_decode(word mot, Ins_disas *insd, Dic *dic)
 {
 	int r1, r2;
-
-
-	mot = wrd_good_endianness(mot);
 
 	r1 = find(mot, insd, dic);
 

@@ -1,0 +1,8 @@
+#-------
+#TEST_RETURN_CODE=PASS       
+#TEST_COMMENT="Teste step"
+#-------
+
+load boucle.o 0x1000
+step into
+assert reg r1 12
