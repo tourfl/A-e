@@ -61,41 +61,104 @@ int disp_dic(Dic *dic)
 
 int load_dic(Dic *dic)
 {
+	int r=0;
+
+
+	r = load_from_file(&(dic->ins32), &(dic->sz32), "lib/instructions_32bits.dic");
+
+	if(r != 0)
+		return r;
+
+
+	r =  load_from_file(&(dic->ins16), &(dic->sz16), "lib/instructions_16bits.dic");
+
+	return r;
+}
+
+
+
+
+
+// p_instab : pointeur vers un tableau d'instruction (output)
+// nb_ins : pointeur vers le nombre d'instructions (output)
+
+
+
+int load_from_file(Instruction **p_instab, int *nb_ins, char* filename)
+{
+
 	int r = 0, sz = 0;
 	FILE *fd = NULL;
+	Instruction *instab;
 
 
 
 
 	
 
-	fd = fopen("lib/instructions_32bits.dic", "r");
+	fd = fopen(filename, "r");
 
-	dic->sz32 = sz = get_nb_ins(fd);
-	dic->ins32 = init_instab(sz);
+	if(fd == NULL)
+	{
+		return 9; // cf which_error de src/inter/notify.c
+	}
 
-	if(dic->ins32 == NULL)
+	sz = get_nb_ins(fd);
+	instab = init_instab(sz);
+
+	if(instab == NULL)
 		return 2;
 
-	r = load_ins_tab_from_file(dic->ins32, dic->sz32, fd);
+	r = load_instab(instab, sz, fd);
 
 	fclose(fd);
 
-
-
-	fd = fopen("lib/instructions_16bits.dic", "r");
-
-	dic->sz16 = sz = get_nb_ins(fd);
-	dic->ins16 = init_instab(sz);
-
-	if(dic->ins16 == NULL)
-		return 2;
-
-	r = load_ins_tab_from_file(dic->ins16, dic->sz16, fd);
-
-	fclose(fd);
+	*nb_ins = sz;
+	*p_instab = instab;
 
 	return r;
+}
+
+
+
+
+
+/*
+ * instab est un tableau d'instruction
+ * nb_ins est le nombre d'instructions de ce tableau
+ */
+
+
+
+int load_instab(Instruction *instab, int nb_ins, FILE *fd)
+{
+	char chaine[TAILLE_MAX] = "";
+	int i, l = 0;
+
+
+
+
+	if(fd == NULL) return 9;
+
+	// On suppose qu'il n'y a pas d'erreurs dans le fichier
+
+	for (i = 0; i < nb_ins; i++) // les premières instructions sont en 32 bits (il y en a NB_INS_32)
+	{
+		if (fgets(chaine, TAILLE_MAX, fd) == NULL)
+			return 1;
+
+		// printf("%s\n", chaine);
+
+		l = load_ins(instab + i, chaine);
+
+
+		if(l != 0)
+			return l;
+
+		// disp_ins(dic[i]);
+	}
+
+	return 0;
 }
 
 
@@ -129,48 +192,6 @@ int get_nb_ins(FILE *fd)
 
 	return sz;
 
-}
-
-
-
-
-
-/*
- * dic est un pointeur sur un tableau d'instruction
- * dic_sz est un pointeur sur la future taille de ce tableau
- */
-
-
-
-int load_ins_tab_from_file(Instruction *dic, int dic_sz, FILE *fd)
-{
-	char chaine[TAILLE_MAX] = "";
-	int i, l = 0;
-
-
-
-
-	if(fd == NULL) return 9;
-
-	// On suppose qu'il n'y a pas d'erreurs dans le fichier
-
-	for (i = 0; i < dic_sz; i++) // les premières instructions sont en 32 bits (il y en a NB_INS_32)
-	{
-		if (fgets(chaine, TAILLE_MAX, fd) == NULL)
-			return 1;
-
-		// printf("%s\n", chaine);
-
-		l = load_ins(dic + i, chaine);
-
-
-		if(l != 0)
-			return l;
-
-		// disp_ins(dic[i]);
-	}
-
-	return 0;
 }
 
 

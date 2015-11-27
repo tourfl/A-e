@@ -41,9 +41,9 @@ void del_dic(Dic *dic);
 int disp_dic(Dic *dic);
 
 int load_dic(Dic *dic);
-
+int load_from_file(Instruction **p_instab, int *nb_ins, char* filename);
+int load_instab(Instruction *instab, int nb_ins, FILE *fd);
 int get_nb_ins(FILE *fd);
-int load_ins_tab_from_file(Instruction *dic, int dic_sz, FILE *fd);
 
 int find(word in, Instruction *out, Dic *dic);
 int find_and_decode(word mot, Instruction *out, Dic *dic);

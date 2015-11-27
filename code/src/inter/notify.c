@@ -13,7 +13,7 @@
 
 void which_error(int code)
 {
-	DEBUG_MSG("Entering function which_error");
+	DEBUG_MSG("error code #%u", code);
 
 	switch (code) {
 		case 0:
@@ -77,6 +77,12 @@ void which_error(int code)
 		case 12:
 		{
 			DEBUG_MSG("Bad number of tokens");
+			break;
+		}
+
+		case 13:
+		{
+			DEBUG_MSG("Unable to find run_pft");
 			break;
 		}
 

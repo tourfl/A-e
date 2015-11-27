@@ -19,6 +19,9 @@ struct emulator;
 typedef struct emulator Emulator;
 
 
+// création d'un alias du type pointeur de fonction
+typedef void (*Run_pft)(Emulator*); 
+
 
 struct ins
 {
@@ -38,7 +41,7 @@ struct ins
 	
 	// Pointeur de fonction :
 
-	void (*run)(Emulator *emul);
+	Run_pft run_pft;
 
 
 };
@@ -66,8 +69,9 @@ void del_ins(Instruction *ins);
 void insclone(Instruction *dest, Instruction *src);
 
 int load_ins(Instruction *ins, char *chaine);
+int load_from_string(Instruction *ins, char *chaine);
 
-
+Run_pft get_run_pft(char* mnemo);
 
 Instruction* init_instab(int sz);
 

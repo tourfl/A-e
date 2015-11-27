@@ -62,6 +62,8 @@ void insclone(Instruction *dest, Instruction *src)
 	dest->reg = plgtabclone(src->reg);
 	dest->imm = plgtabclone(src->imm);
 	dest->ext = plgtabclone(src->ext);
+
+	dest->run_pft = src->run_pft;
 }
 
 
@@ -71,6 +73,34 @@ void insclone(Instruction *dest, Instruction *src)
 
 
 int load_ins(Instruction *ins, char *chaine)
+{
+	int r=0;
+
+
+
+	r = load_from_string(ins, chaine);
+
+	if(r != 0)
+		return r;
+
+	ins->run_pft = get_run_pft(ins->commande);
+
+	// if(ins->run_pft == NULL)
+	// 	return 13; // cf which_error in src/inter/notify.c
+
+
+	return 0;
+
+}
+
+
+
+
+
+
+
+
+int load_from_string(Instruction *ins, char *chaine)
 {
 	char *token = NULL, *str = NULL, *saveptr = NULL;
 	int i, p = 0;
@@ -141,6 +171,18 @@ int load_ins(Instruction *ins, char *chaine)
 	}
 
 	return 0;
+}
+
+
+
+
+
+
+Run_pft get_run_pft(char* mnemo)
+{
+	Run_pft test = NULL;
+
+	return test;
 }
 
 
