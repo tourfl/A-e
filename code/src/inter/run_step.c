@@ -4,7 +4,6 @@
 #include "inter/notify.h" // messages de contrôle
 #include <string.h> // strcmp
 #include "elf/bits.h" // wrd_good_endianness
-#include "dic/mov.h"
 
 /*
 * cf notify.c pour les erreurs
@@ -103,13 +102,7 @@ int step(int flag, Emulator *emul)
 		{
 			disp_insd(*out);
 
-			
-			if(strcmp(out->commande, "mov_imm") == 0)
-			{
-				mov_imm(*out, emul->reg);
-			}
-			// exec(*out);
-		}
+			out->run(*out, emul);		}
 
 		emul->reg[15] += r;
 

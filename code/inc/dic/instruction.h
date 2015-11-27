@@ -14,13 +14,19 @@
  *
  */
 
+
+
 // pour le problème d'inclusions circulaires
 struct emulator;
 typedef struct emulator Emulator;
 
+// pour pouvoir utliser Instruction dans le pointeur de fonction
+struct ins;
+typedef struct ins Instruction;
+
 
 // création d'un alias du type pointeur de fonction
-typedef void (*Run_pft)(Emulator*); 
+typedef int (*Run_pft)(Instruction, Emulator*); 
 
 
 struct ins
@@ -41,12 +47,10 @@ struct ins
 	
 	// Pointeur de fonction :
 
-	Run_pft run_pft;
+	Run_pft run;
 
 
 };
-
-typedef struct ins Instruction;
 
 
 

@@ -5,6 +5,10 @@
 #include "inter/notify.h" // messages de contrôle
 #include "types.h" // plgtab
 
+// Pour les fonctions pointées
+
+#include "dic/mov.h"
+
 
 
 Instruction* init_ins() // pour éviter les bugs lors de la désallocation
@@ -63,7 +67,7 @@ void insclone(Instruction *dest, Instruction *src)
 	dest->imm = plgtabclone(src->imm);
 	dest->ext = plgtabclone(src->ext);
 
-	dest->run_pft = src->run_pft;
+	dest->run = src->run;
 }
 
 
@@ -83,7 +87,7 @@ int load_ins(Instruction *ins, char *chaine)
 	if(r != 0)
 		return r;
 
-	ins->run_pft = get_run_pft(ins->commande);
+	ins->run = get_run_pft(ins->commande);
 
 	// if(ins->run_pft == NULL)
 	// 	return 13; // cf which_error in src/inter/notify.c
@@ -180,9 +184,14 @@ int load_from_string(Instruction *ins, char *chaine)
 
 Run_pft get_run_pft(char* mnemo)
 {
-	Run_pft test = NULL;
+	Run_pft pft = NULL;
 
-	return test;
+	if(strcmp(mnemo, "mov_imm") == 0)
+	{
+		pft = mov_imm;
+	}
+
+	return pft;
 }
 
 

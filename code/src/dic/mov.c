@@ -9,7 +9,7 @@
 /**********************************************************************************************************/
 
 
-int mov_imm (Instruction ins, Registre reg[NB_REG]) {
+int mov_imm (Instruction ins, Emulator *emul) {
 
 
 	int carry, setflags, imm32, i;
@@ -51,7 +51,7 @@ int mov_imm (Instruction ins, Registre reg[NB_REG]) {
 
     sprintf(reg_label, "r%i", ins.reg->plages[0].value);
 
-	set_reg(reg_label, imm32, reg);	
+	set_reg(reg_label, imm32, emul->reg);	
 	// if (setflags) {
 	// 	if (result & (1u << 31) ){
 	// 		APSR.N = 1;
