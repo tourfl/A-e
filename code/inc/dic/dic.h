@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "types.h" // word et Strlist
 #include <stdlib.h> // FILE
-#include "simul/instruction.h"
+#include "dic/instruction.h"
 
 #define TAILLE_MAX 1000
 

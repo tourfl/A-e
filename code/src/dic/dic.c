@@ -1,8 +1,8 @@
-#include "simul/dic.h" // inclut Strlist et word
+#include "dic/dic.h" // inclut Strlist et word
 
 #include <stdlib.h> // calloc
 #include "inter/notify.h"
-#include "simul/ins_disas.h"
+#include "dic/ins_disas.h"
 #include "elf/bits.h" // wrd_good_endianness
 
 

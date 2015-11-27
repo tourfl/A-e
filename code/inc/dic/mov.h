@@ -2,7 +2,7 @@
 #ifndef MOV_H
 #define MOV_H
 
-#include "simul/instruction.h" // Instruction
+#include "dic/instruction.h" // Instruction
 #include "simul/registre.h" // Registre
 
 

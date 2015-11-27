@@ -4,7 +4,7 @@
 
 #include "simul/segment.h"
 #include "simul/registre.h"
-#include "simul/dic.h"
+#include "dic/dic.h"
 #include "inter/interpreteur.h"
 
 

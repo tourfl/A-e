@@ -4,7 +4,7 @@
 #include "inter/notify.h" // Pour les messages de contrôle, inclut stdlib et stdio
 #include <string.h> // pour strcmp notamment
 #include <math.h> // je ne sais plus pour quoi
-#include "simul/dic.h" // Pour lire le dictionnaire pardi
+#include "dic/dic.h" // Pour lire le dictionnaire pardi
 
 
 int exitcmd() {

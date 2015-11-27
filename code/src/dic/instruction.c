@@ -1,4 +1,4 @@
-#include "simul/instruction.h"
+#include "dic/instruction.h"
 
 #include <stdlib.h> // free
 #include <string.h> // strtok

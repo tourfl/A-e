@@ -2,7 +2,7 @@
 #define COMMAND_H
 
 #include "emulator.h"
-#include "simul/ins_disas.h"
+#include "dic/ins_disas.h"
 
 // Macro
 

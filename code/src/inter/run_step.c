@@ -4,7 +4,7 @@
 #include "inter/notify.h" // messages de contrôle
 #include <string.h> // strcmp
 #include "elf/bits.h" // wrd_good_endianness
-#include "simul/mov.h"
+#include "dic/mov.h"
 
 /*
 * cf notify.c pour les erreurs

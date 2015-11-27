@@ -1,4 +1,4 @@
-#include "simul/ins_disas.h"
+#include "dic/ins_disas.h"
 #include <string.h> // strcat
 #include <math.h> // pow
 #include <stdlib.h> // calloc

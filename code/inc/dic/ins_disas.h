@@ -1,7 +1,7 @@
 #ifndef  INSDISASM_H
 #define INSDISASM_H
 
-#include "simul/instruction.h"
+#include "dic/instruction.h"
 
 
 

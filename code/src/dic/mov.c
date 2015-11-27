@@ -1,4 +1,4 @@
-#include "simul/mov.h"
+#include "dic/mov.h"
 
 #include <string.h> // strcmp
 #include <stdlib.h> // strtoul
