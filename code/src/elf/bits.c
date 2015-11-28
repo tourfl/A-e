@@ -1,7 +1,7 @@
 /**
  * @file bits.c
- * @author François Cayre <francois.cayre@grenoble-inp.fr>
- * @date Sat Nov  2 18:48:18 2013
+ * @author François Cayre & Raph
+ * @date 2015
  * @brief Bit twiddling.
  *
  * Bit twiddling.
@@ -113,3 +113,32 @@ int to_good_endianness(char **binstr, int taille)
 
     return 0;
 }
+
+
+
+int masklen(word mot)
+{
+    int l=0;
+
+
+    // algorithme astucieux trouvé sur internet
+    while(mot > 0)
+    {
+        l++;
+
+        mot = mot & (mot-1);
+    }
+
+
+    return l;
+}
+
+
+int cmp_mask(word ref, word mask)
+{
+    int lref = masklen(ref), l = masklen(mask);
+
+    return l - lref;
+}
+
+

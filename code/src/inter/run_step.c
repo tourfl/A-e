@@ -102,7 +102,8 @@ int step(int flag, Emulator *emul)
 		{
 			disp_insd(*out);
 
-			out->run(*out, emul);		}
+			out->run(*out, emul);		
+		}
 
 		emul->reg[15] += r;
 

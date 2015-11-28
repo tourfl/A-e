@@ -25,6 +25,10 @@ Half_word hwd_good_endianness(Half_word in);
 
 int to_good_endianness(char **binstr, int taille);
 
+int cmp_mask(word mask1, word mask2);
+
+int masklen(word mot);
+
 
 #define FLIP_ENDIANNESS( x ) __flip_endianness( (byte*)&(x), sizeof(x) )
 

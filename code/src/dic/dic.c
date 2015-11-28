@@ -69,8 +69,13 @@ int load_dic(Dic *dic)
 	if(r != 0)
 		return r;
 
+	// on range le dictionnaire (règle le problème d'opcode ayant le même début)
+	qsort(dic->ins32, dic->sz32, sizeof(Instruction), cmp_ins);
+
 
 	r =  load_from_file(&(dic->ins16), &(dic->sz16), "lib/instructions_16bits.dic");
+
+	qsort(dic->ins16, dic->sz16, sizeof(Instruction), cmp_ins);
 
 	return r;
 }

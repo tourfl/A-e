@@ -198,6 +198,21 @@ Run_pft get_run_pft(char* mnemo)
 
 
 
+
+int cmp_ins(const void *ins1, const void *ins2)
+{
+	Instruction *_ins1 = (Instruction *) ins1;
+	Instruction *_ins2 = (Instruction *) ins2;
+
+	return cmp_mask(_ins1->mask, _ins2->mask);
+}
+
+
+
+
+
+
+
 Instruction* init_instab(int sz)
 {
 	int i;
@@ -228,15 +243,15 @@ Instruction* init_instab(int sz)
 
 void disp_ins(Instruction ins)
 {
-	printf("\n\n\n  command: %s\tencoding: %s\n", ins.commande, ins.encoding);
-	printf("  name_in: %s\tname_out: %s\n", ins.name_in, ins.name_out);
-	printf("  mask: %8x\topcode: %8x\n", ins.mask, ins.opcode);
-	printf("\n  reg ");
-	disp_plgtab(*(ins.reg));
-	printf("\n  imm ");
-	disp_plgtab(*(ins.imm));
-	printf("\n  ext ");
-	disp_plgtab(*(ins.ext));
+	printf("\n  command: %s\tencoding: %s\n", ins.commande, ins.encoding);
+	// printf("  name_in: %s\tname_out: %s\n", ins.name_in, ins.name_out);
+	// printf("  mask: %8x\topcode: %8x\n", ins.mask, ins.opcode);
+	// printf("\n  reg ");
+	// disp_plgtab(*(ins.reg));
+	// printf("\n  imm ");
+	// disp_plgtab(*(ins.imm));
+	// printf("\n  ext ");
+	// disp_plgtab(*(ins.ext));
 }
 
 

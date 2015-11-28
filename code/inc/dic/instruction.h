@@ -3,6 +3,7 @@
 
 #include "types.h" // Plgtab
 #include "emulator.h"
+#include "elf/bits.h"
 
 
 
@@ -78,6 +79,8 @@ int load_from_string(Instruction *ins, char *chaine);
 Run_pft get_run_pft(char* mnemo);
 
 Instruction* init_instab(int sz);
+
+int cmp_ins(const void *ins1, const void *ins2);
 
 
 void disp_ins(Instruction ins);

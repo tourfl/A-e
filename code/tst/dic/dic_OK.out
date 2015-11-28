@@ -1,884 +1,118 @@
 
-
-
-  command: add_imm	encoding: T3
-  name_in: ADD.W	name_out: 
-  mask: fce08000	opcode: f1000000
-
-  reg (size=2)
-  plage 0:	start: 8	end: 11
-  plage 1:	start: 16	end: 19
-
-  imm (size=3)
-  plage 0:	start: 26	end: 26
-  plage 1:	start: 12	end: 14
-  plage 2:	start: 0	end: 7
-
-  ext (size=1)
-  plage 0:	start: 20	end: 20
-
-
-
-  command: sub_imm	encoding: T3
-  name_in: SUB.W	name_out: 
-  mask: fce08000	opcode: f1a00000
-
-  reg (size=2)
-  plage 0:	start: 8	end: 11
-  plage 1:	start: 16	end: 19
-
-  imm (size=3)
-  plage 0:	start: 26	end: 26
-  plage 1:	start: 12	end: 14
-  plage 2:	start: 0	end: 7
-
-  ext (size=1)
-  plage 0:	start: 20	end: 20
-
-
-
-  command: add_imm	encoding: T4
-  name_in: ADDW	name_out: 
-  mask: fcf08000	opcode: f2000000
-
-  reg (size=2)
-  plage 0:	start: 8	end: 11
-  plage 1:	start: 16	end: 19
-
-  imm (size=3)
-  plage 0:	start: 26	end: 26
-  plage 1:	start: 12	end: 14
-  plage 2:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: sub_imm	encoding: T4
-  name_in: SUBW	name_out: 
-  mask: fcf08000	opcode: f2a00000
-
-  reg (size=2)
-  plage 0:	start: 8	end: 11
-  plage 1:	start: 16	end: 19
-
-  imm (size=3)
-  plage 0:	start: 26	end: 26
-  plage 1:	start: 12	end: 14
-  plage 2:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: add_reg	encoding: T3
-  name_in: ADD.W	name_out: 
-  mask: ffe00000	opcode: eb000000
-
-  reg (size=3)
-  plage 0:	start: 8	end: 11
-  plage 1:	start: 16	end: 19
-  plage 2:	start: 0	end: 3
-
-  imm (size=2)
-  plage 0:	start: 12	end: 14
-  plage 1:	start: 6	end: 7
-
-  ext (size=1)
-  plage 0:	start: 5	end: 5
-
-
-
-  command: sub_reg	encoding: T2
-  name_in: SUB.W	name_out: 
-  mask: ffe00000	opcode: eba00000
-
-  reg (size=3)
-  plage 0:	start: 8	end: 11
-  plage 1:	start: 16	end: 19
-  plage 2:	start: 0	end: 3
-
-  imm (size=2)
-  plage 0:	start: 12	end: 14
-  plage 1:	start: 6	end: 7
-
-  ext (size=1)
-  plage 0:	start: 20	end: 20
-
-
+  command: b	encoding: T4
 
   command: b	encoding: T3
-  name_in: B.W	name_out: 
-  mask: f800d000	opcode: f0008000
-
-  reg (size=0)
-
-  imm (size=2)
-  plage 0:	start: 16	end: 21
-  plage 1:	start: 0	end: 10
-
-  ext (size=0)
-
-
-
-  command: b	encoding: T4
-  name_in: B.W	name_out: 
-  mask: f800d000	opcode: f0009000
-
-  reg (size=0)
-
-  imm (size=2)
-  plage 0:	start: 16	end: 25
-  plage 1:	start: 0	end: 10
-
-  ext (size=0)
-
-
 
   command: bl	encoding: T1
-  name_in: BL	name_out: 
-  mask: f800d000	opcode: f000d000
 
-  reg (size=0)
+  command: add_imm	encoding: T3
 
-  imm (size=2)
-  plage 0:	start: 16	end: 25
-  plage 1:	start: 0	end: 10
+  command: sub_imm	encoding: T3
 
-  ext (size=0)
+  command: sub_reg	encoding: T2
 
+  command: add_reg	encoding: T3
 
+  command: sub_imm	encoding: T4
 
-  command: cmp_imm	encoding: T2
-  name_in: CMP.W	name_out: 
-  mask: fbf08f00	opcode: f1b00f00
-
-  reg (size=1)
-  plage 0:	start: 16	end: 19
-
-  imm (size=3)
-  plage 0:	start: 26	end: 26
-  plage 1:	start: 12	end: 14
-  plage 2:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: cmp_reg	encoding: T3
-  name_in: CMP.W	name_out: 
-  mask: fff00f00	opcode: ebb00f00
-
-  reg (size=2)
-  plage 0:	start: 16	end: 19
-  plage 1:	start: 0	end: 3
-
-  imm (size=1)
-  plage 0:	start: 4	end: 5
-
-  ext (size=2)
-  plage 0:	start: 12	end: 14
-  plage 1:	start: 6	end: 7
-
-
-
-  command: ldr_imm	encoding: T3
-  name_in: LDR.W	name_out: 
-  mask: fff00000	opcode: f8c00000
-
-  reg (size=2)
-  plage 0:	start: 12	end: 15
-  plage 1:	start: 0	end: 3
-
-  imm (size=1)
-  plage 0:	start: 0	end: 11
-
-  ext (size=0)
-
-
-
-  command: ldr_litt	encoding: T2
-  name_in: LDR.W	name_out: 
-  mask: ff7f0000	opcode: f85f0000
-
-  reg (size=1)
-  plage 0:	start: 12	end: 15
-
-  imm (size=1)
-  plage 0:	start: 0	end: 11
-
-  ext (size=0)
-
-
-
-  command: mov_imm	encoding: T2
-  name_in: MOV.W	name_out: 
-  mask: fbef8000	opcode: f04f0000
-
-  reg (size=1)
-  plage 0:	start: 8	end: 11
-
-  imm (size=3)
-  plage 0:	start: 26	end: 26
-  plage 1:	start: 12	end: 14
-  plage 2:	start: 0	end: 7
-
-  ext (size=1)
-  plage 0:	start: 20	end: 20
-
-
+  command: add_imm	encoding: T4
 
   command: mov_imm	encoding: T3
-  name_in: MOVW	name_out: 
-  mask: fbf08000	opcode: f2408000
 
-  reg (size=1)
-  plage 0:	start: 8	end: 11
-
-  imm (size=4)
-  plage 0:	start: 16	end: 19
-  plage 1:	start: 26	end: 26
-  plage 2:	start: 12	end: 14
-  plage 3:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: mov_reg	encoding: T3
-  name_in: MOV.W	name_out: 
-  mask: ffef70f0	opcode: ea4f0000
-
-  reg (size=1)
-  plage 0:	start: 8	end: 11
-
-  imm (size=1)
-  plage 0:	start: 0	end: 3
-
-  ext (size=1)
-  plage 0:	start: 20	end: 20
-
-
+  command: ldr_imm	encoding: T3
 
   command: movt	encoding: T1
-  name_in: MOVT	name_out: 
-  mask: fbf08000	opcode: f2c00000
-
-  reg (size=1)
-  plage 0:	start: 8	end: 11
-
-  imm (size=4)
-  plage 0:	start: 16	end: 19
-  plage 1:	start: 26	end: 26
-  plage 2:	start: 12	end: 14
-  plage 3:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: mul	encoding: T2
-  name_in: MUL	name_out: 
-  mask: fff0f0f0	opcode: fb00f000
-
-  reg (size=1)
-  plage 0:	start: 8	end: 11
-
-  imm (size=1)
-  plage 0:	start: 16	end: 19
-
-  ext (size=1)
-  plage 0:	start: 0	end: 3
-
-
-
-  command: pop	encoding: T2
-  name_in: POP.W	name_out: 
-  mask: ffff0000	opcode: e8bd0000
-
-  reg (size=3)
-  plage 0:	start: 0	end: 3
-  plage 1:	start: 4	end: 7
-  plage 2:	start: 8	end: 11
-
-  imm (size=2)
-  plage 0:	start: 14	end: 14
-  plage 1:	start: 15	end: 15
-
-  ext (size=0)
-
-
-
-  command: pop	encoding: T3
-  name_in: POP.W	name_out: 
-  mask: ffff0fff	opcode: f85d0b04
-
-  reg (size=1)
-  plage 0:	start: 12	end: 15
-
-  imm (size=0)
-
-  ext (size=0)
-
-
-
-  command: push	encoding: T2
-  name_in: PUSH.W	name_out: 
-  mask: ffff0000	opcode: e92d0000
-
-  reg (size=3)
-  plage 0:	start: 0	end: 3
-  plage 1:	start: 4	end: 7
-  plage 2:	start: 8	end: 11
-
-  imm (size=1)
-  plage 0:	start: 14	end: 14
-
-  ext (size=0)
-
-
-
-  command: push	encoding: T3
-  name_in: PUSH.W	name_out: 
-  mask: ffff0fff	opcode: f84d0d04
-
-  reg (size=1)
-  plage 0:	start: 12	end: 15
-
-  imm (size=0)
-
-  ext (size=0)
-
-
 
   command: str_imm	encoding: T3
-  name_in: STR.W	name_out: 
-  mask: fff00000	opcode: f8c00000
-
-  reg (size=2)
-  plage 0:	start: 12	end: 15
-  plage 1:	start: 16	end: 19
-
-  imm (size=1)
-  plage 0:	start: 0	end: 11
-
-  ext (size=0)
-
-
 
   command: str_reg	encoding: T2
-  name_in: STR.W	name_out: 
-  mask: fff00000	opcode: f8400000
-
-  reg (size=3)
-  plage 0:	start: 12	end: 15
-  plage 1:	start: 16	end: 19
-  plage 2:	start: 0	end: 3
-
-  imm (size=1)
-  plage 0:	start: 4	end: 5
-
-  ext (size=0)
-
-
-
-  command: add_sp	encoding: T3
-  name_in: ADD	name_out: 
-  mask: fbef8000	opcode:  f10d000
-
-  reg (size=1)
-  plage 0:	start: 8	end: 11
-
-  imm (size=3)
-  plage 0:	start: 26	end: 26
-  plage 1:	start: 12	end: 14
-  plage 2:	start: 0	end: 7
-
-  ext (size=0)
-
-
 
   command: add_sp	encoding: T4
-  name_in: ADDW	name_out: 
-  mask: fbef8000	opcode:  f20d000
-
-  reg (size=1)
-  plage 0:	start: 8	end: 11
-
-  imm (size=3)
-  plage 0:	start: 26	end: 26
-  plage 1:	start: 12	end: 14
-  plage 2:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: sub_sp	encoding: T2
-  name_in: SUB	name_out: 
-  mask: fbef8000	opcode:  f1ad000
-
-  reg (size=1)
-  plage 0:	start: 8	end: 11
-
-  imm (size=3)
-  plage 0:	start: 26	end: 26
-  plage 1:	start: 12	end: 14
-  plage 2:	start: 0	end: 7
-
-  ext (size=0)
-
-
 
   command: sub_sp	encoding: T3
-  name_in: SUBW	name_out: 
-  mask: fbef8000	opcode:  f2ad000
 
-  reg (size=1)
-  plage 0:	start: 8	end: 11
+  command: sub_sp	encoding: T2
 
-  imm (size=3)
-  plage 0:	start: 26	end: 26
-  plage 1:	start: 12	end: 14
-  plage 2:	start: 0	end: 7
+  command: ldr_litt	encoding: T2
 
-  ext (size=0)
+  command: mov_imm	encoding: T2
 
+  command: add_sp	encoding: T3
 
+  command: cmp_imm	encoding: T2
 
-  command: add_imm	encoding: T1
-  name_in: ADD	name_out: ADDS
-  mask:     fe00	opcode:     1c00
+  command: pop	encoding: T2
 
-  reg (size=2)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 5
+  command: push	encoding: T2
 
-  imm (size=1)
-  plage 0:	start: 6	end: 8
+  command: cmp_reg	encoding: T3
 
-  ext (size=0)
+  command: mul	encoding: T2
 
+  command: mov_reg	encoding: T3
 
+  command: pop	encoding: T3
 
-  command: add_imm	encoding: T2
-  name_in: ADD	name_out: ADDS
-  mask:     f800	opcode:     3000
-
-  reg (size=1)
-  plage 0:	start: 8	end: 10
-
-  imm (size=1)
-  plage 0:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: add_reg	encoding: T1
-  name_in: ADD	name_out: ADDS
-  mask:     fe00	opcode:     1800
-
-  reg (size=3)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 5
-  plage 2:	start: 6	end: 8
-
-  imm (size=0)
-
-  ext (size=0)
-
-
-
-  command: sub_reg	encoding: T1
-  name_in: SUB	name_out: SUBS
-  mask:     fe00	opcode:     1a00
-
-  reg (size=3)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 5
-  plage 2:	start: 6	end: 8
-
-  imm (size=0)
-
-  ext (size=0)
-
-
-
-  command: add_reg	encoding: T2
-  name_in: ADD	name_out: ADDS
-  mask:     ff00	opcode:     4400
-
-  reg (size=2)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 6
-
-  imm (size=0)
-
-  ext (size=1)
-  plage 0:	start: 7	end: 7
-
-
-
-  command: sub_imm	encoding: T1
-  name_in: SUB	name_out: SUBS
-  mask:     fe00	opcode:     1e00
-
-  reg (size=2)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 5
-
-  imm (size=1)
-  plage 0:	start: 6	end: 8
-
-  ext (size=0)
-
-
-
-  command: sub_imm	encoding: T2
-  name_in: SUB	name_out: SUBS
-  mask:     f800	opcode:     3800
-
-  reg (size=1)
-  plage 0:	start: 8	end: 10
-
-  imm (size=1)
-  plage 0:	start: 0	end: 7
-
-  ext (size=0)
-
-
+  command: push	encoding: T3
 
   command: b	encoding: T1
-  name_in: B	name_out: 
-  mask:     f000	opcode:     d000
-
-  reg (size=0)
-
-  imm (size=1)
-  plage 0:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: b	encoding: T2
-  name_in: B	name_out: 
-  mask:     f800	opcode:     e000
-
-  reg (size=0)
-
-  imm (size=1)
-  plage 0:	start: 0	end: 10
-
-  ext (size=0)
-
-
-
-  command: bx	encoding: T1
-  name_in: BX	name_out: 
-  mask:     ff80	opcode:     4700
-
-  reg (size=1)
-  plage 0:	start: 3	end: 6
-
-  imm (size=0)
-
-  ext (size=0)
-
-
-
-  command: cmp_imm	encoding: T1
-  name_in: CMP	name_out: 
-  mask:     f800	opcode:     2800
-
-  reg (size=1)
-  plage 0:	start: 8	end: 10
-
-  imm (size=1)
-  plage 0:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: cmp_reg	encoding: T1
-  name_in: CMP	name_out: 
-  mask:     ffc0	opcode:     4280
-
-  reg (size=2)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 5
-
-  imm (size=0)
-
-  ext (size=0)
-
-
-
-  command: cmp_reg	encoding: T2
-  name_in: CMP	name_out: 
-  mask:     ff00	opcode:     4500
-
-  reg (size=2)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 6
-
-  imm (size=0)
-
-  ext (size=1)
-  plage 0:	start: 7	end: 7
-
-
-
-  command: it	encoding: T1
-  name_in: IT	name_out: 
-  mask:     ff00	opcode:     bf00
-
-  reg (size=0)
-
-  imm (size=0)
-
-  ext (size=0)
-
-
 
   command: ldr_imm	encoding: T1
-  name_in: LDR	name_out: 
-  mask:     f800	opcode:     6800
-
-  reg (size=2)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 5
-
-  imm (size=1)
-  plage 0:	start: 6	end: 10
-
-  ext (size=0)
-
-
 
   command: ldr_imm	encoding: T2
-  name_in: LDR	name_out: 
-  mask:     f800	opcode:     9800
-
-  reg (size=1)
-  plage 0:	start: 8	end: 10
-
-  imm (size=1)
-  plage 0:	start: 0	end: 7
-
-  ext (size=0)
-
-
 
   command: ldr_litt	encoding: T1
-  name_in: LDR	name_out: 
-  mask:     f800	opcode:     6800
-
-  reg (size=2)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 5
-
-  imm (size=1)
-  plage 0:	start: 6	end: 10
-
-  ext (size=0)
-
-
-
-  command: ldr_litt	encoding: T1
-  name_in: LDR	name_out: 
-  mask:     f800	opcode:     7800
-
-  reg (size=1)
-  plage 0:	start: 8	end: 10
-
-  imm (size=1)
-  plage 0:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: mov_imm	encoding: T1
-  name_in: MOV	name_out: MOVS
-  mask:     f800	opcode:     2800
-
-  reg (size=1)
-  plage 0:	start: 8	end: 10
-
-  imm (size=1)
-  plage 0:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: mov_reg	encoding: T1
-  name_in: MOV	name_out: 
-  mask:     ff00	opcode:     4600
-
-  reg (size=2)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 6
-
-  imm (size=0)
-
-  ext (size=1)
-  plage 0:	start: 7	end: 7
-
-
-
-  command: mov_reg	encoding: T2
-  name_in: MOVS	name_out: 
-  mask:     ffc0	opcode:        0
-
-  reg (size=2)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 5
-
-  imm (size=0)
-
-  ext (size=0)
-
-
-
-  command: mul	encoding: T1
-  name_in: MUL	name_out: MOV
-  mask:     ffc0	opcode:     4340
-
-  reg (size=2)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 5
-
-  imm (size=0)
-
-  ext (size=0)
-
-
-
-  command: pop	encoding: T1
-  name_in: POP	name_out: 
-  mask:     fe00	opcode:     bc00
-
-  reg (size=2)
-  plage 0:	start: 0	end: 3
-  plage 1:	start: 4	end: 7
-
-  imm (size=1)
-  plage 0:	start: 8	end: 8
-
-  ext (size=0)
-
-
-
-  command: push	encoding: T1
-  name_in: PUSH	name_out: 
-  mask:     fe00	opcode:     b400
-
-  reg (size=2)
-  plage 0:	start: 0	end: 3
-  plage 1:	start: 4	end: 7
-
-  imm (size=1)
-  plage 0:	start: 8	end: 8
-
-  ext (size=0)
-
-
-
-  command: str_imm	encoding: T1
-  name_in: STR	name_out: 
-  mask:     f800	opcode:     6000
-
-  reg (size=2)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 5
-
-  imm (size=1)
-  plage 0:	start: 6	end: 10
-
-  ext (size=0)
-
-
-
-  command: str_imm	encoding: T2
-  name_in: STR	name_out: 
-  mask:     f800	opcode:     9000
-
-  reg (size=1)
-  plage 0:	start: 8	end: 10
-
-  imm (size=1)
-  plage 0:	start: 0	end: 7
-
-  ext (size=0)
-
-
-
-  command: str_reg	encoding: T1
-  name_in: STR	name_out: 
-  mask:     fe00	opcode:     5000
-
-  reg (size=3)
-  plage 0:	start: 0	end: 2
-  plage 1:	start: 3	end: 5
-  plage 2:	start: 6	end: 8
-
-  imm (size=0)
-
-  ext (size=0)
-
-
-
-  command: scv	encoding: T1
-  name_in: SVC	name_out: 
-  mask:     ff00	opcode:     df00
-
-  reg (size=1)
-  plage 0:	start: 0	end: 7
-
-  imm (size=0)
-
-  ext (size=0)
-
-
 
   command: add_sp	encoding: T1
-  name_in: ADD,sp	name_out: 
-  mask:     f800	opcode:     a800
 
-  reg (size=1)
-  plage 0:	start: 8	end: 10
+  command: add_imm	encoding: T2
 
-  imm (size=1)
-  plage 0:	start: 0	end: 7
+  command: sub_imm	encoding: T2
 
-  ext (size=0)
+  command: b	encoding: T2
 
+  command: str_imm	encoding: T2
 
+  command: cmp_imm	encoding: T1
+
+  command: str_imm	encoding: T1
+
+  command: ldr_litt	encoding: T1
+
+  command: mov_imm	encoding: T1
+
+  command: add_imm	encoding: T1
+
+  command: add_reg	encoding: T1
+
+  command: sub_reg	encoding: T1
+
+  command: sub_imm	encoding: T1
+
+  command: pop	encoding: T1
+
+  command: push	encoding: T1
+
+  command: str_reg	encoding: T1
+
+  command: it	encoding: T1
+
+  command: add_reg	encoding: T2
+
+  command: scv	encoding: T1
+
+  command: mov_reg	encoding: T1
+
+  command: cmp_reg	encoding: T2
+
+  command: bx	encoding: T1
 
   command: add_sp	encoding: T2
-  name_in: ADD,sp,sp	name_out: 
-  mask:     ff80	opcode:     b000
-
-  reg (size=0)
-
-  imm (size=1)
-  plage 0:	start: 0	end: 6
-
-  ext (size=0)
-
-
 
   command: sub_sp	encoding: T1
-  name_in: SUB,sp,sp	name_out: 
-  mask:     ff80	opcode:     b080
 
-  reg (size=0)
+  command: mov_reg	encoding: T2
 
-  imm (size=1)
-  plage 0:	start: 0	end: 6
+  command: cmp_reg	encoding: T1
 
-  ext (size=0)
+  command: mul	encoding: T1

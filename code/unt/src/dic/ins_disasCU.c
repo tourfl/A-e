@@ -1,9 +1,9 @@
-#include "simul/ins_disasCU.h"
+#include "dic/ins_disasCU.h"
 
-#include "simul/ins_disas.h"
-#include "simul/dic.h"
+#include "dic/ins_disas.h"
+#include "dic/dic.h"
 #include "inter/command.h"
-#include "simul/instruction.h"
+#include "dic/instruction.h"
 #include <string.h>
 
 #include <CUnit/CUnit.h>

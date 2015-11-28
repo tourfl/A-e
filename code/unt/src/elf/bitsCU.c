@@ -28,3 +28,15 @@ void CU_wrd_good_endianness()
 
 	CU_ASSERT(wrd_good_endianness(in) == 0xf4f00801);
 }
+
+void CU_masklen()
+{
+	word mot = 0xffffffff, m2 = 1;
+	int l = masklen(mot), l2 = masklen(m2);
+
+	CU_ASSERT(l == 32);
+	CU_ASSERT(l2 = 1);
+
+	printf("l = %u et l2 = %u", l, l2);
+
+}
