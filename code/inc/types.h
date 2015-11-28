@@ -110,6 +110,8 @@ Plage* init_plage();
 
 void disp_plg(Plage p);
 
+word plg_to_mask(Plage p);
+
 
 
 

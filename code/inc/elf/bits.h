@@ -29,6 +29,9 @@ int cmp_mask(word mask1, word mask2);
 
 int masklen(word mot);
 
+word mask_from_0(int pos);
+int sum_2k(int max);
+
 
 #define FLIP_ENDIANNESS( x ) __flip_endianness( (byte*)&(x), sizeof(x) )
 

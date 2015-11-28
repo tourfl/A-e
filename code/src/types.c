@@ -7,6 +7,7 @@
 #include <stdlib.h> // sscanf notamment
 #include <ctype.h> // pour isdigit
 #include <math.h> // pow
+#include "elf/bits.h" // mask_from_0
 
 
 
@@ -54,7 +55,20 @@ Plage* init_plage()
 
 
 void disp_plg(Plage p) {
-    printf("start: %u\tend: %u\n", p.start, p.end);
+    printf("\nstart: %u\tend: %u", p.start, p.end);
+}
+
+
+
+
+// ex : p.start = 2, p.end = 6 retourne 0000 0000 0111 1100 = 124
+
+word plg_to_mask(Plage p)
+{
+    if(p.start == 0)
+        return mask_from_0(p.end);
+
+    return mask_from_0(p.end) - mask_from_0(p.start - 1);
 }
 
 

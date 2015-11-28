@@ -3,6 +3,7 @@
 #include "elf/bits.h"
 
 #include <CUnit/CUnit.h>
+#include <stdlib.h>	
 
 
 
@@ -39,4 +40,12 @@ void CU_masklen()
 
 	printf("l = %u et l2 = %u", l, l2);
 
+}
+
+void CU_mask_from_0()
+{
+	CU_ASSERT(sum_2k(3) == 15);
+	CU_ASSERT(mask_from_0(7) == 255);
+
+	CU_ASSERT(mask_from_0(6) - mask_from_0(3) == strtoul("1110000", NULL, 2));
 }

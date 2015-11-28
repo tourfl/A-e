@@ -32,6 +32,6 @@ void CU_cmp_ins()
 {
 
 	CU_ASSERT(cmp_ins(dic->ins16, dic->ins16) == 0);
-	CU_ASSERT(cmp_ins(dic->ins16, dic->ins16+1) > 0);
-	CU_ASSERT(cmp_ins(dic->ins16+1, dic->ins16) < 0);
+	CU_ASSERT(cmp_ins(dic->ins16, dic->ins16+18) < 0);
+	CU_ASSERT(cmp_ins(dic->ins16+18, dic->ins16) > 0);
 }

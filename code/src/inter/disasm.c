@@ -77,7 +77,7 @@ int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 		mot = plage[i]*pow(16, 6) + plage[i+1]*pow(16, 4);
 		mot+= plage[i+2]*pow(16, 2) + plage[i+3];
 
-		r = find(mot, ins, emul->dic);
+		r = decode(mot, ins, emul->dic);
 		i+= r;
 
 		if(r == 1)
@@ -93,8 +93,8 @@ int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 			}
 
 			p = 0; // signifie qu'au moins une instruction a été lue
-			
-			decode(mot, ins);
+
+			// printf("\n%08x: ", mot);
 
 			disp_insd(*ins);
 

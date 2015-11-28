@@ -129,16 +129,41 @@ int masklen(word mot)
         mot = mot & (mot-1);
     }
 
-
     return l;
 }
 
+
+// retourne n tq
+// si n=0, le mask et la référence sont de même taille
+// si n>0, le mask est plus long que la référence
+// si n<0, le mask est plus court que la référence
 
 int cmp_mask(word ref, word mask)
 {
     int lref = masklen(ref), l = masklen(mask);
 
+
+    // printf("ref: %08x, word: %08x, lref = %u, l = %u\n", ref, mask, lref, l);
+
     return l - lref;
+}
+
+
+
+
+word mask_from_0(int pos)
+{
+    return sum_2k(pos);
+}
+
+
+
+int sum_2k(int max)
+{
+    if( max == 0)
+        return 1;
+
+    return pow(2, max) + sum_2k(max-1);
 }
 
 

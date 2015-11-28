@@ -45,8 +45,7 @@ int load_from_file(Instruction **p_instab, int *nb_ins, char* filename);
 int load_instab(Instruction *instab, int nb_ins, FILE *fd);
 int get_nb_ins(FILE *fd);
 
-int find(word in, Instruction *out, Dic *dic);
-int find_and_decode(word mot, Instruction *out, Dic *dic);
+int decode(word in, Instruction *out, Dic *dic);
 
 int get_ins32(word in, Instruction *out, Dic *dic);
 int get_ins16(word in, Instruction *out, Dic *dic);

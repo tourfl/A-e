@@ -202,35 +202,8 @@ int get_nb_ins(FILE *fd)
 
 
 
-
 // retourne l'offset de lecture de la plage d'octets
-
-
-int find(word in32, Ins_disas *out, Dic *dic)
-{
-	int r = 1;
-	word in16 = 0;
-
-
-
-
-	in32 = wrd_good_endianness(in32);
-	in16 = in32 >> 16;
-
-	r = get_ins16(in16, out, dic);
-
-	if (r == 0) // C'est une instruction 16 bits
-		return 2;
-
-	// printf("unfound word: %8x\t%s\n", mot, int_to_bin(mot, 16));
-
-	r = get_ins32(in32, out, dic);
-
-	if (r == 0) // C'est une instruction 32
-		return 4; // on augmente de 4 puisque une instruction de 4 octets a été lue
-
-	return 1;
-}
+// out est l'instruction désassemblée
 
 
 
@@ -244,24 +217,37 @@ int find(word in32, Ins_disas *out, Dic *dic)
 */
 
 
-int find_and_decode(word mot, Ins_disas *insd, Dic *dic)
+int decode(word in, Instruction *out, Dic *dic)
 {
-	int r1, r2;
-
-	r1 = find(mot, insd, dic);
-
-
-	if(r1 == 1)
-		return 1;
+	int r=1;
+	word in_end = wrd_good_endianness(in);
 
 
-	r2 = decode(mot, insd);
-	
-	if (r2 == 0)
-		return r1;
-	else
-		return 3;
 
+	//V2
+
+	printf("in: %08x\nen: %08x", in, in_end);
+
+	r = get_ins32(in_end, out, dic);
+
+	if(r == 0)
+	{
+		fill_params(in_end, out);
+		return 4;
+	}		
+
+
+	in_end = in_end >> 16;
+
+	r = get_ins16(in_end, out, dic);
+
+	if(r == 0)
+	{
+		fill_params(in_end, out);
+		return 2;
+	}
+
+	return r;
 }
 
 

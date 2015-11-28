@@ -40,24 +40,18 @@ int CU_del_ins_disa_suite()
 
 
 
-
-void CUfind()
+void CU_parse_param()
 {
-	Ins_disas *ins = init_ins();
-	word in16 = mot >> 16;
+	word mot = 0x0a46;
+	Plage p1 = {0, 2, 0};
+	Plage p2 = {3, 6, 0};
 
 
 
-	printf("\nin16: %04x; in32: %08x\n", in16, mot);
+	mot = hwd_good_endianness(mot);
 
-
-	CU_ASSERT(find(mot, ins, dic) == 4);
-
-	decode(mot, ins);
-
-	disp_insd(*ins);
-
-	del_ins(ins);
+	CU_ASSERT(parse_param(mot, p1) == 2);
+	CU_ASSERT(parse_param(mot, p2) == 1);
 }
 
 
@@ -73,7 +67,7 @@ void CUfind_and_disasm()
 
 
 
-	CU_ASSERT(find_and_decode(mot, ins, dic) == 4);
+	CU_ASSERT(decode(mot, ins, dic) == 4);
 
 	disp_insd(*ins);
 
