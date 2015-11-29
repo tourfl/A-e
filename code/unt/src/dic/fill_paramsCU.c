@@ -1,6 +1,6 @@
-#include "dic/ins_disasCU.h"
+#include "dic/fill_paramsCU.h"
 
-#include "dic/ins_disas.h"
+#include "dic/fill_params.h"
 #include "dic/dic.h"
 #include "inter/command.h"
 #include "dic/instruction.h"
@@ -22,7 +22,7 @@ static word mot;
 
 
 
-int CU_init_ins_disa_suite()
+int CU_init_fill_params_suite()
 {
 	dic = init_dic();
 	mot = 0x4ff00801;
@@ -30,7 +30,7 @@ int CU_init_ins_disa_suite()
 	return load_dic(dic);
 }
 
-int CU_del_ins_disa_suite()
+int CU_del_fill_params_suite()
 {
 	del_dic(dic);
 
@@ -57,19 +57,32 @@ void CU_parse_param()
 
 
 
-
-
-
-void CUfind_and_disasm()
+void CU_parse_reglist()
 {
-	Ins_disas *ins = init_ins();
+	word m1 = hwd_good_endianness(0x01b5), m2 = wrd_good_endianness(0xbde80140);
+	Instruction *i1 = init_ins(), *i2 = init_ins();
 
 
 
 
-	CU_ASSERT(decode(mot, ins, dic) == 4);
 
-	disp_insd(*ins);
+	if(get_ins16(m1, i1, dic) != 0)
+		return;
 
-	del_ins(ins);
+	if(get_ins32(m2, i2, dic) != 0)
+		return;
+
+	CU_ASSERT(parse_reglist(m1, i1) == 2);
+	CU_ASSERT(parse_reglist(m2, i2) == 2);
+
+	printf("here {r%u, r%u}", i2->reg->plages[0].value, i2->reg->plages[1].value);
+
+
 }
+
+
+
+
+
+
+

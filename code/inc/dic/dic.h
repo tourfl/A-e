@@ -47,6 +47,7 @@ int get_nb_ins(FILE *fd);
 
 int decode(word in, Instruction *out, Dic *dic);
 
+
 int get_ins32(word in, Instruction *out, Dic *dic);
 int get_ins16(word in, Instruction *out, Dic *dic);
 

@@ -1,5 +1,7 @@
 #include "dic/mov.h"
 
+
+#include "dic/code_arm.h"
 #include <string.h> // strcmp
 #include <stdlib.h> // strtoul
 #include <stdio.h> // sprintf
@@ -12,16 +14,14 @@
 int mov_imm (Instruction ins, Emulator *emul) {
 
 
-	int carry, setflags, imm32, i;
-	char reg_label[4], imm[33] = {0};
+	int carry, setflags, i;
+	word imm32;
+	char reg_label[4];
 
 
 
-
-	for(i = 0; i < ins.imm->size; i++)
-		strcat(imm, int_to_bin(ins.imm->plages[i].value, ins.imm->plages[i].end - ins.imm->plages[i].start));
 	
-	imm32 =strtoul(imm, NULL, 2);
+	imm32 =ZeroExtend(*(ins.imm));
 
 	// if (strcmp (ins.encoding, 'T1') == 0 ) {
 	// 	if ( mov_imm_T1 (ins, reg, &setflags, &imm32 , &carry) ) {

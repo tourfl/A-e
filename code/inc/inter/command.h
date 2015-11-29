@@ -2,8 +2,6 @@
 #define COMMAND_H
 
 #include "emulator.h"
-#include "dic/ins_disas.h"
-
 // Macro
 
 #define INTO -1

@@ -2,7 +2,6 @@
 
 #include <stdlib.h> // calloc
 #include "inter/notify.h"
-#include "dic/ins_disas.h"
 #include "dic/display_ins.h"
 #include "elf/bits.h" // wrd_good_endianness
 
@@ -233,7 +232,7 @@ int decode(word in, Instruction *out, Dic *dic)
 
 	if(r == 0)
 	{
-		fill_params(in_end, out);
+		out->fill_params(in_end, out);
 		return 4;
 	}		
 
@@ -244,7 +243,7 @@ int decode(word in, Instruction *out, Dic *dic)
 
 	if(r == 0)
 	{
-		fill_params(in_end, out);
+		out->fill_params(in_end, out);
 		return 2;
 	}
 

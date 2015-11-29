@@ -1,0 +1,7 @@
+.text
+.rodata
+.data
+.bss
+
+MOV.W r1, #12
+MOV.W r1, #12

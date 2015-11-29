@@ -3,6 +3,7 @@
 #include "inter/notify.h" // printf
 #include "types.h" // Plgtab
 #include <string.h> // strcat
+#include "dic/code_arm.h"
 
 
 
@@ -47,7 +48,7 @@ void disp_not_decoded(Instruction ins)
 void disp_name(Instruction ins)
 {
 	printf("%s", ins.name_in);
-	// printf("(%s/%s)", ins.commande, ins.encoding);
+	// printf("(%s/T%u)", ins.commande, ins.encoding);
 	printf(" ");
 }
 
@@ -65,7 +66,7 @@ void disp_regs(Plgtab regs)
 	for(i = 0; i < regs.size; i++)
 	{
 		if(i != 0)
-			printf(",");
+			printf(", ");
 
 		switch (regs.plages[i].value)
 		{
@@ -100,19 +101,9 @@ void disp_regs(Plgtab regs)
 
 void disp_imm(Plgtab imm)
 {
-	char imm_str[33] = {0};
-	int i;
+	word imm32 = ZeroExtend(imm);
 
-
-
-
-	for(i = 0; i < imm.size; i++)
-		strcat(imm_str, int_to_bin(imm.plages[i].value, imm.plages[i].end - imm.plages[i].start));
-
-	// printf("\nimm:%s\n", imm);
-
-	printf("#%lu", strtoul(imm_str, NULL, 2));
-	// printf(" (%08lx)", strtoul(imm, NULL, 2));
+	printf("#%u", imm32);
 }
 
 
@@ -141,7 +132,7 @@ void disp_default(Instruction ins)
 {
 	printf("\n");
 	disp_name(ins);
-
+	
 	disp_regs_and_imm(ins);
 }
 
@@ -160,10 +151,10 @@ void disp_add_sp(Instruction ins)
 		disp_regs(*(ins.reg));
 
 
-	if(strcmp(ins.encoding, "T2") == 0)
-		printf(" sp");
+	if(ins.encoding == 2)
+		printf("sp");
 
-	printf(",sp");
+	printf(", sp");
 
 	if(ins.reg->size > 0 && ins.imm->size > 0)
 		printf("sp");
@@ -192,7 +183,7 @@ void disp_sub_sp(Instruction ins)
 		disp_regs(*(ins.reg));
 
 
-	if(strcmp(ins.encoding, "T1") == 0)
+	if(ins.encoding == 1)
 		printf("sp");
 
 	if(ins.imm->size > 0)

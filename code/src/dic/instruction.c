@@ -1,10 +1,10 @@
-#include "dic/instruction.h"
+#include "dic/display_ins.h" // display, inclut instruction.h
 
 #include <stdlib.h> // free
 #include <string.h> // strtok
 #include "inter/notify.h" // messages de contrôle
 #include "types.h" // plgtab
-#include "dic/display_ins.h" // display
+#include "dic/fill_params.h" // fill_params_default
 
 // Pour les fonctions pointées
 
@@ -36,7 +36,6 @@ Instruction* init_ins() // pour éviter les bugs lors de la désallocation
 void del_ins(Instruction *ins) // Les éléments alloués sont libérés
 {
 	free(ins->commande);
-	free(ins->encoding);
 	free(ins->name_in);
 	free(ins->name_out);
 
@@ -58,7 +57,7 @@ void del_ins(Instruction *ins) // Les éléments alloués sont libérés
 void insclone(Instruction *dest, Instruction *src)
 {
 	dest->commande = strclone(src->commande);
-	dest->encoding = strclone(src->encoding);
+	dest->encoding = src->encoding;
 	dest->name_in = strclone(src->name_in);
 	dest->name_out = strclone(src->name_out);
 	dest->mask = src->mask;
@@ -68,6 +67,8 @@ void insclone(Instruction *dest, Instruction *src)
 	dest->imm = plgtabclone(src->imm);
 	dest->ext = plgtabclone(src->ext);
 
+
+	dest->fill_params = src->fill_params;
 	dest->run = src->run;
 	dest->display_decoded = src->display_decoded;
 }
@@ -91,8 +92,8 @@ int load_ins(Instruction *ins, char *chaine)
 
 	init_pft(ins);
 
-	// if(ins->run_pft == NULL)
-	// 	return 13; // cf which_error in src/inter/notify.c
+	if(ins->fill_params == NULL || ins->display_decoded == NULL)
+		return 13;
 
 
 	return 0;
@@ -134,7 +135,8 @@ int load_from_string(Instruction *ins, char *chaine)
 				p = to_strtab(token, str_tab);
 
 				ins->commande = str_tab[0]; // alloué dynamiquement
-				ins->encoding = str_tab[1];
+
+				sscanf(str_tab[1], "T%u", &(ins->encoding));
 
 				break;
 			}
@@ -186,11 +188,12 @@ int load_from_string(Instruction *ins, char *chaine)
 
 void init_pft(Instruction *ins)
 {
+	ins->display_decoded = disp_default;
+	ins->fill_params = fill_params_default;
 
 	if(strcmp(ins->commande, "mov_imm") == 0)
 	{
 		ins->run = mov_imm;
-		ins->display_decoded = disp_default;
 	}
 	else if(strcmp(ins->commande, "add_sp") == 0)
 	{
@@ -201,18 +204,12 @@ void init_pft(Instruction *ins)
 		ins->display_decoded = disp_sub_sp;
 	}
 
-	else if(strcmp(ins->commande, "pop") == 0)
+	else if(strcmp(ins->commande, "pop") == 0 || strcmp(ins->commande, "push") == 0)
 	{
 		ins->display_decoded = disp_pop_push;
+		ins->fill_params = fill_params_pop_push;
 	}
-	else if(strcmp(ins->commande, "push") == 0)
-	{
-		ins->display_decoded = disp_pop_push;
-	}
-	else 
-	{
-		ins->display_decoded = disp_default;
-	}
+
 }
 
 
@@ -253,6 +250,47 @@ Instruction* init_instab(int sz)
 
 
 	return instab;
+}
+
+
+
+
+
+
+
+
+
+
+int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic) // retourne l'instruction en question s'il y a match, NULL sinon;
+{
+	/*
+	 * Problème : les fichiers .o sont codés en little endian aligné (cf 2.4)
+	 * Les masques sont en big endian
+	 *
+	 * ce problème est résolu dans la fonction disasm_plage
+	 */
+
+	int i=0;
+
+	if(in == 0)
+	{
+		return 1;
+	}
+	
+	//V2
+
+	while (i<sz_dic && dic[i].commande != NULL) {
+
+		if((in & dic[i].mask) == (dic[i].opcode & dic[i].mask)) {
+			insclone(out, &(dic[i]));
+
+			return 0;
+		}
+
+		i++;
+	}
+
+	return 1;
 }
 
 

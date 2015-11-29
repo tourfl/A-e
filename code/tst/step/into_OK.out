@@ -1,0 +1,7 @@
+.text
+.rodata
+.data
+.bss
+
+MOV.W r0, #0
+MOV.W r0, #0

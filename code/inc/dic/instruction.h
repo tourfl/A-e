@@ -27,6 +27,7 @@ typedef struct ins Instruction;
 
 
 // création d'alias du type pointeur de fonction
+typedef int (*Fill_pft)(word, Instruction*);
 typedef int (*Run_pft)(Instruction, Emulator*); 
 typedef void (*Disp_pft)(Instruction);
 
@@ -35,7 +36,7 @@ struct ins
 {
 	// Général:
 	char* commande;
-	char* encoding;
+	int encoding;
 	char* name_in;
 	char* name_out;
 	unsigned int mask;
@@ -49,15 +50,12 @@ struct ins
 	
 	// Pointeurs de fonction :
 
+	Fill_pft fill_params;
 	Disp_pft display_decoded;
 	Run_pft run;
 
 
 };
-
-
-
-
 
 
 
@@ -81,6 +79,9 @@ int load_from_string(Instruction *ins, char *chaine);
 void init_pft(Instruction *ins);
 
 Instruction* init_instab(int sz);
+
+
+int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic);
 
 int cmp_ins(const void *ins1, const void *ins2);
 

@@ -81,6 +81,7 @@ int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 		r = decode(mot, ins, emul->dic);
 		i+= r;
 
+
 		if(r == 1)
 		{
 			k++;
@@ -92,6 +93,7 @@ int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 				WARNING_MSG("%i unfound instruction(s)", k);
 				k = 0;
 			}
+
 
 			p = 0; // signifie qu'au moins une instruction a été lue
 

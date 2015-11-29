@@ -1,118 +1,118 @@
 
-  command: push	encoding: T3
+PUSH.W 
 
-  command: pop	encoding: T3
+POP.W 
 
-  command: mov_reg	encoding: T3
+MOV.W 
 
-  command: mul	encoding: T2
+MUL 
 
-  command: cmp_reg	encoding: T3
+CMP.W 
 
-  command: push	encoding: T2
+PUSH.W 
 
-  command: pop	encoding: T2
+POP.W 
 
-  command: cmp_imm	encoding: T2
+CMP.W 
 
-  command: ldr_litt	encoding: T2
+LDR.W 
 
-  command: add_sp	encoding: T3
+ADD 
 
-  command: mov_imm	encoding: T2
+MOV.W 
 
-  command: add_sp	encoding: T4
+ADDW 
 
-  command: sub_sp	encoding: T2
+SUB 
 
-  command: sub_sp	encoding: T3
+SUBW 
 
-  command: mov_imm	encoding: T3
+MOVW 
 
-  command: ldr_imm	encoding: T3
+LDR.W 
 
-  command: movt	encoding: T1
+MOVT 
 
-  command: str_imm	encoding: T3
+STR.W 
 
-  command: str_reg	encoding: T2
+STR.W 
 
-  command: sub_imm	encoding: T4
+SUBW 
 
-  command: sub_reg	encoding: T2
+SUB.W 
 
-  command: add_imm	encoding: T4
+ADDW 
 
-  command: add_reg	encoding: T3
+ADD.W 
 
-  command: add_imm	encoding: T3
+ADD.W 
 
-  command: sub_imm	encoding: T3
+SUB.W 
 
-  command: bl	encoding: T1
+BL 
 
-  command: b	encoding: T3
+B.W 
 
-  command: b	encoding: T4
+B.W 
 
-  command: cmp_reg	encoding: T1
+CMP 
 
-  command: mul	encoding: T1
+MUL 
 
-  command: mov_reg	encoding: T2
+MOVS 
 
-  command: bx	encoding: T1
+BX 
 
-  command: add_sp	encoding: T2
+ADD 
 
-  command: sub_sp	encoding: T1
+SUB 
 
-  command: cmp_reg	encoding: T2
+CMP 
 
-  command: mov_reg	encoding: T1
+MOV 
 
-  command: it	encoding: T1
+IT 
 
-  command: add_reg	encoding: T2
+ADD 
 
-  command: svc	encoding: T1
+SVC 
 
-  command: add_imm	encoding: T1
+ADD 
 
-  command: add_reg	encoding: T1
+ADD 
 
-  command: sub_reg	encoding: T1
+SUB 
 
-  command: sub_imm	encoding: T1
+SUB 
 
-  command: pop	encoding: T1
+POP 
 
-  command: push	encoding: T1
+PUSH 
 
-  command: str_reg	encoding: T1
+STR 
 
-  command: ldr_litt	encoding: T1
+LDR 
 
-  command: ldr_imm	encoding: T1
+LDR 
 
-  command: cmp_imm	encoding: T1
+CMP 
 
-  command: b	encoding: T2
+B 
 
-  command: add_sp	encoding: T1
+ADD 
 
-  command: sub_imm	encoding: T2
+SUB 
 
-  command: str_imm	encoding: T1
+STR 
 
-  command: str_imm	encoding: T2
+STR 
 
-  command: add_imm	encoding: T2
+ADD 
 
-  command: mov_imm	encoding: T1
+MOV 
 
-  command: ldr_imm	encoding: T2
+LDR 
 
-  command: ldr_litt	encoding: T1
+LDR 
 
-  command: b	encoding: T1
+B 

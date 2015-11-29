@@ -1,4 +1,4 @@
-#include "dic/ins_disasCU.h"
+#include "dic/fill_paramsCU.h"
 #include "dic/instructionCU.h"
 #include "elf/bitsCU.h"
 #include "simul/segmentCU.h"
@@ -14,7 +14,7 @@
 
 int main(int argc, char *argv[])
 {
-	CU_Suite *id_suite, *bits_suite, *seg_suite, *ins_suite;
+	CU_Suite *fill_suite, *bits_suite, *seg_suite, *ins_suite;
 	CU_Test *test;
 
 
@@ -23,17 +23,17 @@ int main(int argc, char *argv[])
 	if(CU_initialize_registry() != CUE_SUCCESS)
 		return CU_get_error();
 
-	id_suite = CU_add_suite("instruction disa suite", CU_init_ins_disa_suite, CU_del_ins_disa_suite);
+	fill_suite = CU_add_suite("fill params suite", CU_init_fill_params_suite, CU_del_fill_params_suite);
 	ins_suite = CU_add_suite("instruction suite", CU_init_ins_suite, CU_del_ins_suite);
 	bits_suite = CU_add_suite("bits suite", NULL, NULL);
 	seg_suite = CU_add_suite("segment suite", CU_init_seg_suite, CU_del_seg_suite);
 
-	if(id_suite == NULL || ins_suite == NULL || bits_suite == NULL || seg_suite == NULL)
+	if(fill_suite == NULL || ins_suite == NULL || bits_suite == NULL || seg_suite == NULL)
 		return CU_get_error();
 
 
-	test = CU_add_test(id_suite, "parse_param", CU_parse_param);
-	test = CU_add_test(id_suite, "find_and_disasm", CUfind_and_disasm);
+	test = CU_add_test(fill_suite, "parse_param", CU_parse_param);
+	test = CU_add_test(fill_suite, "CU_parse_reglist", CU_parse_reglist);
 
 	test = CU_add_test(bits_suite, "hwd_good_endianness, CU", CU_hwd_good_endianness);
 	test = CU_add_test(bits_suite, "wrd_good_endianness, CU", CU_wrd_good_endianness);
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 	
 	CU_basic_set_mode(CU_BRM_VERBOSE);
 
-	CU_basic_run_suite(bits_suite);
+	CU_basic_run_suite(fill_suite);
 	// CU_console_run_tests();
 
 	CU_cleanup_registry();
