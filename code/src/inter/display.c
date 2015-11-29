@@ -193,13 +193,24 @@ int disp_reg(char *name, Registre reg[NB_REG])
 void disp_all_regs(Registre reg[NB_REG])
 {
 	int i;
+
+	printf("\n");
+
 	for (i = 0; i < NB_REG-4; ++i)
 	{
-		printf("  r%i : %i \n", i, reg[i]);
+		if(i < 10)
+			printf(" ");
+			
+		printf(" r%i :  %08x", i, reg[i]);
+
+		if(i%3 == 2)
+			printf("\n");
+		else
+			printf("\t");	
 	}
 
-	printf("  sp : %i \n", reg[13]);
-	printf("  lr : %i \n", reg[14]);
-	printf("  pc : %i \n", reg[15]);
-	printf("  apsr : %i \n", reg[16]);
+	printf("  sp :  %08x\t", reg[13]);
+	printf("  lr :  %08x\n", reg[14]);
+	printf("  pc :  %08x\t", reg[15]);
+	printf("apsr :  %08x\n", reg[16]);
 }
