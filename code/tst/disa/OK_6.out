@@ -8,23 +8,23 @@
   0x00001020 00 eb 51 01 bd e8 01 40 02 b0 70 47 4f f0 00 00 
   0x00001030 00 df 4f f0 01 00 00 df 00 00 00 
 
-MOV.W r0, #0 (00000000)
-MOV.W r1, #8 (00000008)
-MOV r0, r0
-ADD.W r1, r0, r1, #1 (00000001)
-BL, #3 (00000003)
-CMP r2, r1
-B, #12 (0000000c)
-Battention taille, #0 (00000000)
-PUSH r2, r8, #0 (00000000)
-SUB,sp,spattention taille, #0 (00000000)
-MOV.W r0, #0 (00000000)
-ADD.W r1, r0, r1, #1 (00000001)
-POP.W r1, r0, r0, #0 (00000000)
-ADD,sp,sp, #16 (00000010)
-BX r9
-MOV.W r0, #0 (00000000)
-B, #79 (0000004f)
-MOV.W r0, #1 (00000001)
-B, #0 (00000000)
+MOV.W(mov_imm/T2) r0, #0
+MOV.W(mov_imm/T2) r1, #8
+MOV(mov_reg/T1) r2, r1
+ADD.W(add_reg/T3) r1, r0, r1, #1
+BL(bl/T1), #3
+CMP(cmp_reg/T1) r2, r1
+B(b/T1), #10
+B(b/T2), #12
+PUSH(push/T1) r1, r0, #0
+SUB,sp,sp(sub_sp/T1), #2
+MOV.W(mov_imm/T2) r0, #0
+ADD.W(add_reg/T3) r1, r0, r1, #1
+POP.W(pop/T2) r1, r0, r0, #0
+ADD,sp,sp(add_sp/T2), #2
+BX(bx/T1) lr
+MOV.W(mov_imm/T2) r0, #0
+SVC(svc/T1), #0
+MOV.W(mov_imm/T2) r0, #1
+SVC(svc/T1), #0
 

@@ -26,8 +26,9 @@ struct ins;
 typedef struct ins Instruction;
 
 
-// création d'un alias du type pointeur de fonction
+// création d'alias du type pointeur de fonction
 typedef int (*Run_pft)(Instruction, Emulator*); 
+typedef void (*Disp_pft)(Instruction);
 
 
 struct ins
@@ -46,8 +47,9 @@ struct ins
 	Plgtab *imm;
 	Plgtab *ext;
 	
-	// Pointeur de fonction :
+	// Pointeurs de fonction :
 
+	Disp_pft display_decoded;
 	Run_pft run;
 
 
@@ -76,13 +78,10 @@ void insclone(Instruction *dest, Instruction *src);
 int load_ins(Instruction *ins, char *chaine);
 int load_from_string(Instruction *ins, char *chaine);
 
-Run_pft get_run_pft(char* mnemo);
+void init_pft(Instruction *ins);
 
 Instruction* init_instab(int sz);
 
 int cmp_ins(const void *ins1, const void *ins2);
-
-
-void disp_ins(Instruction ins);
 
 #endif

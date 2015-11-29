@@ -4,6 +4,7 @@
 #include "inter/notify.h" // messages de contrôle
 #include <string.h> // strcmp
 #include "elf/bits.h" // wrd_good_endianness
+ #include "dic/display_ins.h" // display
 
 /*
 * cf notify.c pour les erreurs
@@ -100,7 +101,7 @@ int step(int flag, Emulator *emul)
 
 		else if (r == 2 || r == 4)
 		{
-			disp_insd(*out);
+			display(*out, DECODED);
 
 			out->run(*out, emul);		
 		}

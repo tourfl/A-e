@@ -14,8 +14,6 @@ typedef Instruction Ins_disas;
 
 int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic);
 
-void disp_insd(Instruction ins);
-
 
 int fill_params(word in, Instruction *out);
 int parse_params(word mot, Plgtab *tab);

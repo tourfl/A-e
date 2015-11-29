@@ -26,6 +26,6 @@ str_imm/T1 STR F800/6000 2/0:2/3:5 1/6:10
 str_imm/T2 STR F800/9000 1/8:10 1/0:7
 str_reg/T1 STR FE00/5000 3/0:2/3:5/6:8
 svc/T1 SVC FF00/DF00 0 1/0:7
-add_sp/T1 ADD,sp F800/A800 1/8:10 1/0:7
-add_sp/T2 ADD,sp,sp FF80/B000 0 1/0:6
-sub_sp/T1 SUB,sp,sp FF80/B080 0 1/0:6
+add_sp/T1 ADD F800/A800 1/8:10 1/0:7
+add_sp/T2 ADD FF80/B000 0 1/0:6
+sub_sp/T1 SUB FF80/B080 0 1/0:6

@@ -8,6 +8,7 @@
  #include "inter/notify.h" // messages de contrôle
  #include <string.h> // strcmp
  #include <math.h> // pow
+ #include "dic/display_ins.h" // display
 
 int disasm(Emulator *emul)
 {
@@ -96,7 +97,7 @@ int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 
 			// printf("\n%08x: ", mot);
 
-			disp_insd(*ins);
+			display(*ins, DECODED);
 
 			/* ne surtout pas supprimer le contenu des instructions (ins, ins_d), sinon on le supprime du dic */
 		}

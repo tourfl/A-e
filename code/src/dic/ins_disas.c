@@ -13,6 +13,7 @@
  * out : instruction de sortie
  * dic : tableau d'instructions
  * sz_dic : nb d'instructions dans le tableau
+ * valeur de retour : 1 si rien n'est trouvé
  */
 
 
@@ -47,7 +48,7 @@ int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic) // retourn
 		i++;
 	}
 
-	return 10;
+	return 1;
 }
 
 
@@ -139,66 +140,4 @@ int parse_param(word mot, Plage p)
 
 
 	return r;
-}
-
-
-
-
-
-// Pour une instruction désassemblée
-
-void disp_insd(Ins_disas ins)
-{
-	int i;
-	char imm[33] = {0};
-
-
-
-
-
-	printf("\n");
-	printf("%s", ins.name_in);
-	printf("(%s/%s)", ins.commande, ins.encoding);
-
-	for(i = 0; i < ins.reg->size; i++)
-	{
-		if(i != 0)
-			printf(",");
-
-		switch (ins.reg->plages[i].value)
-		{
-			case 13: {
-				printf(" sp");
-				break;
-			}
-			case 14: {
-				printf(" lr");
-				break;
-			}
-			case 15: {
-				printf(" pc");
-				break;
-			}
-			case 16: {
-				printf(" apsr");
-				break;
-			}
-			default: {
-				printf(" r%u", ins.reg->plages[i].value);				
-				break;
-			}
-		}
-	}
-
-	printf("1ere valeur : %u\n", ins.imm->plages[0].value);
-
-	for(i = 0; i < ins.imm->size; i++)
-		strcat(imm, int_to_bin(ins.imm->plages[i].value, ins.imm->plages[i].end - ins.imm->plages[i].start));
-
-	// printf("\nimm:%s\n", imm);
-
-	if(ins.imm->size > 0)
-	{
-		printf(", #%lu (%08lx)", strtoul(imm, NULL, 2), strtoul(imm, NULL, 2));
-	}
 }

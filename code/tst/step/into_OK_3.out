@@ -1,6 +1,0 @@
-.text
-.rodata
-.data
-.bss
-
-MOV.W r1, #12 (0000000c)

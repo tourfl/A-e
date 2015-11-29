@@ -4,6 +4,7 @@
 #include <string.h> // strtok
 #include "inter/notify.h" // messages de contrôle
 #include "types.h" // plgtab
+#include "dic/display_ins.h" // display
 
 // Pour les fonctions pointées
 
@@ -68,6 +69,7 @@ void insclone(Instruction *dest, Instruction *src)
 	dest->ext = plgtabclone(src->ext);
 
 	dest->run = src->run;
+	dest->display_decoded = src->display_decoded;
 }
 
 
@@ -87,7 +89,7 @@ int load_ins(Instruction *ins, char *chaine)
 	if(r != 0)
 		return r;
 
-	ins->run = get_run_pft(ins->commande);
+	init_pft(ins);
 
 	// if(ins->run_pft == NULL)
 	// 	return 13; // cf which_error in src/inter/notify.c
@@ -180,18 +182,37 @@ int load_from_string(Instruction *ins, char *chaine)
 
 
 
+// initialise display_decoded et run avec un switch de strcmp
 
-
-Run_pft get_run_pft(char* mnemo)
+void init_pft(Instruction *ins)
 {
-	Run_pft pft = NULL;
 
-	if(strcmp(mnemo, "mov_imm") == 0)
+	if(strcmp(ins->commande, "mov_imm") == 0)
 	{
-		pft = mov_imm;
+		ins->run = mov_imm;
+		ins->display_decoded = disp_default;
+	}
+	else if(strcmp(ins->commande, "add_sp") == 0)
+	{
+		ins->display_decoded = disp_add_sp;
+	}
+	else if(strcmp(ins->commande, "sub_sp") == 0)
+	{
+		ins->display_decoded = disp_sub_sp;
 	}
 
-	return pft;
+	else if(strcmp(ins->commande, "pop") == 0)
+	{
+		ins->display_decoded = disp_pop_push;
+	}
+	else if(strcmp(ins->commande, "push") == 0)
+	{
+		ins->display_decoded = disp_pop_push;
+	}
+	else 
+	{
+		ins->display_decoded = disp_default;
+	}
 }
 
 
@@ -232,26 +253,6 @@ Instruction* init_instab(int sz)
 
 
 	return instab;
-}
-
-
-
-
-
-
-// Pour une instruction extraite du dictionnaire
-
-void disp_ins(Instruction ins)
-{
-	printf("\n  command: %s\tencoding: %s\n", ins.commande, ins.encoding);
-	// printf("  name_in: %s\tname_out: %s\n", ins.name_in, ins.name_out);
-	// printf("  mask: %8x\topcode: %8x\n", ins.mask, ins.opcode);
-	// printf("\n  reg ");
-	// disp_plgtab(*(ins.reg));
-	// printf("\n  imm ");
-	// disp_plgtab(*(ins.imm));
-	// printf("\n  ext ");
-	// disp_plgtab(*(ins.ext));
 }
 
 

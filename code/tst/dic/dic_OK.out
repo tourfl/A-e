@@ -1,21 +1,31 @@
 
-  command: b	encoding: T4
+  command: push	encoding: T3
 
-  command: b	encoding: T3
+  command: pop	encoding: T3
 
-  command: bl	encoding: T1
+  command: mov_reg	encoding: T3
 
-  command: add_imm	encoding: T3
+  command: mul	encoding: T2
 
-  command: sub_imm	encoding: T3
+  command: cmp_reg	encoding: T3
 
-  command: sub_reg	encoding: T2
+  command: push	encoding: T2
 
-  command: add_reg	encoding: T3
+  command: pop	encoding: T2
 
-  command: sub_imm	encoding: T4
+  command: cmp_imm	encoding: T2
 
-  command: add_imm	encoding: T4
+  command: ldr_litt	encoding: T2
+
+  command: add_sp	encoding: T3
+
+  command: mov_imm	encoding: T2
+
+  command: add_sp	encoding: T4
+
+  command: sub_sp	encoding: T2
+
+  command: sub_sp	encoding: T3
 
   command: mov_imm	encoding: T3
 
@@ -27,59 +37,45 @@
 
   command: str_reg	encoding: T2
 
-  command: add_sp	encoding: T4
+  command: sub_imm	encoding: T4
 
-  command: sub_sp	encoding: T3
+  command: sub_reg	encoding: T2
 
-  command: sub_sp	encoding: T2
+  command: add_imm	encoding: T4
 
-  command: ldr_litt	encoding: T2
+  command: add_reg	encoding: T3
 
-  command: mov_imm	encoding: T2
+  command: add_imm	encoding: T3
 
-  command: add_sp	encoding: T3
+  command: sub_imm	encoding: T3
 
-  command: cmp_imm	encoding: T2
+  command: bl	encoding: T1
 
-  command: pop	encoding: T2
+  command: b	encoding: T3
 
-  command: push	encoding: T2
+  command: b	encoding: T4
 
-  command: cmp_reg	encoding: T3
+  command: cmp_reg	encoding: T1
 
-  command: mul	encoding: T2
+  command: mul	encoding: T1
 
-  command: mov_reg	encoding: T3
+  command: mov_reg	encoding: T2
 
-  command: pop	encoding: T3
+  command: bx	encoding: T1
 
-  command: push	encoding: T3
+  command: add_sp	encoding: T2
 
-  command: b	encoding: T1
+  command: sub_sp	encoding: T1
 
-  command: ldr_imm	encoding: T1
+  command: cmp_reg	encoding: T2
 
-  command: ldr_imm	encoding: T2
+  command: mov_reg	encoding: T1
 
-  command: ldr_litt	encoding: T1
+  command: it	encoding: T1
 
-  command: add_sp	encoding: T1
+  command: add_reg	encoding: T2
 
-  command: add_imm	encoding: T2
-
-  command: sub_imm	encoding: T2
-
-  command: b	encoding: T2
-
-  command: str_imm	encoding: T2
-
-  command: cmp_imm	encoding: T1
-
-  command: str_imm	encoding: T1
-
-  command: ldr_litt	encoding: T1
-
-  command: mov_imm	encoding: T1
+  command: svc	encoding: T1
 
   command: add_imm	encoding: T1
 
@@ -95,24 +91,28 @@
 
   command: str_reg	encoding: T1
 
-  command: it	encoding: T1
+  command: ldr_litt	encoding: T1
 
-  command: add_reg	encoding: T2
+  command: ldr_imm	encoding: T1
 
-  command: scv	encoding: T1
+  command: cmp_imm	encoding: T1
 
-  command: mov_reg	encoding: T1
+  command: b	encoding: T2
 
-  command: cmp_reg	encoding: T2
+  command: add_sp	encoding: T1
 
-  command: bx	encoding: T1
+  command: sub_imm	encoding: T2
 
-  command: add_sp	encoding: T2
+  command: str_imm	encoding: T1
 
-  command: sub_sp	encoding: T1
+  command: str_imm	encoding: T2
 
-  command: mov_reg	encoding: T2
+  command: add_imm	encoding: T2
 
-  command: cmp_reg	encoding: T1
+  command: mov_imm	encoding: T1
 
-  command: mul	encoding: T1
+  command: ldr_imm	encoding: T2
+
+  command: ldr_litt	encoding: T1
+
+  command: b	encoding: T1

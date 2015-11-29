@@ -3,6 +3,7 @@
 #include <stdlib.h> // calloc
 #include "inter/notify.h"
 #include "dic/ins_disas.h"
+#include "dic/display_ins.h"
 #include "elf/bits.h" // wrd_good_endianness
 
 
@@ -44,11 +45,11 @@ int disp_dic(Dic *dic)
 	int i;
 
 	for (i = 0; i < dic->sz32; ++i) {
-		disp_ins(*(dic->ins32 + i)); // instructions 32 bits
+		display(*(dic->ins32 + i), NOT_DECODED); // instructions 32 bits
 	}
 
 	for (i = 0; i < dic->sz16; ++i) {
-		disp_ins(*(dic->ins16 + i)); // instructions 16 bits
+		display(*(dic->ins16 + i), NOT_DECODED); // instructions 16 bits
 	}
 
 	return 0;
@@ -69,7 +70,7 @@ int load_dic(Dic *dic)
 	if(r != 0)
 		return r;
 
-	// on range le dictionnaire (règle le problème d'opcode ayant le même début)
+	// on range le dictionnaire (règle le problème d'opcodes ayant le même début)
 	qsort(dic->ins32, dic->sz32, sizeof(Instruction), cmp_ins);
 
 
@@ -160,7 +161,7 @@ int load_instab(Instruction *instab, int nb_ins, FILE *fd)
 		if(l != 0)
 			return l;
 
-		// disp_ins(dic[i]);
+		// display(dic[i], NOT_DECODED);
 	}
 
 	return 0;
@@ -226,7 +227,7 @@ int decode(word in, Instruction *out, Dic *dic)
 
 	//V2
 
-	printf("in: %08x\nen: %08x", in, in_end);
+	// printf("in: %08x\nen: %08x", in, in_end);
 
 	r = get_ins32(in_end, out, dic);
 
