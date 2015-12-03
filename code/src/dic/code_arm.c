@@ -29,7 +29,7 @@ int SignExtend (Plgtab imm)
 
 
 
-	for (int i = 0; i < imm.size; ++i)
+	for (int i = imm.size -1; i >= 0; i--)
 	{
 		u_imm += imm.plages[i].value << prev_size;
 
@@ -43,7 +43,12 @@ int SignExtend (Plgtab imm)
 	b = (1 << size) - 1;
 
 
-	printf("u_imm = %u\t b = %u\n", u_imm, b);
 
-	return -(u_imm ^ b);
+	// printf("u_imm = %u\t b = %u\n", u_imm, b);
+
+	if(u_imm > 1 << (size - 1))
+		return -(u_imm ^ b);
+
+	else
+		return u_imm;
 }

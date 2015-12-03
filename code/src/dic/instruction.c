@@ -191,17 +191,34 @@ void init_pft(Instruction *ins)
 	ins->display_decoded = disp_default;
 	ins->fill_params = fill_params_default;
 
+
 	if(strcmp(ins->commande, "mov_imm") == 0)
 	{
 		ins->run = mov_imm;
 	}
+	else if(strcmp(ins->commande, "b") == 0)
+	{
+		if(ins->encoding == 1 || ins->encoding == 2)
+			ins->fill_params = fill_params_B;
+
+		else
+			ins->fill_params = fill_params_BL;
+	}
+	else if(strcmp(ins->commande, "bl") == 0)
+	{
+		ins->fill_params = fill_params_BL;
+	}
 	else if(strcmp(ins->commande, "add_sp") == 0)
 	{
 		ins->display_decoded = disp_add_sp;
+		if(ins->encoding == 1 || ins->encoding == 2)
+			ins->fill_params = fill_params_add_sp;
 	}
 	else if(strcmp(ins->commande, "sub_sp") == 0)
 	{
 		ins->display_decoded = disp_sub_sp;
+		if(ins->encoding == 1)
+			ins->fill_params = fill_params_add_sp;
 	}
 
 	else if(strcmp(ins->commande, "pop") == 0 || strcmp(ins->commande, "push") == 0)

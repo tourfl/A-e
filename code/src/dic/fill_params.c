@@ -5,6 +5,7 @@
 #include <stdlib.h> // calloc
 #include "inter/notify.h" // printf notamment
 #include "elf/bits.h" // to_good_endianness
+#include "dic/code_arm.h" // ZeroExtend
 
 #include "dic/display_ins.h"
 
@@ -23,15 +24,94 @@
 
 int fill_params_default(word in, Instruction *out)
 {
-	int r1, r2, r3;
+	int imm=0, r=0;
 
-	r1 = parse_reg(in, out);
+	
 
-	r2 = parse_imm(in, out);
+	if( (r = parse_all_params(in, out)) != 0)
+		return r;
 
-	r3 = parse_ext(in, out);
 
-	return r1 + r2 + r3;
+
+
+
+	imm = ZeroExtend(*(out->imm));
+
+	if(out->imm->size > 0)
+		fill_with_final_value(imm, out->imm);
+
+	return 0;
+}
+
+
+
+
+
+int fill_with_final_value(int in, Plgtab *tab)
+{
+	del_plgtab(tab);
+
+	if ( (tab = init_plgtab()) == NULL)
+		return 2;
+
+	tab->size = 1;
+
+	if (( tab->plages = calloc(1, sizeof(Plage)) ) == NULL)
+		return 2;
+
+	tab->plages->value = in;
+
+	return 0;
+}
+
+
+
+
+
+int fill_params_B(word in, Instruction *out)
+{
+	int imm=0, r=0;
+
+	
+
+	if( (r = parse_all_params(in, out)) != 0)
+		return r;
+
+
+
+	imm = SignExtend(*(out->imm));
+
+
+
+	fill_with_final_value(imm << 1, out->imm);
+
+
+	return 0;
+}
+
+
+
+
+int fill_params_BL(word in, Instruction *out)
+{
+	int imm=0, r=0;
+
+	
+
+	if( (r = parse_all_params(in, out)) != 0)
+		return r;
+
+
+	// Ji = not(S xor Ii)
+	out->imm->plages[1].value = (~ (out->imm->plages[0].value ^ out->imm->plages[1].value) ) & 1;
+	out->imm->plages[2].value = (~ (out->imm->plages[0].value ^ out->imm->plages[2].value) ) & 1;
+
+
+	imm = SignExtend(*(out->imm));
+
+	fill_with_final_value(imm << 1, out->imm);
+
+	return 0;
 }
 
 
@@ -44,6 +124,52 @@ int fill_params_pop_push(word in, Instruction *out)
 
 
 	return parse_reglist(in, out);
+}
+
+
+
+
+int fill_params_add_sp(word in, Instruction *out)
+{
+	int imm=0, r=0;
+
+
+
+	if( (r = parse_all_params(in, out)) != 0)
+		return r;
+
+
+
+
+
+	imm = ZeroExtend(*(out->imm));
+
+	if(out->imm->size > 0)
+		fill_with_final_value(imm << 2, out->imm); // décalage de 2 bits, cf spécifications
+
+	return 0;
+}
+
+
+
+
+
+int parse_all_params(word in, Instruction *out)
+{
+	int r=0, r1, r2, r3;
+
+
+
+
+	r1 = parse_reg(in, out);
+
+	r2 = parse_imm(in, out);
+
+	r3 = parse_ext(in, out);
+
+	r = r1 + r2 + r3;
+	
+	return r;
 }
 
 

@@ -55,7 +55,7 @@ Plage* init_plage()
 
 
 void disp_plg(Plage p) {
-    printf("\nstart: %u\tend: %u", p.start, p.end);
+    printf("\t%u->%u = %u", p.start, p.end, p.value);
 }
 
 
@@ -140,6 +140,7 @@ Plgtab* plgtabclone(Plgtab *src)
     {
         printf("  plage %u:\t", i);
         disp_plg(t.plages[i]);
+        printf("\n");
     }
  }
 

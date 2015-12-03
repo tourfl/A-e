@@ -48,7 +48,7 @@ void disp_not_decoded(Instruction ins)
 void disp_name(Instruction ins)
 {
 	printf("%s", ins.name_in);
-	printf("(%s/T%u)", ins.commande, ins.encoding);
+	// printf("(%s/T%u)", ins.commande, ins.encoding);
 	printf(" ");
 }
 
@@ -87,7 +87,7 @@ void disp_regs(Plgtab regs)
 				break;
 			}
 			default: {
-				printf("r%u", regs.plages[i].value);				
+				printf("r%u", regs.plages[i].value);			
 				break;
 			}
 		}
@@ -101,9 +101,7 @@ void disp_regs(Plgtab regs)
 
 void disp_imm(Plgtab imm)
 {
-	word imm32 = ZeroExtend(imm);
-
-	printf("#%u", imm32);
+	printf("#%i", imm.plages->value);
 }
 
 
