@@ -29,17 +29,16 @@ int cmp_mask(word mask1, word mask2);
 
 int masklen(word mot);
 
-word mask_from_0(int pos);
-int sum_2k(int max);
-
 
 #define FLIP_ENDIANNESS( x ) __flip_endianness( (byte*)&(x), sizeof(x) )
 
 
 #define CLR_BIT( b, n ) ( b &= 0xFF-(1<<(n)) )
 #define SET_BIT( b, n ) ( b |= 1<<(n) )
-#define GET_BIT( b, n ) ( ( b & 1<<(n) ) >> (n) )
+#define GET_BIT( b, n ) (  b & 1<<(n) )
 
+
+#define SET_BITS( b, i, j ) ( b |= (((1 << (j-i)) - 1) << i) )
 #define GET_BITS( b, i, j ) ( b & (((1 << (j-i)) - 1) << i ) )
 
 

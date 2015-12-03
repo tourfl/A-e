@@ -5,12 +5,12 @@
 
   0x00001000 4f f0 00 00 4f f0 08 01 0a 
 
-MOV.W r0, #0
-MOV.W r1, #8
+MOV.W(mov_imm/T2) r0, #0
+MOV.W(mov_imm/T2) r1, #8
 
 
   0x00002000 59 6f 75 70 69 00 00 00 00 
 
-LDR r1, r3, #5
-LDR r0, r6, #5
+LDR(ldr_imm/T1) r1, r3, #5
+LDR(ldr_imm/T1) r0, r6, #5
 

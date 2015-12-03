@@ -8,23 +8,23 @@
   0x00001020 00 eb 51 01 bd e8 01 40 02 b0 70 47 4f f0 00 00 
   0x00001030 00 df 4f f0 01 00 00 df 00 
 
-MOV.W r0, #0
-MOV.W r1, #8
-MOV r2, r1
-ADD.W r1, r0, r1, #1
-BL #3
-CMP r2, r1
-B #10
-B #12
-PUSH {r1, r1}
-SUB sp, #2
-MOV.W r0, #0
-ADD.W r1, r0, r1, #1
-POP.W {r1, r0, r0}
-ADD sp, sp, #2
-BX lr
-MOV.W r0, #0
-SVC #0
-MOV.W r0, #1
-SVC #0
+MOV.W(mov_imm/T2) r0, #0
+MOV.W(mov_imm/T2) r1, #8
+MOV(mov_reg/T1) r2, r1
+ADD.W(add_reg/T3) r1, r0, r1, #1
+BL(bl/T1) #3
+CMP(cmp_reg/T1) r2, r1
+B(b/T1) #10
+B(b/T2) #12
+PUSH(push/T1) {r0, lr}
+SUB(sub_sp/T1) sp, #2
+MOV.W(mov_imm/T2) r0, #0
+ADD.W(add_reg/T3) r1, r0, r1, #1
+POP.W(pop/T2) {r0, lr}
+ADD(add_sp/T2) sp, sp, #2
+BX(bx/T1) lr
+MOV.W(mov_imm/T2) r0, #0
+SVC(svc/T1) #0
+MOV.W(mov_imm/T2) r0, #1
+SVC(svc/T1) #0
 

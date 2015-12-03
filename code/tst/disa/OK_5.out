@@ -6,9 +6,9 @@
   0x00001000 4f f0 0c 01 4f f0 00 02 02 f1 01 02 91 42 fb d1 
   0x00001010 00 
 
-MOV.W r1, #12
-MOV.W r2, #0
-ADDW r2, r2, #1
-CMP r1, r2
-B #59
+MOV.W(mov_imm/T2) r1, #12
+MOV.W(mov_imm/T2) r2, #0
+ADDW(add_imm/T4) r2, r2, #1
+CMP(cmp_reg/T1) r1, r2
+B(b/T1) #59
 

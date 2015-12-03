@@ -87,7 +87,7 @@ int step(int flag, Emulator *emul)
 {
 	int r = 0;
 	word in = get_word(emul->reg[15], emul->map);
-	Ins_disas *out = init_ins();
+	Instruction *out = init_ins();
 
 
 

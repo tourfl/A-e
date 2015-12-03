@@ -3,5 +3,4 @@
 .data
 .bss
 
-MOV.W r0, #0
-MOV.W r0, #0
+MOV.W(mov_imm/T2) r0, #0

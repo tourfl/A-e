@@ -48,7 +48,7 @@ void disp_not_decoded(Instruction ins)
 void disp_name(Instruction ins)
 {
 	printf("%s", ins.name_in);
-	// printf("(%s/T%u)", ins.commande, ins.encoding);
+	printf("(%s/T%u)", ins.commande, ins.encoding);
 	printf(" ");
 }
 

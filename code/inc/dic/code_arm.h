@@ -11,6 +11,8 @@
 
 word ZeroExtend(Plgtab imm);
 
+int SignExtend(Plgtab imm);
+
 
 #endif
 

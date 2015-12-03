@@ -1,11 +1,14 @@
 
 #include "simul/segmentCU.h"
 #include "inter/command.h"
+#include "simul/segment.h"
 
 #include <CUnit/CUnit.h>
 
 
 
+
+static Segment *map_fix;
 
 
 

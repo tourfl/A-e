@@ -77,17 +77,25 @@ int parse_params(word mot, Plgtab *tab)
 
 int parse_param(word mot, Plage p)
 {
-	word mask = plg_to_mask(p);
-	int r = (int) (mot & mask) >> p.start;
+	word r=0;
+
+
+
+
+	if(p.start == p.end)
+		r = GET_BIT(mot, p.start);
+
+	else
+		r = GET_BITS(mot, p.start, p.end + 1);
 
     // V2
 
 	// disp_plg(p);
-	// printf("\nword: %s\nmask: %s\t res: %u", int_to_bin(mot, 32), int_to_bin(mask, 32), r);
+	// printf("\nword: %s\t res: %u", int_to_bin(mot, 32), r);
 
 
 
-	return r;
+	return (int) (r >> p.start);
 }
 
 
@@ -127,6 +135,8 @@ int parse_reglist(word in, Instruction *out)
 		reglist = parse_push_reglist(in, out);
 	}
 
+	// printf("reglist: %u\n", reglist);
+
 
 	free(out->reg->plages);
 
@@ -142,7 +152,7 @@ int parse_reglist(word in, Instruction *out)
 			// printf("i=%u", i);
 			out->reg->plages[l - 1 - k].value = i;
 
-			reglist -= pow(2, i);
+			reglist -= 1 << i;
 			k++;
 		}
 	}
@@ -165,6 +175,8 @@ int parse_pop_reglist(word in, Instruction *out)
 
 	if(parse_reg(in, out) != 0)
 		return 14;
+
+
 
 	reglist = out->reg->plages[i].value << 15;
 	i++;

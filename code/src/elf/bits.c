@@ -149,21 +149,3 @@ int cmp_mask(word ref, word mask)
 }
 
 
-
-
-word mask_from_0(int pos)
-{
-    return sum_2k(pos);
-}
-
-
-
-int sum_2k(int max)
-{
-    if( max == 0)
-        return 1;
-
-    return pow(2, max) + sum_2k(max-1);
-}
-
-

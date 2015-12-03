@@ -65,10 +65,13 @@ void disp_plg(Plage p) {
 
 word plg_to_mask(Plage p)
 {
-    if(p.start == 0)
-        return mask_from_0(p.end);
+    word m = 0;
 
-    return mask_from_0(p.end) - mask_from_0(p.start - 1);
+
+
+    SET_BITS(m, p.start, p.end);
+
+    return m;
 }
 
 
