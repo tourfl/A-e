@@ -210,7 +210,7 @@ void init_pft(Instruction *ins)
 	}
 	else if(strcmp(ins->commande, "add_sp") == 0)
 	{
-		ins->display_decoded = disp_add_sp;
+		ins->display_decoded = disp_sub_sp;
 		if(ins->encoding == 1 || ins->encoding == 2)
 			ins->fill_params = fill_params_add_sp;
 	}

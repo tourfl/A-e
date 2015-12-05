@@ -28,7 +28,6 @@ void disp_not_decoded(Instruction ins);
 void disp_default(Instruction ins);
 
 // affichage customisé
-void disp_add_sp(Instruction ins);
 void disp_sub_sp(Instruction ins);
 void disp_pop_push(Instruction ins);
 

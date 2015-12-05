@@ -6,13 +6,13 @@
   0x00001000 4f f0 08 00 04 4a 11 68 88 42 14 bf 01 30 00 f0 
   0x00001010 01 f8 f9 e7 00 df 00 00 04 00 00 00 00 00 00 00 
 
-MOV.W(mov_imm/T2) r0, #8
-LDR(ldr_imm/T1) r1, r2, #0
-CMP(cmp_reg/T1) r0, r1
-IT(it/T1) 
-ADD(add_imm/T2) r0, #1
-BL(bl/T1) #1
-B(b/T2) #505
-SVC(svc/T1) #0
-MOVS(mov_reg/T2) r4, r0
+MOV.W r0, #8
+LDR r1, r2, #0
+CMP r0, r1
+IT 
+ADD r0, #1
+BL #2
+B #-12
+SVC #0
+MOVS r4, r0
 

@@ -48,7 +48,7 @@ void disp_not_decoded(Instruction ins)
 void disp_name(Instruction ins)
 {
 	printf("%s", ins.name_in);
-	// printf("(%s/T%u)", ins.commande, ins.encoding);
+	printf("(%s/T%u)", ins.commande, ins.encoding);
 	printf(" ");
 }
 
@@ -138,36 +138,6 @@ void disp_default(Instruction ins)
 
 
 
-void disp_add_sp(Instruction ins)
-{
-	printf("\n");
-
-	disp_name(ins);
-
-
-	if(ins.reg->size > 0)
-		disp_regs(*(ins.reg));
-
-
-	if(ins.encoding == 2)
-		printf("sp");
-
-	printf(", sp");
-
-	if(ins.reg->size > 0 && ins.imm->size > 0)
-		printf("sp");
-
-	if(ins.imm->size > 0)
-	{
-		printf(", ");
-		disp_imm(*(ins.imm));
-	}
-}
-
-
-
-
-
 
 
 void disp_sub_sp(Instruction ins)
@@ -179,10 +149,11 @@ void disp_sub_sp(Instruction ins)
 
 	if(ins.reg->size > 0)
 		disp_regs(*(ins.reg));
-
-
-	if(ins.encoding == 1)
+	else
 		printf("sp");
+
+
+	printf(", sp");
 
 	if(ins.imm->size > 0)
 	{

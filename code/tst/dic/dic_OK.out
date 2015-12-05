@@ -1,118 +1,118 @@
 
-PUSH.W(push/T3) 
+PUSH.W 
 
-POP.W(pop/T3) 
+POP.W 
 
-MOV.W(mov_reg/T3) 
+MOV.W 
 
-MUL(mul/T2) 
+MUL 
 
-CMP.W(cmp_reg/T3) 
+CMP.W 
 
-PUSH.W(push/T2) 
+PUSH.W 
 
-POP.W(pop/T2) 
+POP.W 
 
-CMP.W(cmp_imm/T2) 
+CMP.W 
 
-LDR.W(ldr_litt/T2) 
+LDR.W 
 
-ADD(add_sp/T3) 
+ADD 
 
-MOV.W(mov_imm/T2) 
+MOV.W 
 
-ADDW(add_sp/T4) 
+ADDW 
 
-SUB(sub_sp/T2) 
+SUB 
 
-SUBW(sub_sp/T3) 
+SUBW 
 
-MOVW(mov_imm/T3) 
+MOVW 
 
-LDR.W(ldr_imm/T3) 
+LDR.W 
 
-MOVT(movt/T1) 
+MOVT 
 
-STR.W(str_imm/T3) 
+STR.W 
 
-STR.W(str_reg/T2) 
+STR.W 
 
-SUBW(sub_imm/T4) 
+SUBW 
 
-SUB.W(sub_reg/T2) 
+SUB.W 
 
-ADDW(add_imm/T4) 
+ADDW 
 
-ADD.W(add_reg/T3) 
+ADD.W 
 
-ADD.W(add_imm/T3) 
+ADD.W 
 
-SUB.W(sub_imm/T3) 
+SUB.W 
 
-BL(bl/T1) 
+BL 
 
-B.W(b/T3) 
+B.W 
 
-B.W(b/T4) 
+B.W 
 
-CMP(cmp_reg/T1) 
+CMP 
 
-MUL(mul/T1) 
+MUL 
 
-MOVS(mov_reg/T2) 
+MOVS 
 
-BX(bx/T1) 
+BX 
 
-ADD(add_sp/T2) 
+ADD 
 
-SUB(sub_sp/T1) 
+SUB 
 
-CMP(cmp_reg/T2) 
+CMP 
 
-MOV(mov_reg/T1) 
+MOV 
 
-IT(it/T1) 
+IT 
 
-ADD(add_reg/T2) 
+ADD 
 
-SVC(svc/T1) 
+SVC 
 
-ADD(add_imm/T1) 
+ADD 
 
-ADD(add_reg/T1) 
+ADD 
 
-SUB(sub_reg/T1) 
+SUB 
 
-SUB(sub_imm/T1) 
+SUB 
 
-POP(pop/T1) 
+POP 
 
-PUSH(push/T1) 
+PUSH 
 
-STR(str_reg/T1) 
+STR 
 
-LDR(ldr_litt/T1) 
+LDR 
 
-LDR(ldr_imm/T1) 
+LDR 
 
-CMP(cmp_imm/T1) 
+CMP 
 
-B(b/T2) 
+B 
 
-ADD(add_sp/T1) 
+ADD 
 
-SUB(sub_imm/T2) 
+SUB 
 
-STR(str_imm/T1) 
+STR 
 
-STR(str_imm/T2) 
+STR 
 
-ADD(add_imm/T2) 
+ADD 
 
-MOV(mov_imm/T1) 
+MOV 
 
-LDR(ldr_imm/T2) 
+LDR 
 
-LDR(ldr_litt/T1) 
+LDR 
 
-B(b/T1) 
+B 

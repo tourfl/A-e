@@ -1,0 +1,7 @@
+#-------
+#TEST_RETURN_CODE=PASS       
+#TEST_COMMENT="Teste disasm"
+#-------
+
+load rodata.o
+disasm 0x1000:0x1030
