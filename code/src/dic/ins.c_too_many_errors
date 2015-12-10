@@ -62,14 +62,44 @@ int add_imm (Instruction ins, Memory *mem) {
 	R[d] = result;
 	if (setflag) {
 		if (result & (1u << 31) ){
-			APSR.N = 1;
+			APSR = APSR & 0x7FFFFFFF;
+			APSR = APSR | (1u << 31) ; // APSR.N = 1;
 		}
 		else {
-			APSR.N = 0;
+			APSR = APSR & 0x7FFFFFFF; // APSR.N = 0;
 		}
-		APSR.Z = IsZeroBit(result);
-		APSR.C = carry;
-		APSR.V = overflow;
+
+		//APSR.Z = IsZeroBit (result);
+	
+		if (IsZeroBit(result)) { 
+			APSR = APSR & 0xBFFFFFFF; 
+			APSR = APSR | (1u << 30); 
+		}
+		else {
+			APSR = APSR & 0xBFFFFFFF;
+		}
+
+		//APSR.C = carry;
+
+		if (carry) { 
+			APSR = APSR & 0xDFFFFFFF; 
+			APSR = APSR | (1u << 29); 
+		}
+		else {
+			APSR = APSR & 0xDFFFFFFF;
+		}
+
+		//APSR.V = overflow;
+
+		if (overflow) { 
+			APSR = APSR & 0xEFFFFFFF; 
+			APSR = APSR | (1u << 28); 
+		}
+		else {
+			APSR = APSR & 0xEFFFFFFF;
+		}	
+
+		
 	}
 	return 0;
 }
@@ -86,16 +116,16 @@ int add_imm (Instruction ins, Memory *mem) {
 
 int add_imm_T1(Instruction ins,  int* setflags, int* imm32) {
 		
-	setflags = !InITBlock();
-	imm32 = ZeroExtend( ins.imm.value ); 
+	*setflags =  0;//!InITBlock();
+	*imm32 = ZeroExtend( ins.imm.value ); 
 	return 0;
 }
 
 
 int add_imm_T2(Instruction ins,  int* setflags , int*imm32) {
 	
-	setflags = !InITBlock();
-	imm32 = ZeroExtend( ins.imm.value ) ; 
+	*setflags = 0;//!InITBlock();
+	*imm32 = ZeroExtend( ins.imm.value ) ; 
 	return 0;
 }
 
@@ -103,18 +133,20 @@ int add_imm_T2(Instruction ins,  int* setflags , int*imm32) {
 int add_imm_T3(Instruction ins,  int* setflags , int* imm32 , int* n, int* d) {
 	
 
-	if ( d == 15 && ins.ext.value == 1 ) {
-		// SEE CMN (immmediate)
+	if ( *d == 15 && ins.ext.value == 1 ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	} 
 
-	if ( n == 13 ) {
-		// SEE ADD (SP plus immediate)
+	if ( *n == 13 ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	}
 
-	setflags = 1; 
-	imm32 = ins.imm.value;
+	*setflags = 1; 
+	*imm32 = ins.imm.value;
 
-	if (d==13 || (d==15 && ins.ext.value == 0) || n==15 ) {
+	if (*d==13 || (*d==15 && ins.ext.value == 0) || *n==15 ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
@@ -123,20 +155,22 @@ int add_imm_T3(Instruction ins,  int* setflags , int* imm32 , int* n, int* d) {
 }
 
 
-int add_imm_T4(Instruction ins,  int setflags , int imm32, int n, int d ) {
+int add_imm_T4(Instruction ins,  int* setflags , int* imm32, int* n, int* d ) {
 
-	if (n == 15) {
-		// SEE ADR
+	if (*n == 15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	}
 
 
-	if (n == 13) {
-		// SEE ADD
+	if (*n == 13) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	}
 
-	setflags = 0;
-	imm32 = ins.imm.value;
-	if ( d == 13 || d == 14 || d == 15) {
+	*setflags = 0;
+	*imm32 = ins.imm.value;
+	if ( *d == 13 || *d == 14 || *d == 15) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
@@ -146,7 +180,6 @@ int add_imm_T4(Instruction ins,  int setflags , int imm32, int n, int d ) {
 
 
 //---------------------------------------------------------------------------------------------------------//
-
 
 
 
@@ -465,7 +498,6 @@ int bx_T1(Instruction ins, int* m) {
 //---------------------------------------------------------------------------------------------------------//
 
 
-
 /**********************************************************************************************************/
 /************************************************CMP_IMM***************************************************/
 /**********************************************************************************************************/
@@ -497,14 +529,43 @@ int cmp_imm (Instruction ins, Mem* mem) {
 	result = AddWithCarry(R[n] , !(imm32) , &carry, &overflow);	
 	
 	if (result & (1u << 31) ){
-		APSR.N = 1;
+		APSR = APSR & 0x7FFFFFFF;
+		APSR = APSR | (1u << 31); // APSR.N = 1;
 	}
 	else {
-		APSR.N = 0;
+		APSR = APSR & 0x7FFFFFFF; // APSR.N = 0;
 	}
-	APSR.Z = IsZeroBit(result);
-	APSR.C = carry;
-	APSR.V = overflow;
+
+	//APSR.Z = IsZeroBit (result);
+	
+	if (IsZeroBit(result)) { 
+		APSR = APSR & 0xBFFFFFFF; 
+		APSR = APSR | (1u << 30); 
+	}
+	else {
+		APSR = APSR & 0xBFFFFFFF;
+	}
+
+	//APSR.C = carry;
+
+	if (carry) { 
+		APSR = APSR & 0xDFFFFFFF; 
+		APSR = APSR | (1u << 29); 
+	}
+	else {
+		APSR = APSR & 0xDFFFFFFF;
+	}
+
+	//APSR.V = overflow;
+
+	if (overflow) { 
+		APSR = APSR & 0xEFFFFFFF; 
+		APSR = APSR | (1u << 28); 
+	}
+	else {
+		APSR = APSR & 0xEFFFFFFF;
+	}	
+
 	return 0;
 }
 
@@ -517,7 +578,7 @@ int cmp_imm (Instruction ins, Mem* mem) {
 int cmp_imm_T1 (Instruction ins,int* imm32){
 		
 
-	imm32 = ZeroExtend (imm32);
+	*imm32 = ZeroExtend (*imm32);
 	return 0;
 	
 }
@@ -527,7 +588,7 @@ int cmp_imm_T1 (Instruction ins,int* imm32){
 int cmp_imm_T2 (Instruction ins,int n, int imm32){
 		
 
-	imm32 = ZeroExtend (imm32 , 32);
+	*imm32 = ZeroExtend (*imm32);
 	if (n==15) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
@@ -986,6 +1047,8 @@ int mov_reg_T1 (Instruction ins, int setflags,int d, int m){
 //---------------------------------------------------------------------------------------------------------//
 
 
+
+
 /**********************************************************************************************************/
 /************************************************MOVT***************************************************/
 /**********************************************************************************************************/
@@ -1015,9 +1078,9 @@ int movt (Instruction ins , Mem* mem) {
 
 //---------------------------------------------------------------------------------------------------------//
 
-int movt_T1 (Instruction ins, int d){
+int movt_T1 (Instruction ins, int* d){
 
-	if (d==13 || d==14 || d==15) {
+	if (*d==13 || *d==14 || *d==15) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}	
@@ -1067,13 +1130,25 @@ int mul (Instruction ins, Mem* mem ) {
 	R[d] = result + R[d];
 	if (setflags) {
 		if (result & (1u << 31) ){
-			APSR.N = 1;
+			APSR = APSR & 0x7FFFFFFF;
+			APSR = APSR | (1u << 31) ; // APSR.N = 1;
 		}
 		else {
-			APSR.N = 0;
+			APSR = APSR & 0x7FFFFFFF; // APSR.N = 0;
 		}
-		APSR.Z = IsZeroBit(result);
+
+		//APSR.Z = IsZeroBit (result);
+	
+		if (IsZeroBit(result)) { 
+			APSR = APSR & 0xBFFFFFFF; 
+			APSR = APSR | (1u << 30)  ; 
+		}
+		else {
+			APSR = APSR & 0xBFFFFFFF;
+		}
+	
 		// APSR.V & APSR.C unchanged
+	
 	}
 	return 0;
 }
@@ -1084,16 +1159,16 @@ int mul (Instruction ins, Mem* mem ) {
 
 int mul_T1 (Instruction ins,int* d,int* m, int* setflags){
 
-	m = d;
-	setflags = !InITBlock();
+	*m = *d;
+	setflags = 0; //!InITBlock();
 	return 0;
 }
 
 
 int mul_T2 (Instruction ins, int* d, int* n, int* m, int* setflags){
 
-	setflags = 0;
-	if ( (n==13 || n==14 || n==15) || (d==13 || d==14 || d==15) || (m==13 || m==14 || m==15) ) {
+	*setflags = 0;
+	if ( (*n==13 || *n==14 || *n==15) || (*d==13 || *d==14 || *d==15) || (*m==13 || *m==14 || *m==15) ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
@@ -1452,6 +1527,8 @@ int str_imm_T2 (Instruction ins, int* index,int* add, int* wback, int* shift_t, 
 //---------------------------------------------------------------------------------------------------------//
 
 
+
+
 /**********************************************************************************************************/
 /************************************************SUB_IMM***************************************************/
 /**********************************************************************************************************/
@@ -1503,15 +1580,43 @@ int sub_imm (Instruction ins, Mem* mem) {
 	R[d] = result;
 	if (setflag) {
 		if (result & (1u << 31) ){
-			APSR.N = 1;
+			APSR = APSR & 0x7FFFFFFF;
+			APSR = APSR  (1u << 31); // APSR.N = 1;
 		}
 		else {
-			APSR.N = 0;
+			APSR = APSR & 0x7FFFFFFF; // APSR.N = 0;
 		}
-		APSR.Z = IsZeroBit(result);
-		APSR.Z = IsZeroBit(result);
-		APSR.C = carry;
-		APSR.V = overflow;
+
+		//APSR.Z = IsZeroBit (result);
+	
+		if (IsZeroBit(result)) { 
+			APSR = APSR & 0xBFFFFFFF; 
+			APSR = APSR  (1u << 30); 
+		}
+		else {
+			APSR = APSR & 0xBFFFFFFF;
+		}
+
+		//APSR.C = carry;
+
+		if (carry) { 
+			APSR = APSR & 0xDFFFFFFF; 
+			APSR = APSR  (1u << 29); 
+		}
+		else {
+			APSR = APSR & 0xDFFFFFFF;
+		}
+
+		//APSR.V = overflow;
+
+		if (overflow) { 
+			APSR = APSR & 0xEFFFFFFF; 
+			APSR = APSR  (1u << 28);
+		}
+		else {
+			APSR = APSR & 0xEFFFFFFF;
+		}	
+
 	}
 	return 0;
 }
@@ -1528,8 +1633,8 @@ int sub_imm (Instruction ins, Mem* mem) {
 
 int sub_imm_T1(Instruction ins,  int* setflags, int* imm32) {
 		
-	setflags = !InITBlock();
-	imm32 = ZeroExtend( ins.imm.value); 
+	*setflags = 0 ; //!InITBlock();
+	*imm32 = ZeroExtend( ins.imm.value); 
 	return 0;
 	
 }
@@ -1537,8 +1642,8 @@ int sub_imm_T1(Instruction ins,  int* setflags, int* imm32) {
 
 int sub_imm_T2(Instruction ins,  int* setflags , int* imm32) {
 	
-	setflags = !InITBlock();
-	imm32 = ZeroExtend( ins.imm.value); 
+	*setflags = 0; //!InITBlock();
+	*imm32 = ZeroExtend( ins.imm.value); 
 	return 0;
 
 }
@@ -1547,20 +1652,22 @@ int sub_imm_T2(Instruction ins,  int* setflags , int* imm32) {
 int sub_imm_T3(Instruction ins,  int* setflags , int* imm32 , int* n, int* d) {
 	
 
-	if ( d == 15 && ins.ext.value == 1 ) {
-		// SEE CMP (immmediate)
+	if ( *d == 15 && ins.ext.value == 1 ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	} 
 
-	if ( n == 13 ) {
-		// SEE SUB (SP minus immediate)
+	if ( *n == 13 ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	}
 
 	if (ins.ext.value == 1 ) {
-		setflags = 1;
+		*setflags = 1;
 	} 
-	imm32 = ins.imm.value;
+	*imm32 = ins.imm.value;
 
-	if (d==13 || (d==15 && ins.ext.value == 0) || n==15 ) {
+	if (*d==13 || (*d==15 && ins.ext.value == 0) || *n==15 ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
@@ -1571,18 +1678,20 @@ int sub_imm_T3(Instruction ins,  int* setflags , int* imm32 , int* n, int* d) {
 
 int sub_imm_T4(Instruction ins,  int* setflags , int* imm32, int* n, int* d ) {
 
-	if (n == 15) {
-		// SEE ADR
+	if (*n == 15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	}
 
-
-	if (n == 13) {
-		// SEE ADD
+	if (*n == 13) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
 	}
 
-	setflags = 0;
-	imm32 = ins.imm.value;
-	if ( d == 13 || d == 14 || d == 15) {
+	*setflags = 0;
+	*imm32 = ins.imm.value;
+	
+	if ( *d == 13 || *d == 14 || *d == 15) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
@@ -1593,7 +1702,7 @@ int sub_imm_T4(Instruction ins,  int* setflags , int* imm32, int* n, int* d ) {
 
 
 /**********************************************************************************************************/
-/************************************************SUB_IMM***************************************************/
+/************************************************SUB_REG***************************************************/
 /**********************************************************************************************************/
 
 
