@@ -526,7 +526,7 @@ int cmp_imm (Instruction ins, Mem* mem) {
 		return 1;
 	}
 	
-	result = AddWithCarry(R[n] , !(imm32) , &carry, &overflow);	
+	result = AddWithCarry(R[n] , (~imm32) , &carry, &overflow);	
 	
 	if (result & (1u << 31) ){
 		APSR = APSR & 0x7FFFFFFF;
@@ -585,11 +585,11 @@ int cmp_imm_T1 (Instruction ins,int* imm32){
 
 
 
-int cmp_imm_T2 (Instruction ins,int n, int imm32){
+int cmp_imm_T2 (Instruction ins,int* n, int* imm32){
 		
 
 	*imm32 = ZeroExtend (*imm32);
-	if (n==15) {
+	if (*n==15) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
