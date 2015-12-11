@@ -925,7 +925,7 @@ int mov_imm (Instruction ins, Mem* mem) {
 	if (setflags) {
 		if (result & (1u << 31) ){
 			APSR = APSR & 0x7FFFFFFF;
-			APSR = APSR | (1u << 31) // APSR.N = 1;
+			APSR = APSR | (1u << 31); // APSR.N = 1;
 		}
 		else {
 			APSR = APSR & 0x7FFFFFFF; // APSR.N = 0;
@@ -935,7 +935,7 @@ int mov_imm (Instruction ins, Mem* mem) {
 	
 		if (IsZeroBit(result)) { 
 			APSR = APSR & 0xBFFFFFFF; 
-			APSR = APSR | (1u << 30)
+			APSR = APSR | (1u << 30);
 		}
 		else {
 			APSR = APSR & 0xBFFFFFFF;
@@ -945,7 +945,7 @@ int mov_imm (Instruction ins, Mem* mem) {
 
 		if (carry) { 
 			APSR = APSR & 0xDFFFFFFF; 
-			APSR = APSR | (1u << 29)
+			APSR = APSR | (1u << 29);
 		}
 		else {
 			APSR = APSR & 0xDFFFFFFF;
@@ -1011,7 +1011,7 @@ int mov_reg (Instruction ins, Mem* mem) {
 	
 	
 	int d, m;
-	int setflags;
+	int setflags = 0;
 	long result;
 	d = ins.reg[0].value;
 	n = ins.reg[1].value;
@@ -1047,12 +1047,23 @@ int mov_reg (Instruction ins, Mem* mem) {
 		R[d] = result;
 		if (setflags) {
 			if (result & (1u << 31) ){
-				APSR.N = 1;
+				APSR = APSR & 0x7FFFFFFF;
+				APSR = APSR | (1u << 31); // APSR.N = 1;
 			}
 			else {
-				APSR.N = 0;
+				APSR = APSR & 0x7FFFFFFF; // APSR.N = 0;
 			}
-			APSR.Z = IsZeroBit (result);
+
+			//APSR.Z = IsZeroBit (result);
+	
+			if (IsZeroBit(result)) { 
+				APSR = APSR & 0xBFFFFFFF; 
+				APSR = APSR | (1u << 30); 
+			}
+			else {
+				APSR = APSR & 0xBFFFFFFF;
+			}
+
 			// APSR.C & APSR.V unchanged
 		}
 	}
@@ -1066,36 +1077,41 @@ int mov_reg (Instruction ins, Mem* mem) {
 
 int mov_reg_T1 (Instruction ins, int* setflags,int* d){
 
-	d = concat (ins.ext.value, d);
-	setflags = 0;
-	if (d==15 && InITBlock() && !LastInITBlock() ) {
+
+	// (*d) = ins.ext.value:(*d)
+	if (ins.ext.value) {
+		*d = *d + 8;
+	}
+	*setflags = 0;
+	if (*d==15 /*&& InITBlock() && !LastInITBlock()*/ ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
 	return 0;
 }
 
-int mov_reg_T2 (Instruction ins, int setflags){
+int mov_reg_T2 (Instruction ins, int* setflags){
 
-	setflags = 1;
-	if (InITBlock() ){
-		// UNPREDICTABLE
-	}
+	*setflags = 1;
+	/*if (InITBlock() ){
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}*/
 }
 
-int mov_reg_T1 (Instruction ins, int setflags,int d, int m){
+int mov_reg_T1 (Instruction ins, int* setflags,int* d, int* m){
 
 	
 	if (ins.ext.value == 1) {
-		setflags = 1;
+		*setflags = 1;
 	}
 	
-	if (setflags && ( (d==13 || d==14 || d==15 ) || (n==13 || n==14 || n==15) ) {
+	if (*setflags && ( (*d==13 || *d==14 || *d==15 ) || (*n==13 || *n==14 || *n==15) ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}	
 	
-	if (!setflags && (d==15 || m== 15 || (d==13 && m==13) ) ) {
+	if (!(*setflags) && (*d==15 || *m== 15 || (*d==13 && *m==13) ) ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
@@ -1105,8 +1121,6 @@ int mov_reg_T1 (Instruction ins, int setflags,int d, int m){
 
 
 //---------------------------------------------------------------------------------------------------------//
-
-
 
 
 /**********************************************************************************************************/
