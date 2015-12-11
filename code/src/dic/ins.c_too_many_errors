@@ -1041,7 +1041,7 @@ int mov_reg (Instruction ins, Mem* mem) {
 	
 	result = R[m];
 	if (d==15) {
-		ALUWritePC (result); //setflags is always false here
+		BranchWritePC (result); //setflags is always false here
 	}
 	else {
 		R[d] = result;
