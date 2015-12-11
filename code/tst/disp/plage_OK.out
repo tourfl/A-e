@@ -1,3 +1,752 @@
+token(0): add_imm / T3
+	strlen: 10
+token(1): ADD.W
+	strlen: 5
+token(2): FCE08000 / F1000000
+	strlen: 17
+token(3): 2 / 8 : 11 / 16 : 19
+	strlen: 12
+token(4): 3 / 26 / 12 : 14 / 0 : 7
+	strlen: 14
+token(5): 1 / 20
+
+	strlen: 5
+
+ADD.W(add_imm/T0) 
+token(0): sub_imm / T3
+	strlen: 10
+token(1): SUB.W
+	strlen: 5
+token(2): FCE08000 / F1A00000
+	strlen: 17
+token(3): 2 / 8 : 11 / 16 : 19
+	strlen: 12
+token(4): 3 / 26 / 12 : 14 / 0 : 7
+	strlen: 14
+token(5): 1 / 20
+
+	strlen: 5
+
+SUB.W(sub_imm/T0) 
+token(0): add_imm / T4
+	strlen: 10
+token(1): ADDW
+	strlen: 4
+token(2): FCF08000 / F2000000
+	strlen: 17
+token(3): 2 / 8 : 11 / 16 : 19
+	strlen: 12
+token(4): 3 / 26 / 12 : 14 / 0 : 7
+
+	strlen: 15
+
+ADDW(add_imm/T0) 
+token(0): sub_imm / T4
+	strlen: 10
+token(1): SUBW
+	strlen: 4
+token(2): FCF08000 / F2A00000
+	strlen: 17
+token(3): 2 / 8 : 11 / 16 : 19
+	strlen: 12
+token(4): 3 / 26 / 12 : 14 / 0 : 7
+
+	strlen: 15
+
+SUBW(sub_imm/T0) 
+token(0): add_reg / T3
+	strlen: 10
+token(1): ADD.W
+	strlen: 5
+token(2): FFE00000 / EB000000
+	strlen: 17
+token(3): 3 / 8 : 11 / 16 : 19 / 0 : 3
+	strlen: 16
+token(4): 2 / 12 : 14 / 6 : 7
+	strlen: 11
+token(5): 1 / 5
+
+	strlen: 4
+
+ADD.W(add_reg/T0) 
+token(0): sub_reg / T2
+	strlen: 10
+token(1): SUB.W
+	strlen: 5
+token(2): FFE00000 / EBA00000
+	strlen: 17
+token(3): 3 / 8 : 11 / 16 : 19 / 0 : 3
+	strlen: 16
+token(4): 2 / 12 : 14 / 6 : 7
+	strlen: 11
+token(5): 1 / 20
+
+	strlen: 5
+
+SUB.W(sub_reg/T0) 
+token(0): b / T3
+	strlen: 4
+token(1): B.W
+	strlen: 3
+token(2): F800D000 / F0008000
+	strlen: 17
+token(3): 0
+	strlen: 1
+token(4): 5 / 26 / 13 / 11 / 16 : 21 / 0 : 10
+
+	strlen: 22
+
+B.W(b/T0) 
+token(0): b / T4
+	strlen: 4
+token(1): B.W
+	strlen: 3
+token(2): F800D000 / F0009000
+	strlen: 17
+token(3): 0
+	strlen: 1
+token(4): 5 / 26 / 13 / 11 / 16 : 25 / 0 : 10
+
+	strlen: 22
+
+B.W(b/T0) 
+token(0): bl / T1
+	strlen: 5
+token(1): BL
+	strlen: 2
+token(2): F800D000 / F000D000
+	strlen: 17
+token(3): 0
+	strlen: 1
+token(4): 5 / 26 / 13 / 11 / 16 : 25 / 0 : 10
+
+	strlen: 22
+
+BL(bl/T0) 
+token(0): cmp_imm / T2
+	strlen: 10
+token(1): CMP.W
+	strlen: 5
+token(2): FBF08F00 / F1B00F00
+	strlen: 17
+token(3): 1 / 16 : 19
+	strlen: 7
+token(4): 3 / 26 / 12 : 14 / 0 : 7
+	strlen: 14
+token(5): 
+
+	strlen: 1
+
+CMP.W(cmp_imm/T0) 
+token(0): cmp_reg / T3
+	strlen: 10
+token(1): CMP.W
+	strlen: 5
+token(2): FFF00F00 / EBB00F00
+	strlen: 17
+token(3): 2 / 16 : 19 / 0 : 3
+	strlen: 11
+token(4): 1 / 4 : 5
+	strlen: 5
+token(5): 2 / 12 : 14 / 6 : 7
+
+	strlen: 12
+
+CMP.W(cmp_reg/T0) 
+token(0): ldr_imm / T3
+	strlen: 10
+token(1): LDR.W
+	strlen: 5
+token(2): FFF00000 / F8C00000
+	strlen: 17
+token(3): 2 / 12 : 15 / 0 : 3
+	strlen: 11
+token(4): 1 / 0 : 11
+
+	strlen: 7
+
+LDR.W(ldr_imm/T0) 
+token(0): ldr_litt / T2
+	strlen: 11
+token(1): LDR.W
+	strlen: 5
+token(2): FF7F0000 / F85F0000
+	strlen: 17
+token(3): 1 / 12 : 15
+	strlen: 7
+token(4): 1 / 0 : 11
+
+	strlen: 7
+
+LDR.W(ldr_litt/T0) 
+token(0): mov_imm / T2
+	strlen: 10
+token(1): MOV.W
+	strlen: 5
+token(2): FBEF8000 / F04F0000
+	strlen: 17
+token(3): 1 / 8 : 11
+	strlen: 6
+token(4): 3 / 26 / 12 : 14 / 0 : 7
+	strlen: 14
+token(5): 1 / 20
+
+	strlen: 5
+
+MOV.W(mov_imm/T0) 
+token(0): mov_imm / T3
+	strlen: 10
+token(1): MOVW
+	strlen: 4
+token(2): FBF08000 / F2408000
+	strlen: 17
+token(3): 1 / 8 : 11
+	strlen: 6
+token(4): 4 / 16 : 19 / 26 / 12 : 14 / 0 : 7
+
+	strlen: 21
+
+MOVW(mov_imm/T0) 
+token(0): mov_reg / T3
+	strlen: 10
+token(1): MOV.W
+	strlen: 5
+token(2): FFEF70F0 / EA4F0000
+	strlen: 17
+token(3): 1 / 8 : 11
+	strlen: 6
+token(4): 1 / 0 : 3
+	strlen: 5
+token(5): 1 / 20
+
+	strlen: 5
+
+MOV.W(mov_reg/T0) 
+token(0): movt / T1
+	strlen: 7
+token(1): MOVT
+	strlen: 4
+token(2): FBF08000 / F2C00000
+	strlen: 17
+token(3): 1 / 8 : 11
+	strlen: 6
+token(4): 4 / 16 : 19 / 26 / 12 : 14 / 0 : 7
+
+	strlen: 21
+
+MOVT(movt/T0) 
+token(0): mul / T2
+	strlen: 6
+token(1): MUL
+	strlen: 3
+token(2): FFF0F0F0 / FB00F000
+	strlen: 17
+token(3): 1 / 8 : 11
+	strlen: 6
+token(4): 1 / 16 : 19
+	strlen: 7
+token(5): 1 / 0 : 3
+
+	strlen: 6
+
+MUL(mul/T0) 
+token(0): pop / T2
+	strlen: 6
+token(1): POP.W
+	strlen: 5
+token(2): FFFF0000 / E8BD0000
+	strlen: 17
+token(3): 3 / 15 / 14 / 0 : 12
+
+	strlen: 13
+
+POP.W(pop/T0) 
+token(0): pop / T3
+	strlen: 6
+token(1): POP.W
+	strlen: 5
+token(2): FFFF0FFF / F85D0B04
+	strlen: 17
+token(3): 1 / 12 : 15
+
+	strlen: 8
+
+POP.W(pop/T0) 
+token(0): push / T2
+	strlen: 7
+token(1): PUSH.W
+	strlen: 6
+token(2): FFFF0000 / E92D0000
+	strlen: 17
+token(3): 3 / 0 : 3 / 4 : 7 / 8 : 11
+	strlen: 14
+token(4): 1 / 14
+
+	strlen: 5
+
+PUSH.W(push/T0) 
+token(0): push / T3
+	strlen: 7
+token(1): PUSH.W
+	strlen: 6
+token(2): FFFF0FFF / F84D0D04
+	strlen: 17
+token(3): 1 / 12 : 15
+
+	strlen: 8
+
+PUSH.W(push/T0) 
+token(0): str_imm / T3
+	strlen: 10
+token(1): STR.W
+	strlen: 5
+token(2): FFF00000 / F8C00000
+	strlen: 17
+token(3): 2 / 12 : 15 / 16 : 19
+	strlen: 13
+token(4): 1 / 0 : 11
+
+	strlen: 7
+
+STR.W(str_imm/T0) 
+token(0): str_reg / T2
+	strlen: 10
+token(1): STR.W
+	strlen: 5
+token(2): FFF00000 / F8400000
+	strlen: 17
+token(3): 3 / 12 : 15 / 16 : 19 / 0 : 3
+	strlen: 17
+token(4): 1 / 4 : 5
+
+	strlen: 6
+
+STR.W(str_reg/T0) 
+token(0): add_sp / T3
+	strlen: 9
+token(1): ADD
+	strlen: 3
+token(2): FBEF8000 / F10D000
+	strlen: 16
+token(3): 1 / 8 : 11
+	strlen: 6
+token(4): 3 / 26 / 12 : 14 / 0 : 7
+
+	strlen: 15
+
+ADD(add_sp/T0) 
+token(0): add_sp / T4
+	strlen: 9
+token(1): ADDW
+	strlen: 4
+token(2): FBEF8000 / F20D000
+	strlen: 16
+token(3): 1 / 8 : 11
+	strlen: 6
+token(4): 3 / 26 / 12 : 14 / 0 : 7
+
+	strlen: 15
+
+ADDW(add_sp/T0) 
+token(0): sub_sp / T2
+	strlen: 9
+token(1): SUB
+	strlen: 3
+token(2): FBEF8000 / F1AD000
+	strlen: 16
+token(3): 1 / 8 : 11
+	strlen: 6
+token(4): 3 / 26 / 12 : 14 / 0 : 7
+
+	strlen: 15
+
+SUB(sub_sp/T0) 
+token(0): sub_sp / T3
+	strlen: 9
+token(1): SUBW
+	strlen: 4
+token(2): FBEF8000 / F2AD000
+	strlen: 16
+token(3): 1 / 8 : 11
+	strlen: 6
+token(4): 3 / 26 / 12 : 14 / 0 : 7
+	strlen: 14
+
+SUBW(sub_sp/T0) 
+token(0): add_imm / T1
+	strlen: 10
+token(1): ADD / ADDS
+	strlen: 8
+token(2): FE00 / 1C00
+	strlen: 9
+token(3): 2 / 0 : 2 / 3 : 5
+	strlen: 9
+token(4): 1 / 6 : 8
+
+	strlen: 6
+
+ADD(add_imm/T0) 
+token(0): add_imm / T2
+	strlen: 10
+token(1): ADD / ADDS
+	strlen: 8
+token(2): F800 / 3000
+	strlen: 9
+token(3): 1 / 8 : 10
+	strlen: 6
+token(4): 1 / 0 : 7
+
+	strlen: 6
+
+ADD(add_imm/T0) 
+token(0): add_reg / T1
+	strlen: 10
+token(1): ADD / ADDS
+	strlen: 8
+token(2): FE00 / 1800
+	strlen: 9
+token(3): 3 / 0 : 2 / 3 : 5 / 6 : 8
+
+	strlen: 14
+
+ADD(add_reg/T0) 
+token(0): sub_reg / T1
+	strlen: 10
+token(1): SUB / SUBS
+	strlen: 8
+token(2): FE00 / 1A00
+	strlen: 9
+token(3): 3 / 0 : 2 / 3 : 5 / 6 : 8
+
+	strlen: 14
+
+SUB(sub_reg/T0) 
+token(0): add_reg / T2
+	strlen: 10
+token(1): ADD / ADDS
+	strlen: 8
+token(2): FF00 / 4400
+	strlen: 9
+token(3): 3 / 7 / 0 : 2 / 3 : 6
+
+	strlen: 12
+
+ADD(add_reg/T0) 
+token(0): sub_imm / T1
+	strlen: 10
+token(1): SUB / SUBS
+	strlen: 8
+token(2): FE00 / 1E00
+	strlen: 9
+token(3): 2 / 0 : 2 / 3 : 5
+	strlen: 9
+token(4): 1 / 6 : 8
+
+	strlen: 6
+
+SUB(sub_imm/T0) 
+token(0): sub_imm / T2
+	strlen: 10
+token(1): SUB / SUBS
+	strlen: 8
+token(2): F800 / 3800
+	strlen: 9
+token(3): 1 / 8 : 10
+	strlen: 6
+token(4): 1 / 0 : 7
+
+	strlen: 6
+
+SUB(sub_imm/T0) 
+token(0): b / T1
+	strlen: 4
+token(1): B
+	strlen: 1
+token(2): F000 / D000
+	strlen: 9
+token(3): 0
+	strlen: 1
+token(4): 1 / 0 : 7
+
+	strlen: 6
+
+B(b/T0) 
+token(0): b / T2
+	strlen: 4
+token(1): B
+	strlen: 1
+token(2): F800 / E000
+	strlen: 9
+token(3): 0
+	strlen: 1
+token(4): 1 / 0 : 10
+
+	strlen: 7
+
+B(b/T0) 
+token(0): bx / T1
+	strlen: 5
+token(1): BX
+	strlen: 2
+token(2): FF80 / 4700
+	strlen: 9
+token(3): 1 / 3 : 6
+
+	strlen: 6
+
+BX(bx/T0) 
+token(0): cmp_imm / T1
+	strlen: 10
+token(1): CMP
+	strlen: 3
+token(2): F800 / 2800
+	strlen: 9
+token(3): 1 / 8 : 10
+	strlen: 6
+token(4): 1 / 0 : 7
+
+	strlen: 6
+
+CMP(cmp_imm/T0) 
+token(0): cmp_reg / T1
+	strlen: 10
+token(1): CMP
+	strlen: 3
+token(2): FFC0 / 4280
+	strlen: 9
+token(3): 2 / 0 : 2 / 3 : 5
+
+	strlen: 10
+
+CMP(cmp_reg/T0) 
+token(0): cmp_reg / T2
+	strlen: 10
+token(1): CMP
+	strlen: 3
+token(2): FF00 / 4500
+	strlen: 9
+token(3): 2 / 0 : 2 / 3 : 6
+	strlen: 9
+token(4): 0
+	strlen: 1
+token(5): 1 / 7
+
+	strlen: 4
+
+CMP(cmp_reg/T0) 
+token(0): it / T1
+	strlen: 5
+token(1): IT
+	strlen: 2
+token(2): FF00 / BF00
+	strlen: 9
+token(3): 
+
+	strlen: 1
+
+IT(it/T0) 
+token(0): ldr_imm / T1
+	strlen: 10
+token(1): LDR
+	strlen: 3
+token(2): F800 / 6800
+	strlen: 9
+token(3): 2 / 0 : 2 / 3 : 5
+	strlen: 9
+token(4): 1 / 6 : 10
+
+	strlen: 7
+
+LDR(ldr_imm/T0) 
+token(0): ldr_imm / T2
+	strlen: 10
+token(1): LDR
+	strlen: 3
+token(2): F800 / 9800
+	strlen: 9
+token(3): 1 / 8 : 10
+	strlen: 6
+token(4): 1 / 0 : 7
+
+	strlen: 6
+
+LDR(ldr_imm/T0) 
+token(0): ldr_litt / T1
+	strlen: 11
+token(1): LDR
+	strlen: 3
+token(2): F800 / 4800
+	strlen: 9
+token(3): 1 / 8 : 10
+	strlen: 6
+token(4): 1 / 0 : 7
+
+	strlen: 6
+
+LDR(ldr_litt/T0) 
+token(0): mov_imm / T1
+	strlen: 10
+token(1): MOV / MOVS
+	strlen: 8
+token(2): F800 / 2000
+	strlen: 9
+token(3): 1 / 8 : 10
+	strlen: 6
+token(4): 1 / 0 : 7
+	strlen: 5
+token(5): 
+
+	strlen: 1
+
+MOV(mov_imm/T0) 
+token(0): mov_reg / T1
+	strlen: 10
+token(1): MOV
+	strlen: 3
+token(2): FF00 / 4600
+	strlen: 9
+token(3): 2 / 0 : 2 / 3 : 6
+	strlen: 9
+token(4): 0
+	strlen: 1
+token(5): 1 / 7
+	strlen: 3
+
+MOV(mov_reg/T0) 
+token(0): mov_reg / T2
+	strlen: 10
+token(1): MOVS
+	strlen: 4
+token(2): FFC0 / 0000
+	strlen: 9
+token(3): 2 / 0 : 2 / 3 : 5
+
+	strlen: 10
+
+MOVS(mov_reg/T0) 
+token(0): mul / T1
+	strlen: 6
+token(1): MUL / MOV
+	strlen: 7
+token(2): FFC0 / 4340
+	strlen: 9
+token(3): 2 / 0 : 2 / 3 : 5
+	strlen: 9
+token(4): 
+
+	strlen: 1
+
+MUL(mul/T0) 
+token(0): pop / T1
+	strlen: 6
+token(1): POP
+	strlen: 3
+token(2): FE00 / BC00
+	strlen: 9
+token(3): 2 / 8 / 0 : 7
+
+	strlen: 8
+
+POP(pop/T0) 
+token(0): push / T1
+	strlen: 7
+token(1): PUSH
+	strlen: 4
+token(2): FE00 / B400
+	strlen: 9
+token(3): 2 / 8 / 0 : 7
+
+	strlen: 8
+
+PUSH(push/T0) 
+token(0): str_imm / T1
+	strlen: 10
+token(1): STR
+	strlen: 3
+token(2): F800 / 6000
+	strlen: 9
+token(3): 2 / 0 : 2 / 3 : 5
+	strlen: 9
+token(4): 1 / 6 : 10
+
+	strlen: 7
+
+STR(str_imm/T0) 
+token(0): str_imm / T2
+	strlen: 10
+token(1): STR
+	strlen: 3
+token(2): F800 / 9000
+	strlen: 9
+token(3): 1 / 8 : 10
+	strlen: 6
+token(4): 1 / 0 : 7
+
+	strlen: 6
+
+STR(str_imm/T0) 
+token(0): str_reg / T1
+	strlen: 10
+token(1): STR
+	strlen: 3
+token(2): FE00 / 5000
+	strlen: 9
+token(3): 3 / 0 : 2 / 3 : 5 / 6 : 8
+
+	strlen: 14
+
+STR(str_reg/T0) 
+token(0): svc / T1
+	strlen: 6
+token(1): SVC
+	strlen: 3
+token(2): FF00 / DF00
+	strlen: 9
+token(3): 0
+	strlen: 1
+token(4): 1 / 0 : 7
+
+	strlen: 6
+
+SVC(svc/T0) 
+token(0): add_sp / T1
+	strlen: 9
+token(1): ADD
+	strlen: 3
+token(2): F800 / A800
+	strlen: 9
+token(3): 1 / 8 : 10
+	strlen: 6
+token(4): 1 / 0 : 7
+
+	strlen: 6
+
+ADD(add_sp/T0) 
+token(0): add_sp / T2
+	strlen: 9
+token(1): ADD
+	strlen: 3
+token(2): FF80 / B000
+	strlen: 9
+token(3): 0
+	strlen: 1
+token(4): 1 / 0 : 6
+
+	strlen: 6
+
+ADD(add_sp/T0) 
+token(0): sub_sp / T1
+	strlen: 9
+token(1): SUB
+	strlen: 3
+token(2): FF80 / B080
+	strlen: 9
+token(3): 0
+	strlen: 1
+token(4): 1 / 0 : 6
+	strlen: 5
+
+SUB(sub_sp/T0) 
 .text
 .rodata
 .data

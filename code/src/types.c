@@ -26,7 +26,6 @@ void *init_m(void *addr, int size)
 
 
 
-
 enum {HEXA,OCT,DEC,UNKNOWN};
 
 int get_type(char* chaine) {
@@ -81,6 +80,22 @@ word plg_to_mask(Plage p)
 Plgtab* init_plgtab()
 {
     return calloc(1, sizeof(Plgtab));
+}
+
+
+
+
+
+
+int set_plgtab(Plgtab *plgt, int size)
+{
+    plgt->size = size;
+    
+
+    if ( ( plgt->plages = calloc(size, sizeof(Plage)) ) == NULL)
+        return 2;
+
+    return 0;
 }
 
 
@@ -147,68 +162,6 @@ Plgtab* plgtabclone(Plgtab *src)
 
 
 
-// return an newly-allocated str
-
-char* strclone(char *src)
-{
-    char *dest = calloc(strlen(src), sizeof(*dest));
-
-    if(dest == NULL)
-        return NULL;
-
-    return strcpy(dest, src);
-}
-
-
-
-
-Strlist* init_strlist()
-{
-    return calloc(1, sizeof(Strlist));
-}
-
-
-
-
-
-
-
-
-void del_strlist(Strlist *l)
-{
-    int i;
-
-    // printf("\nsize : %u", l->size);
-
-    if(l->content == NULL)
-        return;
-
-    for (i = 0; i < l->size; ++i)
-    {
-        // printf("\n%s", l->content[i]);
-        free(l->content[i]); // on libère ce qu'il y a dans les cases du tableau
-        l->content[i] = NULL;
-    }
-
-    free(l->content); // on libère le tableau
-    l->size = 0;
-}
-
-
-
-
-
-
- void disp_strlist(Strlist l)
- {
-    int i;
-
-
-    for (i = 0; i < l.size; ++i)
-    {
-        printf("\nl.content[%u] : %s", i, l.content[i]);
-    }
- }
 
 
  int prepend_2slash(char **str)
@@ -244,45 +197,6 @@ void del_strlist(Strlist *l)
 
 
 
-// reprise de to_strlist
-
-int to_strtab(char *chaine, char **tab) {
-    char *token = NULL, *str = NULL, *saveptr = NULL;
-    int i;
-
-
-
-
-    for (i = 0, str = chaine; i < 2; ++i, str = NULL)
-    {
-        token = strtok_r(str, "/", &saveptr);
-
-        // DISP_TOKEN(i, token);
-
-        if (token != NULL) {
-            tab[i] = malloc(strlen(token) * sizeof(char));
-
-            if(tab[i] == NULL)
-                return 2;
-
-            if(strcpy(tab[i], token) == NULL)
-                return 5;
-        }
-        else {
-            tab[i] = calloc(1, sizeof(char));
-
-            if(tab[i] == NULL)
-                return 2;
-        }
-    }
-
-    return 0;
-}
-
-
-
-
-
 
 // Même principe que to_wrdtab
 
@@ -313,88 +227,46 @@ int to_wrdtab(char *chaine, word tab[]) {
 
 
 
-int to_strlist(char *chaine, Strlist *l) // p doit être initialisée
-{
-    char *token = NULL, *str = NULL, *saveptr = NULL;
-    int i;
-
-
-
-    // V3
-
-
-
-    // V2
-    // Nécessite une fonction pour exploiter les valeurs de retour (non-écrite)
-    for (i = 0, str = chaine; ; ++i, str = NULL)
-    {
-        token = strtok_r(str, "/", &saveptr);
-
-        if(token == NULL) // comprend le cas chaine == NULL
-            break;
-
-        if(i == 0) {
-            l->size = strtoul(token, NULL, 10);
-
-            if(l->size >= 0) {
-                l->content = malloc(l->size * sizeof(char *));
-
-                if(l->content == NULL)
-                    return 2;
-            }
-
-            else return 3;
-        }
-        else if (i <= l->size) {
-            l->content[i-1] = calloc(strlen(token), sizeof(char));
-
-            if(l->content[i-1] == NULL)
-                return 2;
-
-            if(strcpy(l->content[i-1], token) == NULL)
-                return 5;
-        }
-    }
-
-    // disp_strlist(*l);
-
-    if(i != l->size + 1) // l->size
-        return 4; // Problème dans le nombre de tokens
-
-
-    return 0;
-}
 
 int to_plgtab(char *chaine, Plgtab *plgt)
 {
-    Strlist *strl = init_strlist();
-    int i, r = 0;
+    char *token, *str = NULL, *saveptr = NULL;
+    int i, s = 0; // au moins un token, celui de la taille
 
 
-    r = to_strlist(chaine, strl);
 
-    // disp_strlist(strl);
+    // 2 niveaux de parsing
 
-    if(r != 0)
-        return r;
+    if(plgt == NULL)
+        return 31;
 
-    plgt->plages = malloc(strl->size * sizeof(Plage));
 
-    if(plgt->plages == NULL)
-        return 2;
-
-    plgt->size = strl->size;
-
-    for (i = 0; i < strl->size; ++i)
+    for (i = -1, str = chaine; i < s; ++i, str = NULL)
     {
-        if(sscanf(strl->content[i], "%u:%u", &(plgt->plages[i].start), &(plgt->plages[i].end)) == 1)
+        token = strtok_r(str, "/", &saveptr);
+
+
+        // DISP_TOKEN(i, token);
+
+
+        if(token == NULL) // Comprend le cas chaine == NULL
+            break;
+
+        if(i == -1)
+        {
+            sscanf(token, "%u", &s);
+            set_plgtab(plgt, s);
+        }
+
+        else if(sscanf(token, "%u:%u", &plgt->plages[i].start, &plgt->plages[i].end) == 1)
+        {
             plgt->plages[i].end = plgt->plages[i].start;
+        }
 
-
-        // printf("  \nplage %u:\tstart: %u\tend: %u\n", i, plgt->plages[i].start, plgt->plages[i].end);
+        
     }
 
-    del_strlist(strl);
+
 
     return 0;
 }

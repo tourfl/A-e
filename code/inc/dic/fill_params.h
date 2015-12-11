@@ -15,7 +15,10 @@ int fill_params_default(word in, Instruction *out);
 int fill_params_B(word in, Instruction *out);
 int fill_params_BL(word in, Instruction *out);
 int fill_params_pop_push(word in, Instruction *out);
-int fill_params_add_sp(word in, Instruction *out);
+int fill_params_sub_sp(word in, Instruction *out);
+int fill_params_ldr(word in, Instruction *out);
+int fill_params_add_reg(word in, Instruction *out);
+
 
 int fill_with_final_value(int in, Plgtab *tab);
 

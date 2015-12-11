@@ -116,6 +116,81 @@ int to_good_endianness(char **binstr, int taille)
 
 
 
+
+int change_word_endianness(word *mot, Endianness in, Endianness out)
+{
+    word w= *mot << 16;
+
+
+    if( (in == LITTLE_E_ALIGNED && out == LITTLE_E)
+          || (in == LITTLE_E && out == LITTLE_E_ALIGNED) )
+    {
+        *mot = *mot >> 16;
+        *mot += w;
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+int change_endianness(byte *tab, int size, Endianness in, Endianness out)
+{
+    int i;
+    byte b1=0, b2=0;
+
+
+
+
+    if(size % 2 != 0) // On ne peut pas changer l'endianness dans ces conditions
+        return 30;
+
+
+
+    if( (in == BIG_E && out == LITTLE_E)
+     || (in == LITTLE_E && out == BIG_E) )
+    {
+        change_endianness(tab, size, in, LITTLE_E_ALIGNED);
+        change_endianness(tab, size, LITTLE_E_ALIGNED, out);
+    }
+    
+    else if( (in == LITTLE_E_ALIGNED && out == LITTLE_E)
+          || (in == LITTLE_E && out == LITTLE_E_ALIGNED) )
+    {
+        for (i = 0; i < size; i += 4)
+        {
+            b1 = tab[i];
+            b2 = tab[i + 1];
+
+            tab[i] = tab[i+2];
+            tab[i+1] = tab[i+3];
+
+            tab[i+2] = b1;
+            tab[i+3] = b2;
+        }
+    }
+
+    else if( (in == BIG_E && out == LITTLE_E_ALIGNED)
+          || (out == BIG_E && in == LITTLE_E_ALIGNED) )
+    {
+        for (i = 0; i < size - 1; i += 2)
+        {
+            b1 = tab[i];
+            tab[i] = tab[i + 1];
+            tab[i+1] = b1;
+        }
+    }
+
+    return 0;
+}
+
+
+
+
+
 int masklen(word mot)
 {
     int l=0;

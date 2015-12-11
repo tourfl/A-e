@@ -198,8 +198,10 @@ int set_word(vaddr32 va_1, word value, Segment map[NB_SEC])
    vaddr32 va_start;
    vaddr32 va_end;
    uint32_t size;
-   int p;
-   int i;
+   int i, k=0, n=0;
+
+
+   // printf("value = %u\n", value);
 
    for (i = 0; i < NB_SEC; i++)
    {
@@ -224,13 +226,13 @@ int set_word(vaddr32 va_1, word value, Segment map[NB_SEC])
 
         	while (va <= va_1 + 3)
         	{
+                k = va - va_start;
+                n = va - va_1;
             	// big endian
 
-        		p = pow(16, 2*(3-va+va_1));
+                value = (value << (n * 8)) >> (n * 8);
 
-        		*(map[i].content + va - va_start) = value / p;
-
-        		value = value % p;
+        		map[i].content[k] = value >> ((3 - n) * 8);
 
         		if(va == va_1 + 3)
         			return 0;

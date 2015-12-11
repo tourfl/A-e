@@ -17,26 +17,28 @@
 
 int main ( int argc, char *argv[] ) {
 
-    int r = 0;
+    int r = 0, l=0;
     FILE *fp = NULL; /* le flux dans lequel les commande seront lues : stdin (mode shell) ou un fichier */
     FILE *fd = NULL; // Pour le mode debug, permet de stocker provisoirement le fichier ouvert en mode script
     Emulator *emul = init_emul();
     interpreteur inter = emul->inter;
 
 
-
-
     if(emul == NULL) {
         exit(r);
     }
 
-    if (load_dic(emul->dic) != 0 
-        || emul->dic->ins32 == NULL 
-        || emul->dic->ins32[0].commande == NULL)
+    DEBUG_MSG("Emulator initialized");
+
+    if ( (l = load_dic(emul->dic)) != 0 
+        || emul->dic->ins32 == NULL )
     {
+        which_error(l);
         del(emul);
         ERROR_MSG("unable to load dic");
     }
+
+    DEBUG_MSG("Instructions loaded");
 
 
     if ( argc > 2 ) {

@@ -127,7 +127,6 @@ word plg_to_mask(Plage p);
 
 
 
-char* strclone(char *src);
 
  Strlist* init_strlist();
  void del_strlist(Strlist *l);
@@ -137,7 +136,6 @@ char* strclone(char *src);
  int prepend_2slash(char **str); // ajoute "2/" au début de la chaîne
 
 
- int to_strtab(char *chaine, char **tab);
  int to_wrdtab(char *chaine, word tab[]);
 
  int to_strlist(char *chaine, Strlist *liste); // fonction ultra sécurisée !

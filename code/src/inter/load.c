@@ -39,7 +39,8 @@ int loadcmd(Emulator *emul) {
     }
 
     // On récupère le contenu du fichier ELF puis on le charge en mémoire
-    load_elf_in_mem(fo, emul->map, va);
+    if(load_elf_in_mem(fo, emul->map, va) == 0)
+        INFO_MSG("%s loaded", name);
 
 
     // l'adresse du PC est mise à l'adresse du segment text
@@ -98,10 +99,10 @@ int load_elf_in_mem(FILE *fo, Segment map[], unsigned int va)
     		}
     	}
 
-    	printf("%s\n", map[i].name);
+    	// printf("%s\n", map[i].name);
 
     	map[i].size = 0;
-    	byte *content = elf_extract_scn_by_name(ehdr, fo, map[i].name, &(map[i].size), NULL );
+    	byte *content = elf_extract_scn_by_name(ehdr, fo, map[i].name, &(map[i].size), NULL);
 
     	if(content != NULL && map[i].size != 0)
     	{
@@ -117,14 +118,23 @@ int load_elf_in_mem(FILE *fo, Segment map[], unsigned int va)
     			*(map[i].content + j) = *(content + j);
     		}
 
+
+            /*
+            * ============ ENDIANNESS ============
+            * Quelque soit l'endianness réelle du contenu des sections,
+            * On fixe ici que l'on est face à du BIG ENDIAN !
+            * Les masks sont en LITTLE ENDIAN ALIGNE
+            * Le parsing des paramètres se fait également en LITTLE ENDIAN ALIGNE
+            */
+
+            // On convertit le contenu en LITTLE ENDIAN ALIGNE
+            if (change_endianness(map[i].content, map[i].size, BIG_E, LITTLE_E_ALIGNED) != 0)
+                return 31;
+
     		map[i].va = next_segment_start;
 
-    		INFO_MSG("section %s implanted at 0x%8x", map[i].name, map[i].va);
+    		DEBUG_MSG("%s at 0x%08x", map[i].name, map[i].va);
     		next_segment_start += (map[i].size/4096 + 1) * 4096;
-    	}
-
-    	else {
-    		INFO_MSG("section %s not present", map[i].name);
     	}
     }
     free(ehdr);

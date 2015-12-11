@@ -220,30 +220,27 @@ int get_nb_ins(FILE *fd)
 int decode(word in, Instruction *out, Dic *dic)
 {
 	int r=1;
-	word in_end = wrd_good_endianness(in);
 
 
 
 	//V2
 
-	// printf("in: %08x\nen: %08x", in, in_end);
-
-	r = get_ins32(in_end, out, dic);
+	r = get_ins32(in, out, dic);
 
 	if(r == 0)
 	{
-		out->fill_params(in_end, out);
+		out->fill_params(in, out);
 		return 4;
 	}		
 
 
-	in_end = in_end >> 16;
+	in = in >> 16;
 
-	r = get_ins16(in_end, out, dic);
+	r = get_ins16(in, out, dic);
 
 	if(r == 0)
 	{
-		out->fill_params(in_end, out);
+		out->fill_params(in, out);
 		return 2;
 	}
 

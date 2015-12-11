@@ -48,6 +48,8 @@ int main(int argc, char *argv[])
 
 	CU_add_test(bits_suite, "hwd_good_endianness, CU", CU_hwd_good_endianness);
 	CU_add_test(bits_suite, "wrd_good_endianness, CU", CU_wrd_good_endianness);
+	CU_add_test(bits_suite, "change endianness", CU_change_endianness);
+	CU_add_test(bits_suite, "change word endianness", CU_change_word_endianness);
 
 	CU_add_test(seg_suite, "get_word", CU_get_word);
 	CU_add_test(seg_suite, "get byte", CU_get_byte);
@@ -61,7 +63,7 @@ int main(int argc, char *argv[])
 
 	/* Exécution */
 
-	CU_basic_run_suite(arm_suite);
+	CU_basic_run_suite(bits_suite);
 	// CU_console_run_tests();
 
 

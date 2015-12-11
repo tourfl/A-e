@@ -1,0 +1,10 @@
+#-------
+#TEST_RETURN_CODE=PASS       
+#TEST_COMMENT="Remplace une partie de la section .text pour tester l'instruction add_imm T2"
+#-------
+
+load pile.o
+disp mem 0x1000+30
+set mem word 0x1000 0xb9440000
+disp mem 0x1000+30
+disasm 0x1000+4

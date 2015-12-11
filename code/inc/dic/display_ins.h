@@ -16,6 +16,7 @@ void display(Instruction ins, int flag);
 
 void disp_name(Instruction ins);
 void disp_regs(Plgtab regs);
+void disp_reg_name(Plage p);
 void disp_imm(Plgtab imm);
 
 
@@ -30,6 +31,7 @@ void disp_default(Instruction ins);
 // affichage customisé
 void disp_sub_sp(Instruction ins);
 void disp_pop_push(Instruction ins);
+void disp_ldr(Instruction ins);
 
 
 

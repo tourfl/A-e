@@ -62,7 +62,7 @@ char* get_next_token(interpreteur inter) {
     char delim[] = " \t\n";
 
     if ( inter->pos == 0 ) {
-        str = malloc(strlen(inter->input) * sizeof(char));
+        str = malloc( (strlen(inter->input) + 1) * sizeof(char)); // end char
 
         if(str == NULL)
             return NULL;
@@ -313,7 +313,7 @@ void string_standardise( char* in, char* out ) {
     for ( j= 0; i< strlen(in); i++ ) {
 
         /* insert blanks around special characters*/
-        if (in[i]==':' || in[i]=='+' || in[i]=='~') {
+        if (in[i]==':' || in[i]=='+' || in[i]=='~'  || in[i]=='/') {
             out[j++]=' ';
             out[j++]=in[i];
             out[j++]=' ';
@@ -336,6 +336,8 @@ void string_standardise( char* in, char* out ) {
         else if (isblank((int) in[i])) out[j++]=' ';
         else out[j++]=in[i];
     }
+
+    out[j] = '\0';
 }
 
 

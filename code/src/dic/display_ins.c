@@ -48,7 +48,7 @@ void disp_not_decoded(Instruction ins)
 void disp_name(Instruction ins)
 {
 	printf("%s", ins.name_in);
-	printf("(%s/T%u)", ins.commande, ins.encoding);
+	// printf("(%s/T%u)", ins.commande, ins.encoding);
 	printf(" ");
 }
 
@@ -68,7 +68,17 @@ void disp_regs(Plgtab regs)
 		if(i != 0)
 			printf(", ");
 
-		switch (regs.plages[i].value)
+		disp_reg_name(regs.plages[i]);
+	}
+}
+
+
+
+
+
+void disp_reg_name(Plage p)
+{
+	switch (p.value)
 		{
 			case 13: {
 				printf("sp");
@@ -87,11 +97,10 @@ void disp_regs(Plgtab regs)
 				break;
 			}
 			default: {
-				printf("r%u", regs.plages[i].value);			
+				printf("r%u", p.value);			
 				break;
 			}
 		}
-	}
 }
 
 
@@ -128,7 +137,6 @@ void disp_regs_and_imm(Instruction ins)
 
 void disp_default(Instruction ins)
 {
-	printf("\n");
 	disp_name(ins);
 	
 	disp_regs_and_imm(ins);
@@ -142,8 +150,6 @@ void disp_default(Instruction ins)
 
 void disp_sub_sp(Instruction ins)
 {
-	printf("\n");
-
 	disp_name(ins);
 
 
@@ -170,8 +176,6 @@ void disp_sub_sp(Instruction ins)
 void disp_pop_push(Instruction ins)
 {
 
-	printf("\n");
-
 	disp_name(ins);
 
 	printf("{");
@@ -180,5 +184,27 @@ void disp_pop_push(Instruction ins)
 		disp_regs(*(ins.reg));
 
 	printf("}");
+}
+
+
+
+
+void disp_ldr(Instruction ins)
+{
+	disp_name(ins);
+
+	disp_reg_name(ins.reg->plages[0]);
+
+	printf(", [");
+	disp_reg_name(ins.reg->plages[1]);
+
+	if(ins.imm->size > 0 && ins.imm->plages->value > 0)
+	{
+		printf(", ");
+		disp_imm(*(ins.imm));
+	}
+
+	printf("]");
+
 }
 

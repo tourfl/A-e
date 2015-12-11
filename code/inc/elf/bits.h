@@ -23,6 +23,15 @@ byte *__flip_endianness( byte * block, uint sz );
 word wrd_good_endianness(word in);
 Half_word hwd_good_endianness(Half_word in);
 
+
+
+typedef enum endianness { 
+	BIG_E, LITTLE_E, LITTLE_E_ALIGNED
+ } Endianness;
+
+int change_word_endianness(word *mot, Endianness in, Endianness out);
+
+int change_endianness(byte *tab, int size, Endianness in, Endianness out);
 int to_good_endianness(char **binstr, int taille);
 
 int cmp_mask(word mask1, word mask2);

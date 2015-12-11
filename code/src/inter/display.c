@@ -62,6 +62,7 @@ int dispcmd (Emulator *emul) {
 			}
 			else
 			{
+				printf("\n");
 				return 0;
 			}
 		}
@@ -158,7 +159,7 @@ void disp_plage (Plage plg, Segment map[NB_SEC]) // on suppose va_1 > va_2
 	while(va <= plg.end)
 	{
 		if (k % 16 == 0)
-			printf("\n  0x%08x ", va);
+			printf("\n0x%08x\t", va);
 
 		printf("%02x ", plage[va - plg.start]);
 
@@ -167,13 +168,11 @@ void disp_plage (Plage plg, Segment map[NB_SEC]) // on suppose va_1 > va_2
 	}
 
 	free(plage);
-
-	printf("\n");
 }
 
 void disp_oct(unsigned int va, Segment map[NB_SEC]) // V2
 {
-	printf(" 0x%08x %02x\n", va, get_byte(va, map));
+	printf("\n0x%08x\t%02x", va, get_byte(va, map));
 }
 
 int disp_reg(char *name, Registre reg[NB_REG])

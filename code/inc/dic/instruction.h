@@ -15,6 +15,14 @@
  *
  */
 
+ #define MAX_CHAR 10
+
+typedef enum decodage {
+	FOUND_16=2,
+	FOUND_32=4,
+	UNFOUND=1
+} Decodage;
+
 
 
 // pour le problème d'inclusions circulaires
@@ -35,10 +43,10 @@ typedef void (*Disp_pft)(Instruction);
 struct ins
 {
 	// Général:
-	char* commande;
+	char commande[MAX_CHAR];
 	int encoding;
-	char* name_in;
-	char* name_out;
+	char name_in[MAX_CHAR];
+	char name_out[MAX_CHAR];
 	unsigned int mask;
 	unsigned int opcode;
  

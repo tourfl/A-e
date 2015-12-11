@@ -12,6 +12,9 @@
 int setcmd (Emulator *emul) {
 
 	interpreteur inter = emul->inter;
+
+	// mauvais choix d'utiliser l'allocation dynamique pour les token...
+
 	char* what = NULL;
 	char* name = NULL;
 	vaddr32 va = 0; // name en unsigned int
@@ -26,9 +29,9 @@ int setcmd (Emulator *emul) {
 
 	name = get_next_token(inter); // registre ou adresse
 	value = get_next_token(inter); // valeur
+	// printf("value = %s\n", value);
 
-	/* On commence par tester la valeur car elle est commune aux 3 commandes
-	*/
+
 
 	if( what == NULL
 	|| name == NULL

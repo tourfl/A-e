@@ -129,7 +129,7 @@ int fill_params_pop_push(word in, Instruction *out)
 
 
 
-int fill_params_add_sp(word in, Instruction *out)
+int fill_params_sub_sp(word in, Instruction *out)
 {
 	int imm=0, r=0;
 
@@ -139,13 +139,81 @@ int fill_params_add_sp(word in, Instruction *out)
 		return r;
 
 
-
-
-
 	imm = ZeroExtend(*(out->imm));
 
-	if(out->imm->size > 0)
-		fill_with_final_value(imm << 2, out->imm); // décalage de 2 bits, cf spécifications
+	if(out->encoding == 1)
+		imm <<= 2;  // décalage de 2 bits, cf spécifications
+
+	return fill_with_final_value(imm , out->imm);
+}
+
+
+
+
+
+
+int fill_params_ldr(word in, Instruction *out)
+{
+	int imm=0, r=0;
+
+
+
+	if( (r = parse_all_params(in, out)) != 0)
+		return r;
+
+	imm = ZeroExtend( *(out->imm) );
+
+	if(out->encoding == 1 || out->encoding == 2)
+		imm <<= 2;
+
+	return fill_with_final_value(imm, out->imm);
+}
+
+
+
+
+
+int fill_params_add_reg(word in, Instruction *out)
+{
+	int rdn=0;
+	Plgtab *rdntab = plgtabclone(out->reg);
+
+
+
+	if(out->encoding != 2)
+		return fill_params_default(in , out);
+
+	disp_plgtab(*out->reg);
+
+	parse_params(in, out->reg);
+
+
+
+	disp_plgtab(*out->reg);
+
+	rdntab->size = 2; // il ne doit pas prendre en compte la dernière case
+
+	rdn = ZeroExtend(*rdntab); // met la taille à 1 et concatène les valeurs binaires
+
+	printf("\nrdn = %u", rdn);
+
+	fill_with_final_value(rdn, rdntab);
+	disp_plgtab(*rdntab);	
+
+	rdntab->plages = realloc(rdntab->plages, 2 * sizeof(Plage));
+
+	if(rdntab->plages == NULL)
+		return 2;
+
+	disp_plgtab(*rdntab);
+
+	rdntab->size = 2;
+
+	rdntab->plages[1] = out->reg->plages[2];
+
+	free(out->reg);
+
+	out->reg = rdntab;
 
 	return 0;
 }

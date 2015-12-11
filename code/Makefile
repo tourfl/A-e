@@ -1,5 +1,7 @@
 TARGET=emul-arm
 MODE=debug
+LEAKFINDER=valgrind
+TESTFILE=
 
 # noms des executables utilisés durant la compilation/edition des liens
 CC=`which gcc` 
@@ -14,6 +16,10 @@ LFLAGS=-lreadline -lm -lcurses
 ifeq ($(MODE),debug)
 	CFLAGS+= -g -DDEBUG -DVERBOSE
 endif
+
+#options du leakfinder
+
+LEAKFLAGS=--leak-check=yes
 
 # definition des repertoires de source/destination
 SRCDIR=src
@@ -58,6 +64,10 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 unit:
 	@($(MAKE) $(TARGET))
 	@(cd $(UNTDIR) && $(MAKE))
+
+leak:
+	@( $(MAKE) )
+	@( $(LEAKFINDER) $(LEAKFLAGS) ./$(TARGET) $(TESTFILE) )
 
 clean : 
 	$(RM) $(TARGET) $(GARBAGE) $(OBJ)

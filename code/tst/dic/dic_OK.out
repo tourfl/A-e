@@ -91,9 +91,7 @@ PUSH
 
 STR 
 
-LDR 
-
-LDR 
+MOV 
 
 CMP 
 
@@ -109,7 +107,7 @@ STR
 
 ADD 
 
-MOV 
+LDR 
 
 LDR 
 

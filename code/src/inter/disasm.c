@@ -53,7 +53,8 @@ int disasm(Emulator *emul)
 int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 {
 	byte *plage = NULL;
-	uint i = 0, p = 1, r, k = 0;
+	uint i = 0, j, p = 1, k = 0;
+	Decodage r=UNFOUND;
 	word mot;
 
 	// On récupère la plage d'octet si elle est correcte (taille > 1 bytes, va_2 > va_1)
@@ -63,7 +64,7 @@ int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 
 	plage = get_plage(plg, emul->map);
 
-	disp_plage(plg, emul->map);
+	// disp_plage(plg, emul->map);
 
 	while (i < plg.end - plg.start - 1) // il reste au moins 2 octets à lire (une instruction sur 16 bits)
 	{
@@ -75,34 +76,59 @@ int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 		if(ins == NULL)
 			return 2;
 
-		mot = plage[i]*pow(16, 6) + plage[i+1]*pow(16, 4);
-		mot+= plage[i+2]*pow(16, 2) + plage[i+3];
+		for (j = 0; j < 4; ++j)
+			mot = (mot << 8) + plage[i+j];
 
-		r = decode(mot, ins, emul->dic);
-		i+= r;
+		i += ( r = decode(mot, ins, emul->dic) );
 
 
-		if(r == 1)
+		if(r == UNFOUND)
 		{
 			k++;
 		}
 		else
 		{
-			if(k > 0)
+			if(k == 1)
 			{
-				WARNING_MSG("%i unfound instruction(s)", k);
+				printf("\033[00;31m");
+				disp_oct(plg.start + i - r - 1, emul->map);
+				printf("\033[0m");
+				k = 0;
+			}
+			else if (k > 1)
+			{
+				printf("\033[00;31m");
+				Plage pl = {plg.start + i - r - k, plg.start + i - r - 1, 0};
+				disp_plage(pl, emul->map);
+				printf("\033[0m");
 				k = 0;
 			}
 
 
+
 			p = 0; // signifie qu'au moins une instruction a été lue
 
-			// printf("\n%08x: ", mot);
+			printf("\n0x%08x\t\033[00;32m", plg.start + i - r);
+
+			if(r == 4)
+				printf("%08x\t", mot);
+			else
+				printf("%04x\t\t", mot >> 16);
+
+			printf("\033[0m");
 
 			display(*ins, DECODED);
 
 			/* ne surtout pas supprimer le contenu des instructions (ins, ins_d), sinon on le supprime du dic */
 		}
+	}
+	if (k > 0)
+	{
+		printf("\033[00;31m");
+		Plage pl = {plg.start + i - r - k + 1, plg.start + i - r, 0};
+		disp_plage(pl, emul->map);
+		printf("\033[0m");
+		k = 0;
 	}
 
 	printf("\n\n");

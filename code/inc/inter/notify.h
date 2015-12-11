@@ -121,7 +121,7 @@ extern "C" {
 
 #define here_n(n) DEBUG_MSG("Able to be here n°%i", n);
 
-#define DISP_TOKEN(i, token) printf("token(%u): %s\n",i, token);
+#define DISP_TOKEN(i, token) printf("token(%i): %s\n",i, token);
 
 
 

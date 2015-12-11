@@ -5,6 +5,7 @@
 #include "inter/notify.h" // messages de contrôle
 #include "types.h" // plgtab
 #include "dic/fill_params.h" // fill_params_default
+#include "inter/interpreteur.h" // string_standardise
 
 // Pour les fonctions pointées
 
@@ -35,16 +36,11 @@ Instruction* init_ins() // pour éviter les bugs lors de la désallocation
 
 void del_ins(Instruction *ins) // Les éléments alloués sont libérés
 {
-	free(ins->commande);
-	free(ins->name_in);
-	free(ins->name_out);
-
-
 	// Paramètres :
 
-	del_plgtab(ins->reg);
-	del_plgtab(ins->imm);
-	del_plgtab(ins->ext);
+	// del_plgtab(ins->reg);
+	// del_plgtab(ins->imm);
+	// del_plgtab(ins->ext);
 }
 
 
@@ -56,10 +52,10 @@ void del_ins(Instruction *ins) // Les éléments alloués sont libérés
 
 void insclone(Instruction *dest, Instruction *src)
 {
-	dest->commande = strclone(src->commande);
+	strcpy(dest->commande, src->commande);
 	dest->encoding = src->encoding;
-	dest->name_in = strclone(src->name_in);
-	dest->name_out = strclone(src->name_out);
+	strcpy(dest->name_in, src->name_in);
+	strcpy(dest->name_out, src->name_out);
 	dest->mask = src->mask;
 	dest->opcode = src->opcode;
 
@@ -106,11 +102,10 @@ int load_ins(Instruction *ins, char *chaine)
 
 
 
-
 int load_from_string(Instruction *ins, char *chaine)
 {
-	char *token = NULL, *str = NULL, *saveptr = NULL;
-	int i, p = 0;
+	char token_s[STRLEN] = {0}, *token = NULL, *str = NULL, *saveptr = NULL;
+	int i, r = 0;
 
 
 
@@ -118,73 +113,70 @@ int load_from_string(Instruction *ins, char *chaine)
 	// V4
 
 
-	for (i = 0, str = chaine; i < 6; ++i, str = NULL)
+	for (i = 0, str = chaine; i < 6 && r == 0; ++i, str = NULL)
 	{
 		token = strtok_r(str, " ", &saveptr);
 
-		// DISP_TOKEN(i, token);
 
 		if(token == NULL) // Comprend le cas chaine == NULL
 			break;
 
+
+
+
+
+		// DISP_TOKEN(i, token);
+		
 		switch (i)
 		{
 			case 0: {
-				Str str_tab[2]; // tableau de 2 char*
 
-				p = to_strtab(token, str_tab);
+				string_standardise(token, token_s); // Pour utiliser sscanf avec des chaînes
+				r = sscanf(token_s, "%s / T%u", ins->commande, &ins->encoding);
 
-				ins->commande = str_tab[0]; // alloué dynamiquement
-
-				sscanf(str_tab[1], "T%u", &(ins->encoding));
-
+				r = (2) ? 0 : 2;
 				break;
 			}
 
 			case 1: {
-				Str str_tab[2]; // tableau de 2 char*
+				
+				string_standardise(token, token_s); // Pour utiliser sscanf avec des chaînes
+				r = sscanf(token_s, "%s / %s", ins->name_in, ins->name_out);
 
-				p = to_strtab(token, str_tab);
-
-				ins->name_in = str_tab[0];
-				ins->name_out = str_tab[1]; // juste un \0 s'il n'est pas dans la définition de l'instruction
+				if(r == 1 || r == 2) r = 0;
 				break;
 			}
 			
 			case 2: {
-				word wrd_tab[2];
+				r = sscanf(token, "%x/%x", &ins->mask, &ins->opcode);
 
-				p = to_wrdtab(token, wrd_tab);
-
-				ins->mask = wrd_tab[0]; // On suppose qu'il n'y a pas d'erreur
-				ins->opcode = wrd_tab[1];
+				r = (2) ? 0 : 2;
 				break;
 			}
 			
 			case 3 :
-			p = to_plgtab(token, ins->reg);
+			r = to_plgtab(token, ins->reg);
 			break;
 			
 			case 4 :
-			p = to_plgtab(token, ins->imm);
+			r = to_plgtab(token, ins->imm);
 			break;
 			
 			case 5 :
-			p = to_plgtab(token, ins->ext);
+			r = to_plgtab(token, ins->ext);
 			break;
 		}
-
-		if(p != 0 && p != 3)
-			return p;
 	}
 
-	return 0;
+	// display(*ins, NOT_DECODED);
+
+	return r;
 }
 
 
 
 
-// initialise display_decoded et run avec un switch de strcmp
+// initialise les pointeurs de fonction de chaque instruction
 
 void init_pft(Instruction *ins)
 {
@@ -211,21 +203,34 @@ void init_pft(Instruction *ins)
 	else if(strcmp(ins->commande, "add_sp") == 0)
 	{
 		ins->display_decoded = disp_sub_sp;
-		if(ins->encoding == 1 || ins->encoding == 2)
-			ins->fill_params = fill_params_add_sp;
+		ins->fill_params = fill_params_ldr; // f_p_add_sp = f_p_ldr
+	}
+	else if(strcmp(ins->commande, "add_reg") == 0)
+	{
+		ins->fill_params = fill_params_add_reg;
 	}
 	else if(strcmp(ins->commande, "sub_sp") == 0)
 	{
 		ins->display_decoded = disp_sub_sp;
-		if(ins->encoding == 1)
-			ins->fill_params = fill_params_add_sp;
+		ins->fill_params = fill_params_sub_sp;
 	}
+	else if(strcmp(ins->commande, "ldr_litt") == 0)
+	{
+		ins->fill_params = fill_params_sub_sp;
+	}
+
 
 	else if(strcmp(ins->commande, "pop") == 0 || strcmp(ins->commande, "push") == 0)
 	{
 		ins->display_decoded = disp_pop_push;
 		ins->fill_params = fill_params_pop_push;
 	}
+	else if(strcmp(ins->commande, "ldr_imm") == 0 || strcmp(ins->commande, "str_imm") == 0)
+	{
+		ins->fill_params = fill_params_ldr;
+		ins->display_decoded = disp_ldr;
+	}
+
 
 }
 
@@ -296,7 +301,7 @@ int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic) // retourn
 	
 	//V2
 
-	while (i<sz_dic && dic[i].commande != NULL) {
+	while (i<sz_dic) {
 
 		if((in & dic[i].mask) == (dic[i].opcode & dic[i].mask)) {
 			insclone(out, &(dic[i]));
