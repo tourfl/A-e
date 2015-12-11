@@ -879,6 +879,7 @@ int ldr_litt_T1 (Instruction ins,int* imm32, int* t) {
 //---------------------------------------------------------------------------------------------------------//
 
 
+
 /**********************************************************************************************************/
 /************************************************MOV_IMM***************************************************/
 /**********************************************************************************************************/
@@ -923,13 +924,33 @@ int mov_imm (Instruction ins, Mem* mem) {
 	R[d] = result;
 	if (setflags) {
 		if (result & (1u << 31) ){
-			APSR.N = 1;
+			APSR = APSR & 0x7FFFFFFF;
+			APSR = APSR | (1u << 31) // APSR.N = 1;
 		}
 		else {
-			APSR.N = 0;
+			APSR = APSR & 0x7FFFFFFF; // APSR.N = 0;
 		}
-		APSR.Z = IsZeroBit(result);
-		APSR.C = carry;	
+
+		//APSR.Z = IsZeroBit (result);
+	
+		if (IsZeroBit(result)) { 
+			APSR = APSR & 0xBFFFFFFF; 
+			APSR = APSR | (1u << 30)
+		}
+		else {
+			APSR = APSR & 0xBFFFFFFF;
+		}
+
+		//APSR.C = carry;
+
+		if (carry) { 
+			APSR = APSR & 0xDFFFFFFF; 
+			APSR = APSR | (1u << 29)
+		}
+		else {
+			APSR = APSR & 0xDFFFFFFF;
+		}
+		
 		// APSR.V unchanged
 	}
 	return 0;
@@ -942,9 +963,14 @@ int mov_imm (Instruction ins, Mem* mem) {
 
 int mov_imm_T1 (Instruction ins,Mem* mem, int* setflags, int* imm32, int* carry){
 	
-	setflags = !InITBlock() ;
-	imm32 = ZeroExtend (imm32);
-	carry = ASPR.C;
+	*setflags = 0; //!InITBlock() ;
+	*imm32 = ZeroExtend (*imm32);
+	if (APSR & (1u << 29) ) {
+		carry = 1;
+	}
+	else {
+		carry = 0;
+	}
 	return 0;
 }
 
@@ -952,11 +978,11 @@ int mov_imm_T1 (Instruction ins,Mem* mem, int* setflags, int* imm32, int* carry)
 int mov_imm_T2 (Instruction ins, int* setflags, int* imm32, int* carry, int* d) {
 	
 	if (ins.ext.value==1) {
-		setflags = 1;
+		*setflags = 1;
 	}
 	
-	(imm32 , carry) = ThumbExpandImm_C (imm32 , 32);
-	if (d==13 || d==14 || d==15) {
+	//(imm32 , carry) = ThumbExpandImm_C (imm32 , 32);
+	if (*d==13 || *d==14 || *d==15) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
@@ -965,9 +991,9 @@ int mov_imm_T2 (Instruction ins, int* setflags, int* imm32, int* carry, int* d) 
 	
 int mov_imm_T3 (Instruction ins, int* setflags, int* imm32, int* d) {
 
-	setflags = 0;
-	imm32 = ZeroExtend (imm32, 32);
-	if (d==13 || d==14 || d==15) {
+	*setflags = 0;
+	*imm32 = ZeroExtend (*imm32 );
+	if (*d==13 || *d==14 || *d==15) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
