@@ -11,7 +11,7 @@
 /**********************************************************************************************************/
 
 
-int mov_imm (Instruction ins, Emulator *emul) {
+int mov_imm_2 (Instruction ins, Emulator *emul) {
 
 
 	int carry, setflags, i;
