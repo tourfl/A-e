@@ -45,5 +45,11 @@ int pop_T1 (Instruction ins, long* registers);
 int pop_T2 (Instruction ins, long* registers);
 int pop_T3 (Instruction ins , long* registers , int* t);
 
+int ldr_imm (Instruction ins, Emulator* emul);
+int ldr_imm_T1 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n, int* t);
+int ldr_imm_T2 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n, int* t);
+int ldr_imm_T3 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n, int* t);
+
+
 
 #endif
