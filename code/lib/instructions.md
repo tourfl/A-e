@@ -39,3 +39,28 @@ mov_imm/T3 MOV/MOVW FBF08000/F2408000 1/24:27 4/0:3/10/28:30/16:23 0
 
 Il n'y a pas de paramètres extra, Rd est récupéré de 24 à 27, imm4 de 0 à 3, i en 10, imm3 de 28 à 30 et imm8 de 16 à 23
 ```
+
+## Instructions semblables :
+
+### 16 bits :
+
+```
+T1 :
+	add_imm	  sub_imm   mul   cmp_reg   ldr_imm   str_imm
+T2 :
+	mov_reg
+```
+```
+T1 :
+	add_reg   sub_reg   str_reg
+T2 :
+	add_reg (?)
+```
+```
+T1 :
+	cmp_imm   ldr_imm   mov_imm   add_sp
+T2 :
+	add_imm   sub_imm   ldr_imm   str_imm
+```
+
+

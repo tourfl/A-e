@@ -58,15 +58,15 @@ int SignExtend (Plgtab imm)
 void BranchWritePC (vaddr32 adresse) {
 	
 	adresse = adresse & ~(1u << 0) ;
-	PC = adresse;
+	// PC = adresse;
 
-	}
+}
 
 
 	
-void BXWritePC (vaddr a) {
+void BXWritePC (vaddr32 a) {
 
-	BranchwritePC (a);
+	BranchWritePC (a);
 
 }
 

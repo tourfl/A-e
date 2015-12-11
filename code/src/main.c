@@ -115,6 +115,7 @@ int main ( int argc, char *argv[] ) {
                 exit(EXIT_SUCCESS);
                 break;
             default:
+                which_error(res);
                 /* erreur durant l'execution de la commande */
                 /* En mode "fichier" toute erreur implique la fin du programme afin de récupérer la valeur de retour de la commande */
                 if (inter->mode == SCRIPT) {

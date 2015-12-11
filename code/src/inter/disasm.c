@@ -53,7 +53,7 @@ int disasm(Emulator *emul)
 int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 {
 	byte *plage = NULL;
-	uint i = 0, j, p = 1, k = 0;
+	uint i = 0, j, p = 14 /* #error code*/, k = 0;
 	Decodage r=UNFOUND;
 	word mot;
 

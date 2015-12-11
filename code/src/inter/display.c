@@ -149,7 +149,7 @@ void disp_map(Segment map[NB_SEC])
 		return;
 	}
 
-	printf("Virtual memory map (%u segments)\n", NB_SEC);
+	printf("Virtual memory map (%u segments)\n", n);
 
 	for(i = 0; i < n; i++)
 	{

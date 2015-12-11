@@ -1,6 +1,6 @@
 #-------
-#TEST_RETURN_CODE=PASS      
-#TEST_COMMENT="Teste disa"
+#TEST_RETURN_CODE=FAIL      
+#TEST_COMMENT="Des instructions sont trouvés sur la 1ère plage mais pas sur la 2ème => erreur"
 #-------
 
 load pile.o

@@ -86,14 +86,17 @@ void which_error(int code)
 			break;
 		}
 
+		case 14:
+		{
+			DEBUG_MSG("Unable to decode any word");
+			break;
+		}
+
 		default:
 		{
 			DEBUG_MSG("Untracked error %u", code);
 			break;
 		}
 	}
-
-
-	DEBUG_MSG("Exiting function which_error");
 }
 
