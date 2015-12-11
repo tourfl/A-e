@@ -1019,3 +1019,114 @@ int ldr_imm_T3 (Instruction ins, int* imm32, int* index, int* add, int* wback, i
 }
 	
 //---------------------------------------------------------------------------------------------------------//						 
+
+
+
+
+
+/**********************************************************************************************************/
+/************************************************PUSH***************************************************/
+/**********************************************************************************************************/
+
+
+int push (Instruction ins, Emulator* emul) {
+	
+	int t;
+	int i;
+	long registers;
+	long address;
+
+
+	if (ins.encoding == 1 ) {
+		if (push_T1 (ins, &registers)) {
+			return 1;
+		}
+	}
+
+	else if (ins.encoding == 2 ) {
+		if (push_T2 (ins, &registers)) {
+			return 1;
+		}
+	}
+	
+	else if (ins.encoding == 3 ) {
+		if (push_T3 (ins, &registers, &t)) {
+			return 1;
+		}
+	}
+	
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+	
+	address = emul->reg[13] - 4*BitCount(registers);
+	for (i=0 ; i<=14; i++) {
+		if (registers & (1u << i) ){
+			address = emul->reg[i];
+			address = address + 4;
+		}
+		
+	}
+	emul->reg[13] = emul->reg[13] - 4*BitCount(address) ;
+	return 0;
+
+}
+
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+int push_T1 (Instruction ins, long* registers) {
+
+	*registers = ins.imm[0].plages->value;
+	if (ins.ext[0].plages->value) {
+		*registers = *registers | (1u << 16) ;
+	} 	
+	if (BitCount(*registers)<1){
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+int push_T2 (Instruction ins, long* registers){
+
+	*registers = ins.imm[0].plages->value;
+	if (ins.ext[0].plages->value) {
+		*registers = *registers | (1u << 14) ;
+	} 	
+	if (ins.ext[1].plages->value) {
+		*registers = *registers | (1u << 15) ;
+	} 	
+
+	if (BitCount (*registers)<2 || (ins.ext[1].plages->value && ins.ext[0].plages->value) ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	if (*registers & (1u << 15)) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+		 
+	return 0;
+}
+
+int push_T3 (Instruction ins , long* registers , int* t){
+
+	*registers = 0;
+	int s = *t;
+	int d;
+	d = (unsigned int) s;
+	*registers = *registers | (1u < d ) ;
+	if (*t==13 || *t==14 || *t==15 ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+} 
+	
+//---------------------------------------------------------------------------------------------------------//						 
+
