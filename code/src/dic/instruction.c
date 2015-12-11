@@ -115,7 +115,7 @@ int load_from_string(Instruction *ins, char *chaine)
 
 	for (i = 0, str = chaine; i < 6 && r == 0; ++i, str = NULL)
 	{
-		token = strtok_r(str, " ", &saveptr);
+		token = strtok_r(str, " \t", &saveptr);
 
 
 		if(token == NULL) // Comprend le cas chaine == NULL
