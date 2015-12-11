@@ -1069,6 +1069,7 @@ int mov_reg (Instruction ins, Mem* mem) {
 	}
 	return 0;
 }
+ 
 
 
 
