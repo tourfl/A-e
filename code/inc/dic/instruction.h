@@ -27,17 +27,15 @@ typedef enum decodage {
 
 // pour le problème d'inclusions circulaires
 struct emulator;
-typedef struct emulator Emulator;
 
 // pour pouvoir utliser Instruction dans le pointeur de fonction
 struct ins;
-typedef struct ins Instruction;
 
 
 // création d'alias du type pointeur de fonction
-typedef int (*Fill_pft)(word, Instruction*);
-typedef int (*Run_pft)(Instruction, Emulator*); 
-typedef void (*Disp_pft)(Instruction);
+typedef int (*Fill_pft)(word, struct ins*);
+typedef int (*Run_pft)(struct ins, struct emulator*); 
+typedef void (*Disp_pft)(struct ins);
 
 
 struct ins
@@ -61,9 +59,9 @@ struct ins
 	Fill_pft fill_params;
 	Disp_pft display_decoded;
 	Run_pft run;
-
-
 };
+
+typedef struct ins Instruction;
 
 
 

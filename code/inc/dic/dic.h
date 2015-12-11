@@ -14,14 +14,13 @@
 
 // pour le problème d'inclusions circulaires
 struct ins;
-typedef struct ins Instruction;
 
 
 
  struct dic
  {
- 	Instruction* ins32;
- 	Instruction* ins16;
+ 	struct ins* ins32;
+ 	struct ins* ins16;
  	int sz32;
  	int sz16;
 
@@ -41,15 +40,15 @@ void del_dic(Dic *dic);
 int disp_dic(Dic *dic);
 
 int load_dic(Dic *dic);
-int load_from_file(Instruction **p_instab, int *nb_ins, char* filename);
-int load_instab(Instruction *instab, int nb_ins, FILE *fd);
+int load_from_file(struct ins **p_instab, int *nb_ins, char* filename);
+int load_instab(struct ins *instab, int nb_ins, FILE *fd);
 int get_nb_ins(FILE *fd);
 
-int decode(word in, Instruction *out, Dic *dic);
+int decode(word in, struct ins *out, Dic *dic);
 
 
-int get_ins32(word in, Instruction *out, Dic *dic);
-int get_ins16(word in, Instruction *out, Dic *dic);
+int get_ins32(word in, struct ins *out, Dic *dic);
+int get_ins16(word in, struct ins *out, Dic *dic);
 
 
 #endif

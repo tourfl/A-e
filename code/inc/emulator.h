@@ -11,8 +11,6 @@
 
 // pour le problème d'inclusions circulaires
 struct dic;
-typedef struct dic Dic;
-
 
 
 struct emulator
@@ -20,7 +18,7 @@ struct emulator
 	Segment map[NB_SEC];
 	Registre reg[NB_REG];
 
-	Dic *dic;
+	struct dic *dic;
 
 	interpreteur inter;
 
