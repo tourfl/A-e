@@ -897,3 +897,125 @@ int pop_T3 (Instruction ins , long* registers , int* t){
 } 
 
 //---------------------------------------------------------------------------------------------------------//						 
+
+
+
+/**********************************************************************************************************/
+/************************************************LDR_IMM***************************************************/
+/**********************************************************************************************************/
+
+int ldr_imm (Instruction ins, Emulator* emul) {
+	
+
+	int t,n, imm32;
+	long offset_addr, address, data;
+	int index, wback, add;
+	imm32 = ins.imm[0].plages->value;
+	
+	if (ins.encoding == 1 ) {
+		if (ldr_imm_T1 (ins, &imm32, &index, &add, &wback, &n, &t)) {
+			return 1;
+		}
+	}
+
+	else if (ins.encoding == 2 ) {
+		if (ldr_imm_T2 (ins, &imm32, &index, &add, &wback, &n, &t)) {
+			return 1;
+		}
+	}
+
+	else if (ins.encoding == 3 ) {
+		if ( ldr_imm_T3 (ins, &imm32, &index, &add, &wback, &n, &t)) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+	
+	if (add) {
+		offset_addr = emul->reg[n] + imm32;
+	}
+	else {
+		offset_addr = emul->reg[n] - imm32;
+	}
+	
+	if (index) {
+		address = offset_addr;
+	}
+	else {
+		address = emul->reg[n];
+	} 
+	
+	data = address;
+	
+	if (wback) {
+		emul->reg[n] = offset_addr;
+	}
+	
+	if (t==15) {
+		if ( (address & (1u << 0)) && (address & (1u << 1)) ) {
+			return 1;
+		}
+		else {
+			BranchWritePC (data, emul) ;
+		}
+	}
+	else {
+		emul->reg[t] = data;
+	}  
+
+	return 0;
+}
+
+
+//---------------------------------------------------------------------------------------------------------//						 
+
+
+int ldr_imm_T1 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n, int* t) {
+	
+	*t = ins.reg[0].plages->value;
+	*n = ins.reg[1].plages->value;
+	*imm32 = ZeroExtend(*imm32);	
+	*imm32 = ins.imm[0].plages->value << 2;
+	*index = 1;
+	*add = 1;
+	*wback = 0;
+	return 0;	
+}
+
+int ldr_imm_T2 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n, int* t) {
+
+	*t = ins.reg[0].plages->value;
+	*n = 13;
+	*imm32 = ZeroExtend(*imm32);	
+	*imm32 = ins.imm[0].plages->value << 2;
+	*index = 1;
+	*add = 1;
+	*wback = 0;
+	return 0;	
+}
+
+int ldr_imm_T3 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n, int* t) {
+
+	*t = ins.reg[0].plages->value;
+	*n = ins.reg[1].plages->value;
+	if (*n==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	*imm32 = ZeroExtend(*imm32);	
+	*imm32 = ins.imm[0].plages->value << 2;
+	*index = 1;
+	*add = 1;
+	*wback = 0;
+	if (*t==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+	
+//---------------------------------------------------------------------------------------------------------//						 
