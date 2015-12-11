@@ -5,7 +5,7 @@
 #include <stdlib.h> // calloc
 #include "inter/notify.h" // printf notamment
 #include "elf/bits.h" // to_good_endianness
-#include "dic/code_arm.h" // ZeroExtend
+#include "dic/code_arm.h" // ZeroExtend_plgtab
 
 #include "dic/display_ins.h"
 
@@ -35,7 +35,7 @@ int fill_params_default(word in, Instruction *out)
 
 
 
-	imm = ZeroExtend(*(out->imm));
+	imm = ZeroExtend_plgtab(*(out->imm));
 
 	if(out->imm->size > 0)
 		fill_with_final_value(imm, out->imm);
@@ -79,7 +79,7 @@ int fill_params_B(word in, Instruction *out)
 
 
 
-	imm = SignExtend(*(out->imm));
+	imm = SignExtend_plgtab(*(out->imm));
 
 
 
@@ -107,7 +107,7 @@ int fill_params_BL(word in, Instruction *out)
 	out->imm->plages[2].value = (~ (out->imm->plages[0].value ^ out->imm->plages[2].value) ) & 1;
 
 
-	imm = SignExtend(*(out->imm));
+	imm = SignExtend_plgtab(*(out->imm));
 
 	fill_with_final_value(imm << 1, out->imm);
 
@@ -139,7 +139,7 @@ int fill_params_sub_sp(word in, Instruction *out)
 		return r;
 
 
-	imm = ZeroExtend(*(out->imm));
+	imm = ZeroExtend_plgtab(*(out->imm));
 
 	if(out->encoding == 1)
 		imm <<= 2;  // décalage de 2 bits, cf spécifications
@@ -161,7 +161,7 @@ int fill_params_ldr(word in, Instruction *out)
 	if( (r = parse_all_params(in, out)) != 0)
 		return r;
 
-	imm = ZeroExtend( *(out->imm) );
+	imm = ZeroExtend_plgtab( *(out->imm) );
 
 	if(out->encoding == 1 || out->encoding == 2)
 		imm <<= 2;
@@ -193,7 +193,7 @@ int fill_params_add_reg(word in, Instruction *out)
 
 	rdntab->size = 2; // il ne doit pas prendre en compte la dernière case
 
-	rdn = ZeroExtend(*rdntab); // met la taille à 1 et concatène les valeurs binaires
+	rdn = ZeroExtend_plgtab(*rdntab); // met la taille à 1 et concatène les valeurs binaires
 
 	printf("\nrdn = %u", rdn);
 

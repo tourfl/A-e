@@ -219,29 +219,25 @@ void disp_ldr(Instruction ins)
 void disp_it(Instruction ins)
 {
 	char mask = (char) ins.ext->plages[0].value;
-	int cond = ins.ext->plages[1].value;
+	int i, k, cond = ins.ext->plages[1].value;
 	char cond0 = GET_BIT(cond, 0);
 	char str_cond[15][3] = {{0}};
 
-		strcpy(str_cond[0], "EQ");
-		strcpy(str_cond[1], "NE");
-		strcpy(str_cond[2], "HS");
-		strcpy(str_cond[3], "LO");
-		strcpy(str_cond[4], "MI");
-		strcpy(str_cond[5], "PL");
-		strcpy(str_cond[6], "VS");
-		strcpy(str_cond[7], "VC");
-		strcpy(str_cond[8], "HI");
-		strcpy(str_cond[9], "LS");
-		strcpy(str_cond[10], "GE");
-		strcpy(str_cond[11], "LT");
-		strcpy(str_cond[12], "GT");
-		strcpy(str_cond[13], "LE");
-		strcpy(str_cond[14], "AL");
-
-
-
-	int i, k;
+	strcpy(str_cond[0], "EQ");
+	strcpy(str_cond[1], "NE");
+	strcpy(str_cond[2], "HS");
+	strcpy(str_cond[3], "LO");
+	strcpy(str_cond[4], "MI");
+	strcpy(str_cond[5], "PL");
+	strcpy(str_cond[6], "VS");
+	strcpy(str_cond[7], "VC");
+	strcpy(str_cond[8], "HI");
+	strcpy(str_cond[9], "LS");
+	strcpy(str_cond[10], "GE");
+	strcpy(str_cond[11], "LT");
+	strcpy(str_cond[12], "GT");
+	strcpy(str_cond[13], "LE");
+	strcpy(str_cond[14], "AL");
 
 
 

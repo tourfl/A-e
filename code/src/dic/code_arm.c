@@ -7,7 +7,7 @@
 
 
 
-word ZeroExtend (Plgtab imm) {
+word ZeroExtend_plgtab (Plgtab imm) {
 	
 	char imm_str[33] = {0};
 	int i;
@@ -22,7 +22,7 @@ word ZeroExtend (Plgtab imm) {
 
 
 
-int SignExtend (Plgtab imm) 
+int SignExtend_plgtab (Plgtab imm) 
 {
 	uint u_imm=0, b=0;
 	int prev_size=0, size=0;
@@ -55,7 +55,7 @@ int SignExtend (Plgtab imm)
 
 
 
-void BranchWritePC (vaddr32 adresse) {
+void BranchWritePC (vaddr32 adresse, Emulator *emul) {
 	
 	adresse = adresse & ~(1u << 0) ;
 	// PC = adresse;
@@ -64,9 +64,9 @@ void BranchWritePC (vaddr32 adresse) {
 
 
 	
-void BXWritePC (vaddr32 a) {
+void BXWritePC (vaddr32 a, Emulator *emul) {
 
-	BranchWritePC (a);
+	BranchWritePC (a, emul);
 
 }
 
@@ -154,6 +154,25 @@ unsigned long AddWithCarry (unsigned long registre , unsigned long imm32 , int* 
 
 
 }
+
+
+
+
+
+
+int IsZeroBit (long result) {
+	
+	if (!result) {
+		return 0;
+	}
+	else {
+		return 1;
+	}
+
+}
+
+
+
 
 
 int BitCount (long a) {

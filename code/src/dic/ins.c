@@ -24,8 +24,8 @@ int mul (Instruction ins, Emulator* emul ) {
 	int d,n,m;
 	int setflags; 
 	long result, operand1, operand2;
-	d = ins.reg[0].plages->value;
-	n = ins.reg[1].plages->value;
+	d = ins.reg->plages[0].value;
+	n = ins.reg->plages[1].value;
 
 	if (ins.encoding == 1 ) {
 		if (mul_T1 (ins, &d, &m, &setflags)) {
@@ -107,8 +107,8 @@ int movt (Instruction ins , Emulator* emul) {
 
 	int d;
 	int imm16 = 0;
-	d = ins.reg[0].plages->value;
-	imm16 = ins.imm[0].plages->value;
+	d = ins.reg->plages[0].value;
+	imm16 = ins.imm->plages[0].value;
 	
 	if (ins.encoding == 1 ) {
 		if (movt_T1 (ins, &d)) {
@@ -120,7 +120,7 @@ int movt (Instruction ins , Emulator* emul) {
 		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
 		return 1;
 	}
-	imm16 = ZeroExtend (imm16) ;
+	// imm16 = ZeroExtend (imm16) ; // Pas besoin, il est déjà fait !
 	emul->reg[d] = emul->reg[d] & 0x0000FFFF;
 	emul->reg[d] = emul->reg[d] + imm16;
 	// R[d]<0:15> reste inchangé
@@ -153,8 +153,8 @@ int add_imm (Instruction ins, Emulator* emul) {
 	int setflags, imm32, carry, overflow;
 	long result;
 	
-	n = ins.reg[0].plages->value;
-	d = ins.reg[1].plages->value;
+	n = ins.reg->plages[0].value;
+	d = ins.reg->plages[1].value;
 	
 	if (ins.encoding == 1 ) {
 		if( add_imm_T1 (ins,  &setflags)) {
@@ -186,7 +186,7 @@ int add_imm (Instruction ins, Emulator* emul) {
 	}
 	
 		
-	imm32 = ZeroExtend( ins.imm[0].plages->value );
+	imm32 = ins.imm->plages[0].value;
 	result = AddWithCarry (emul->reg[n] , imm32, &carry , &overflow);
 	emul->reg[d] = result;
 	if (setflags) {
@@ -249,7 +249,7 @@ int add_imm_T2(Instruction ins,  int* setflags) {
 int add_imm_T3(Instruction ins,  int* setflags ,  int* n, int* d) {
 	
 
-	if ( *d == 15 && ins.ext[0].plages->value == 1 ) {
+	if ( *d == 15 && ins.ext->plages[0].value == 1 ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	} 
@@ -262,7 +262,7 @@ int add_imm_T3(Instruction ins,  int* setflags ,  int* n, int* d) {
 	*setflags = 1; 
 	
 
-	if (*d==13 || (*d==15 && ins.ext[0].plages->value == 0) || *n==15 ) {
+	if (*d==13 || (*d==15 && ins.ext->plages[0].value == 0) || *n==15 ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
@@ -309,8 +309,8 @@ int cmp_imm (Instruction ins, Emulator* emul) {
 	int imm32, n;
 	int carry, overflow;
 	long result;
-	n = ins.reg[0].plages->value;
-	imm32 =ins.imm[0].plages->value;
+	n = ins.reg->plages[0].value;
+	imm32 =ins.imm->plages[0].value;
 	
 	if (ins.encoding == 1 ) {
 		if ( cmp_imm_T1 (ins)) {
@@ -329,7 +329,6 @@ int cmp_imm (Instruction ins, Emulator* emul) {
 	}
 	
 	
-	imm32 = ZeroExtend (imm32);
 	result = AddWithCarry(emul->reg[n] , ~(imm32) , &carry, &overflow);	
 	
 	emul->reg[16] = emul->reg[16] & 0x7FFFFFFF;
@@ -404,8 +403,8 @@ int sub_imm (Instruction ins, Emulator* emul) {
 	int setflags, imm32, carry, overflow;
 	long result;
 	
-	n = ins.reg[0].plages->value;
-	d = ins.reg[1].plages->value;
+	n = ins.reg->plages[0].value;
+	d = ins.reg->plages[1].value;
 	
 	if (ins.encoding == 1 ) {
 		if (sub_imm_T1 (ins,  &setflags)) {
@@ -436,7 +435,7 @@ int sub_imm (Instruction ins, Emulator* emul) {
 		return 1;
 	}
 
-	imm32 = ZeroExtend( ins.imm[0].plages->value);
+	imm32 = ins.imm->plages[0].value;
 	result = AddWithCarry (emul->reg[n] , ~imm32, &carry, &overflow);
 	emul->reg[d] = result;
 	if (setflags) {
@@ -501,7 +500,7 @@ int sub_imm_T2(Instruction ins,  int* setflags) {
 int sub_imm_T3(Instruction ins,  int* setflags , int* n, int* d) {
 	
 
-	if ( *d == 15 && ins.ext[0].plages->value == 1 ) {
+	if ( *d == 15 && ins.ext->plages[0].value == 1 ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	} 
@@ -511,12 +510,12 @@ int sub_imm_T3(Instruction ins,  int* setflags , int* n, int* d) {
 		return 1;
 	}
 
-	if (ins.ext[0].plages->value == 1 ) {
+	if (ins.ext->plages[0].value == 1 ) {
 		*setflags = 1;
 	} 
 	
 
-	if (*d==13 || (*d==15 && ins.ext[0].plages->value == 0) || *n==15 ) {
+	if (*d==13 || (*d==15 && ins.ext->plages[0].value == 0) || *n==15 ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
@@ -565,8 +564,8 @@ int mov_imm (Instruction ins, Emulator* emul) {
 	long result;
 	int setflags;
 	int imm32;
-	d = ins.reg[0].plages->value;
-	imm32 = ins.imm[0].plages->value;
+	d = ins.reg->plages[0].value;
+	imm32 = ins.imm->plages[0].value;
 
 	if (ins.encoding == 1 ) {
 		if ( mov_imm_T1 (ins, emul, &setflags, &imm32 , &carry) ) {
@@ -627,7 +626,6 @@ int mov_imm (Instruction ins, Emulator* emul) {
 int mov_imm_T1 (Instruction ins, Emulator* emul, int* setflags, int* imm32, int* carry){
 	
 	*setflags = 0; //!InITBlock() ;
-	*imm32 = ZeroExtend (*imm32);
 	if (emul->reg[16] & (1u << 29) ) {
 		*carry = 1;
 	}
@@ -640,7 +638,7 @@ int mov_imm_T1 (Instruction ins, Emulator* emul, int* setflags, int* imm32, int*
 
 int mov_imm_T2 (Instruction ins, int* setflags, int* imm32, int* carry, int* d) {
 	
-	if (ins.ext[0].plages->value==1) {
+	if (ins.ext->plages[0].value==1) {
 		*setflags = 1;
 	}
 	
@@ -655,7 +653,6 @@ int mov_imm_T2 (Instruction ins, int* setflags, int* imm32, int* carry, int* d) 
 int mov_imm_T3 (Instruction ins, int* setflags, int* imm32, int* d) {
 
 	*setflags = 0;
-	*imm32 = ZeroExtend (*imm32 );
 	if (*d==13 || *d==14 || *d==15) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
@@ -679,8 +676,8 @@ int mov_reg (Instruction ins, Emulator* emul) {
 	int d, m;
 	int setflags = 0;
 	long result;
-	d = ins.reg[0].plages->value;
-	m = ins.reg[1].plages->value;
+	d = ins.reg->plages[0].value;
+	m = ins.reg->plages[1].value;
 
 	if (ins.encoding == 1 ) {
 		if ( mov_reg_T1 (ins,  &setflags, &d)) {
@@ -739,8 +736,8 @@ int mov_reg (Instruction ins, Emulator* emul) {
 int mov_reg_T1 (Instruction ins, int* setflags,int* d){
 
 
-	// (*d) = ins.ext.value:(*d)
-	if (ins.ext[0].plages->value) {
+	// (*d) = ins.ext->ue:(*d.va.	
+	if (ins.ext->plages[0].value) {
 		*d = *d + 8;
 	}
 	*setflags = 0;
@@ -764,7 +761,7 @@ int mov_reg_T2 (Instruction ins, int* setflags){
 int mov_reg_T3 (Instruction ins, int* setflags,int* d, int* m){
 
 	
-	if (ins.ext[0].plages->value) {
+	if (ins.ext->plages[0].value) {
 		*setflags = 1;
 	}
 	
@@ -844,10 +841,9 @@ int pop (Instruction ins, Emulator* emul) {
 
 int pop_T1 (Instruction ins, long* registers) {
 
-	//*registers = ins.ext.value:'0000000':ins.reg.value ;
-	
-	*registers = ins.reg[0].plages->value;
-	if (ins.ext[0].plages->value) {
+	//*registers = ins.ext->ue:'00.va.000':ins.reg->ue ;
+	*registers = ins.reg->plages[0].value;
+	if (ins.ext->plages[0].value) {
 		*registers = *registers | (1u << 12);
 	} 
 	if (BitCount(*registers)<1){
@@ -859,15 +855,15 @@ int pop_T1 (Instruction ins, long* registers) {
 
 int pop_T2 (Instruction ins, long* registers){
 
-	//*registers = ins.ext[0].value:ins.ext[1].value:ins.reg.value ;
-	*registers = ins.reg[0].plages->value;
-	if (ins.ext[1].plages->value) {
+	//*registers = ins.ext->value:[0].s.ext->value:[1].s.reg->ue ;
+	*registers = ins.reg->plages[0].value;
+	if (ins.ext->plages[1].value) {
 		*registers = *registers | (1u << 5);
 	} 
-	if (ins.ext[0].plages->value) {
+	if (ins.ext->plages[0].value) {
 		*registers = *registers | (1u << 6);
 	} 
-	if (BitCount (*registers)<2 || (ins.ext[0].plages->value == 1 && ins.ext[1].plages->value == 1 ) ) {
+	if (BitCount (*registers)<2 || (ins.ext->plages[0].value == 1 && ins.ext->plages[1].value == 1 ) ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
@@ -881,7 +877,7 @@ int pop_T2 (Instruction ins, long* registers){
 
 int pop_T3 (Instruction ins , long* registers , int* t){
 
-	*t = ins.reg[0].plages->value;
+	*t = ins.reg->plages[0].value;
 	*registers = 0;
 	unsigned int d;
 	int s;
@@ -910,7 +906,7 @@ int ldr_imm (Instruction ins, Emulator* emul) {
 	int t,n, imm32;
 	long offset_addr, address, data;
 	int index, wback, add;
-	imm32 = ins.imm[0].plages->value;
+	imm32 = ins.imm->plages[0].value;
 	
 	if (ins.encoding == 1 ) {
 		if (ldr_imm_T1 (ins, &imm32, &index, &add, &wback, &n, &t)) {
@@ -976,10 +972,9 @@ int ldr_imm (Instruction ins, Emulator* emul) {
 
 int ldr_imm_T1 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n, int* t) {
 	
-	*t = ins.reg[0].plages->value;
-	*n = ins.reg[1].plages->value;
-	*imm32 = ZeroExtend(*imm32);	
-	*imm32 = ins.imm[0].plages->value << 2;
+	*t = ins.reg->plages[0].value;
+	*n = ins.reg->plages[1].value;
+	*imm32 = ins.imm->plages[0].value << 2;
 	*index = 1;
 	*add = 1;
 	*wback = 0;
@@ -988,10 +983,9 @@ int ldr_imm_T1 (Instruction ins, int* imm32, int* index, int* add, int* wback, i
 
 int ldr_imm_T2 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n, int* t) {
 
-	*t = ins.reg[0].plages->value;
-	*n = 13;
-	*imm32 = ZeroExtend(*imm32);	
-	*imm32 = ins.imm[0].plages->value << 2;
+	*t = ins.reg->plages[0].value;
+	*n = 13;	
+	*imm32 = ins.imm->plages[0].value;
 	*index = 1;
 	*add = 1;
 	*wback = 0;
@@ -1000,14 +994,13 @@ int ldr_imm_T2 (Instruction ins, int* imm32, int* index, int* add, int* wback, i
 
 int ldr_imm_T3 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n, int* t) {
 
-	*t = ins.reg[0].plages->value;
-	*n = ins.reg[1].plages->value;
+	*t = ins.reg->plages[0].value;
+	*n = ins.reg->plages[1].value;
 	if (*n==15) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}
-	*imm32 = ZeroExtend(*imm32);	
-	*imm32 = ins.imm[0].plages->value << 2;
+	*imm32 = ins.imm->plages[0].value;
 	*index = 1;
 	*add = 1;
 	*wback = 0;
@@ -1081,8 +1074,8 @@ int push (Instruction ins, Emulator* emul) {
 
 int push_T1 (Instruction ins, long* registers) {
 
-	*registers = ins.imm[0].plages->value;
-	if (ins.ext[0].plages->value) {
+	*registers = ins.imm->plages[0].value;
+	if (ins.ext->plages[0].value) {
 		*registers = *registers | (1u << 16) ;
 	} 	
 	if (BitCount(*registers)<1){
@@ -1094,15 +1087,15 @@ int push_T1 (Instruction ins, long* registers) {
 
 int push_T2 (Instruction ins, long* registers){
 
-	*registers = ins.imm[0].plages->value;
-	if (ins.ext[0].plages->value) {
+	*registers = ins.imm->plages[0].value;
+	if (ins.ext->plages[0].value) {
 		*registers = *registers | (1u << 14) ;
 	} 	
-	if (ins.ext[1].plages->value) {
+	if (ins.ext->plages[1].value) {
 		*registers = *registers | (1u << 15) ;
 	} 	
 
-	if (BitCount (*registers)<2 || (ins.ext[1].plages->value && ins.ext[0].plages->value) ) {
+	if (BitCount (*registers)<2 || (ins.ext->plages[1].value && ins.ext->plages[0].value) ) {
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
 	}

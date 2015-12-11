@@ -9,7 +9,8 @@
 
 // Pour les fonctions pointées
 
-#include "dic/mov.h"
+// #include "dic/mov.h"
+#include "dic/ins.h"
 
 
 
@@ -188,6 +189,18 @@ void init_pft(Instruction *ins)
 	{
 		ins->run = mov_imm;
 	}
+	else if (strcmp(ins->commande, "mov_reg") == 0)
+	{
+		ins->run = mov_reg;
+	}
+	else if (strcmp(ins->commande, "movt") == 0)
+	{
+		ins->run = movt;
+	}
+	else if (strcmp(ins->commande, "mul") == 0)
+	{
+		ins->run = mul;
+	}
 	else if(strcmp(ins->commande, "b") == 0)
 	{
 		if(ins->encoding == 1 || ins->encoding == 2)
@@ -208,6 +221,19 @@ void init_pft(Instruction *ins)
 	else if(strcmp(ins->commande, "add_reg") == 0)
 	{
 		ins->fill_params = fill_params_add_reg;
+		// ins->run = add_reg;
+	}
+	else if(strcmp(ins->commande, "add_imm") == 0)
+	{
+		ins->run = add_imm;
+	}
+	else if(strcmp(ins->commande, "sub_imm") == 0)
+	{
+		ins->run = sub_imm;
+	}
+	else if(strcmp(ins->commande, "cmp_imm") == 0)
+	{
+		ins->run = cmp_imm;
 	}
 	else if(strcmp(ins->commande, "sub_sp") == 0)
 	{
@@ -220,15 +246,29 @@ void init_pft(Instruction *ins)
 	}
 
 
-	else if(strcmp(ins->commande, "pop") == 0 || strcmp(ins->commande, "push") == 0)
+	else if(strcmp(ins->commande, "pop") == 0)
 	{
 		ins->display_decoded = disp_pop_push;
 		ins->fill_params = fill_params_pop_push;
+		ins->run = pop;
 	}
-	else if(strcmp(ins->commande, "ldr_imm") == 0 || strcmp(ins->commande, "str_imm") == 0)
+	else if (strcmp(ins->commande, "push") == 0)
+	{
+		ins->display_decoded = disp_pop_push;
+		ins->fill_params = fill_params_pop_push;
+		ins->run = push;
+	}
+	else if(strcmp(ins->commande, "ldr_imm") == 0)
 	{
 		ins->fill_params = fill_params_ldr;
 		ins->display_decoded = disp_ldr;
+		ins->run = ldr_imm;
+	}
+	else if(strcmp(ins->commande, "str_imm") == 0)
+	{
+		ins->fill_params = fill_params_ldr;
+		ins->display_decoded = disp_ldr;
+		// ins->run = str_imm;
 	}
 	else if(strcmp(ins->commande, "it") == 0)
 	{

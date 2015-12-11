@@ -2,16 +2,17 @@
 #define CODE_ARM_H
 
 #include "types.h" // Plgtab
+#include "emulator.h"
 
 
 
 
 
 
-/*word ZeroExtend(Plgtab imm);*/
+word ZeroExtend_plgtab(Plgtab imm);
 long ZeroExtend (int x);
 int BitCount (long a);
-int SignExtend(Plgtab imm);
+int SignExtend_plgtab(Plgtab imm);
 unsigned long AddWithCarry (unsigned long registre , unsigned long imm32 , int* carry , int* overflow);
 long UInt32 (long x);
 int UInt16 (int x);

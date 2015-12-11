@@ -21,7 +21,7 @@ int mov_imm_2 (Instruction ins, Emulator *emul) {
 
 
 	
-	imm32 =ZeroExtend(*(ins.imm));
+	imm32 = ZeroExtend_plgtab(*(ins.imm));
 
 	// if (strcmp (ins.encoding, 'T1') == 0 ) {
 	// 	if ( mov_imm_T1 (ins, reg, &setflags, &imm32 , &carry) ) {
