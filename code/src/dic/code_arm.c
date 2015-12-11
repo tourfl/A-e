@@ -159,7 +159,7 @@ unsigned long AddWithCarry (unsigned long registre , unsigned long imm32 , int* 
 int BitCount (long a) {
 	
 	int i;
-	int j;
+	int j=0;
 	for (i=0 ; i<=31 ; i++) {
 		if (a & (1u << i) ) {
 			j = j + 1;
