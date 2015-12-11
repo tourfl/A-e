@@ -230,6 +230,10 @@ void init_pft(Instruction *ins)
 		ins->fill_params = fill_params_ldr;
 		ins->display_decoded = disp_ldr;
 	}
+	else if(strcmp(ins->commande, "it") == 0)
+	{
+		ins->display_decoded = disp_it;
+	}
 
 
 }

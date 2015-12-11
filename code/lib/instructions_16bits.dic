@@ -11,7 +11,7 @@ sub_imm/T1 		SUB/SUBS 	FE00/1E00 		2/0:2/3:5 		1/6:8
 ldr_imm/T1 		LDR 		F800/6800 		2/0:2/3:5 		1/6:10
 str_imm/T1 		STR 		F800/6000 		2/0:2/3:5 		1/6:10
 cmp_reg/T2 		CMP 		FF00/4500 		2/0:2/3:6 		0 			1/7
-mov_reg/T1 		MOV 		FF00/4600 		2/0:2/3:6 		0 			1/7 
+mov_reg/T1 		MOV 		FF00/4600 		2/0:2/3:6 		0 			1/7
 cmp_reg/T1 		CMP 		FFC0/4280 		2/0:2/3:5
 mov_reg/T2 		MOVS 		FFC0/0000 		2/0:2/3:5
 mul/T1 			MUL/MOV 	FFC0/4340 		2/0:2/3:5
@@ -27,4 +27,4 @@ svc/T1 			SVC 		FF00/DF00 		0 				1/0:7
 add_sp/T2 		ADD 		FF80/B000 		0 				1/0:6
 sub_sp/T1 		SUB 		FF80/B080 		0 				1/0:6
 b/T2 			B 			F800/E000 		0 				1/0:10
-it/T1 			IT 			FF00/BF00
+it/T1 			IT 			FF00/BF00		0 				0 			2/0:3/4:7

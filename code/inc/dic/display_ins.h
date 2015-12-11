@@ -32,6 +32,7 @@ void disp_default(Instruction ins);
 void disp_sub_sp(Instruction ins);
 void disp_pop_push(Instruction ins);
 void disp_ldr(Instruction ins);
+void disp_it(Instruction ins);
 
 
 

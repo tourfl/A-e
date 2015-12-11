@@ -1,0 +1,8 @@
+#-------
+#TEST_RETURN_CODE=PASS       
+#TEST_COMMENT="Teste disasm"
+#-------
+
+load reloc_miam.o
+set byte 0x100b 0x15
+disasm 0x1000:0x101f

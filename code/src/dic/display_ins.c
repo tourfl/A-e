@@ -49,7 +49,6 @@ void disp_name(Instruction ins)
 {
 	printf("%s", ins.name_in);
 	// printf("(%s/T%u)", ins.commande, ins.encoding);
-	printf(" ");
 }
 
 
@@ -138,6 +137,8 @@ void disp_regs_and_imm(Instruction ins)
 void disp_default(Instruction ins)
 {
 	disp_name(ins);
+
+	printf(" ");
 	
 	disp_regs_and_imm(ins);
 }
@@ -151,6 +152,8 @@ void disp_default(Instruction ins)
 void disp_sub_sp(Instruction ins)
 {
 	disp_name(ins);
+
+	printf(" ");
 
 
 	if(ins.reg->size > 0)
@@ -177,6 +180,7 @@ void disp_pop_push(Instruction ins)
 {
 
 	disp_name(ins);
+	printf(" ");
 
 	printf("{");
 
@@ -192,6 +196,7 @@ void disp_pop_push(Instruction ins)
 void disp_ldr(Instruction ins)
 {
 	disp_name(ins);
+	printf(" ");
 
 	disp_reg_name(ins.reg->plages[0]);
 
@@ -207,4 +212,60 @@ void disp_ldr(Instruction ins)
 	printf("]");
 
 }
+
+
+
+
+void disp_it(Instruction ins)
+{
+	char mask = (char) ins.ext->plages[0].value;
+	int cond = ins.ext->plages[1].value;
+	char cond0 = GET_BIT(cond, 0);
+	char str_cond[15][3] = {{0}};
+
+		strcpy(str_cond[0], "EQ");
+		strcpy(str_cond[1], "NE");
+		strcpy(str_cond[2], "HS");
+		strcpy(str_cond[3], "LO");
+		strcpy(str_cond[4], "MI");
+		strcpy(str_cond[5], "PL");
+		strcpy(str_cond[6], "VS");
+		strcpy(str_cond[7], "VC");
+		strcpy(str_cond[8], "HI");
+		strcpy(str_cond[9], "LS");
+		strcpy(str_cond[10], "GE");
+		strcpy(str_cond[11], "LT");
+		strcpy(str_cond[12], "GT");
+		strcpy(str_cond[13], "LE");
+		strcpy(str_cond[14], "AL");
+
+
+
+	int i, k;
+
+
+
+	disp_name(ins);
+
+
+
+	for (k = 0; k < 4; k++) // trouve le premier bit à 1
+	{
+		if(GET_BIT(mask, k) == (1 << k) )
+			break;
+	}
+
+
+
+	for (i = 3; i > k; i--)
+	{
+		if( GET_BIT(mask, i) == (cond0 << i) )
+			printf("T");
+		else
+			printf("E");
+	}
+
+	printf(" %s", str_cond[cond]);
+}
+
 
