@@ -57,23 +57,21 @@ B.W
 
 CMP 
 
-MUL 
-
 MOVS 
 
-BX 
+MUL 
 
 ADD 
 
-SUB 
+BX 
 
-CMP 
+SUB 
 
 MOV 
 
 IT 
 
-ADD 
+CMP 
 
 SVC 
 
@@ -81,7 +79,11 @@ ADD
 
 ADD 
 
+ADD 
+
 SUB 
+
+STR 
 
 SUB 
 
@@ -89,28 +91,26 @@ POP
 
 PUSH 
 
+ADD 
+
 STR 
 
+LDR 
+
 MOV 
+
+LDR 
+
+LDR 
+
+SUB 
+
+ADD 
+
+STR 
 
 CMP 
 
 B 
-
-ADD 
-
-SUB 
-
-STR 
-
-STR 
-
-ADD 
-
-LDR 
-
-LDR 
-
-LDR 
 
 B 

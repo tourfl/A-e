@@ -1,3 +1,3 @@
-Virtual memory map (4 segments)
+Virtual memory map (2 segments)
 .text	r-x	Vaddr: 0x00004000	Size: 56 bytes
 .bss	rw-	Vaddr: 0x00005000	Size: 0 bytes

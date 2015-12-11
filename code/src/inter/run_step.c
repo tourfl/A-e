@@ -92,6 +92,7 @@ int step(int flag, Emulator *emul)
 
 
 
+
 	if(flag == INTO)
 	{
 		r = decode(in, out, emul->dic); // retourne l'offset (2 : instruction 16 bits, 4 : 32 bits)
@@ -101,9 +102,20 @@ int step(int flag, Emulator *emul)
 
 		else if (r == 2 || r == 4)
 		{
-			display(*out, DECODED);
+			printf("\n");
 
-			out->run(*out, emul);		
+			if(out->run != NULL)
+			{
+				out->run(*out, emul);
+				printf("\033[00;32m");
+			}
+
+			else
+			{
+				printf("\033[00;31m");
+			}
+			display(*out, DECODED);
+			printf("\033[0m");
 		}
 
 		emul->reg[15] += r;

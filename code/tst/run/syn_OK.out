@@ -1,0 +1,1 @@
+MOV.W r0, #0MOV.W r1, #8MOV r2, r1ADD.W r1, r0, r1, #1BL #6CMP r2, r1B #20B #24PUSH {r0, lr}SUB sp, sp, #8MOV.W r0, #0ADD.W r1, r0, r1, #1POP.W {r0, lr}ADD sp, sp, #8BX lrMOV.W r0, #0SVC #0MOV.W r0, #1SVC #0
