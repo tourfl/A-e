@@ -50,6 +50,12 @@ int ldr_imm_T1 (Instruction ins, int* imm32, int* index, int* add, int* wback, i
 int ldr_imm_T2 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n, int* t);
 int ldr_imm_T3 (Instruction ins, int* imm32, int* index, int* add, int* wback, int* n, int* t);
 
+int push (Instruction ins, Emulator* emul);
+int push_T1 (Instruction ins, long* registers);
+int push_T2 (Instruction ins, long* registers);
+int push_T3 (Instruction ins, long* registers , int* t);
+
+
 
 
 #endif
