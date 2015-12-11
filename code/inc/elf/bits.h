@@ -29,6 +29,8 @@ typedef enum endianness {
 	BIG_E, LITTLE_E, LITTLE_E_ALIGNED
  } Endianness;
 
+ 
+
 int change_word_endianness(word *mot, Endianness in, Endianness out);
 
 int change_endianness(byte *tab, int size, Endianness in, Endianness out);

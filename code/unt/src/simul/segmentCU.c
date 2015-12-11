@@ -62,3 +62,4 @@ void CU_get_byte()
 {
 	CU_ASSERT(get_byte(0x1004, map_fix) == 0x4f);
 }
+

@@ -19,7 +19,7 @@ typedef struct
 	vaddr32 va;
 	char name[NAME_SIZE_MAX];
 	byte *content; // On utilise l'allocation dynamique
-	uint32_t size;
+	uint size;
 	int perm; // rwx = 0b111 = 7, rw- = 0b110 = 6, r-- = 0b100 = 4, etc.
 
 } Segment;
@@ -31,6 +31,11 @@ typedef struct
 
 
 void del_map(Segment map[NB_SEC]);
+
+int number_of_loaded_section(Segment map[NB_SEC]);
+
+
+void perm_to_str(int perm, char str[4]);
 
 int realloc_seg(int size, int i, Segment map[NB_SEC]);
 void del_seg(Segment *seg);

@@ -13,7 +13,7 @@ int loadcmd(Emulator *emul) {
     char usage[] = "Usage : load <nom_du_fichier> {<adresse>}\n";
 
 	name = get_next_token(emul->inter);
-	get_last_if_hexa(emul->inter, &va); // rien ne se passe si ce n'est pas un hexa
+	get_last_if_addr(emul->inter, &va); // rien ne se passe si ce n'est pas un hexa
 
 	if(name == NULL || v == 12)
 	{
@@ -34,9 +34,8 @@ int loadcmd(Emulator *emul) {
         return 2;
     }
 
-    if(va % 4096 != 0) { // on arrondit au ko supérieur
-        va = (va/4096 + 1) * 4096;
-    }
+    if (va % 0x1000 != 0)
+        va = ( (va >> 12) << 12 ) + 0x1000; // on arrondit au ko supérieur
 
     // On récupère le contenu du fichier ELF puis on le charge en mémoire
     if(load_elf_in_mem(fo, emul->map, va) == 0)
@@ -62,8 +61,9 @@ int loadcmd(Emulator *emul) {
 
 int load_elf_in_mem(FILE *fo, Segment map[], unsigned int va)
 {
-	uint i, j;
-    vaddr32 next_segment_start = va; // compteur pour designer le début de la prochaine section
+    int perm=0;
+	uint i, j = 0, size=0;
+    char section_name[NAME_SIZE_MAX] = {0};
 
     /*
     * On ne récupère pas les symboles pour le moment puisque l'on ne s'occupe pas de la relocation
@@ -75,69 +75,112 @@ int load_elf_in_mem(FILE *fo, Segment map[], unsigned int va)
     byte *ehdr    = __elf_get_ehdr(fo );  
 
     for (i=0; i<NB_SEC; i++) {
+
+        map[i].size = 0; // initialisation de toutes les sections
+
+
+
+
+
     	switch (i)
     	{
     		case 0:
     		{
-    			strcpy(map[i].name, TEXT_SECTION_STR);
+                perm = 5;
+    			strcpy(section_name, TEXT_SECTION_STR);
     			break;
     		}
     		case 1:
     		{
-    			strcpy(map[i].name, RODATA_SECTION_STR);
+                perm = 4;
+    			strcpy(section_name, RODATA_SECTION_STR);
     			break;
     		}
     		case 2:
     		{
-    			strcpy(map[i].name, DATA_SECTION_STR);
+                perm = 6;
+    			strcpy(section_name, DATA_SECTION_STR);
     			break;
     		}
     		case 3:
     		{
-    			strcpy(map[i].name, BSS_SECTION_STR);
+                perm = 6;
+    			strcpy(section_name, BSS_SECTION_STR);
     			break;
     		}
     	}
 
     	// printf("%s\n", map[i].name);
 
-    	map[i].size = 0;
-    	byte *content = elf_extract_scn_by_name(ehdr, fo, map[i].name, &(map[i].size), NULL);
 
-    	if(content != NULL && map[i].size != 0)
-    	{
-    		map[i].content = malloc(map[i].size * sizeof(byte));
+    	byte *content = elf_extract_scn_by_name(ehdr, fo, section_name, &size, NULL);
 
-    		if(map[i].content == NULL)
-    		{
-    			return 1;
-    		}
+        if(load_section(content, section_name, &va, size, perm, &map[j]) == 0)
+        {
+            DEBUG_MSG("%s at 0x%08x", map[j].name, map[j].va);
+            j++;
+        }
+        else if(strcmp(section_name, BSS_SECTION_STR) == 0)
+        {
+            // on charge une section BSS même s'il n'y en a pas dans le fichier objet
 
-    		for (j = 0; j < map[i].size; ++j)
-    		{
-    			*(map[i].content + j) = *(content + j);
-    		}
-
-
-            /*
-            * ============ ENDIANNESS ============
-            * Quelque soit l'endianness réelle du contenu des sections,
-            * On fixe ici que l'on est face à du BIG ENDIAN !
-            * Les masks sont en LITTLE ENDIAN ALIGNE
-            * Le parsing des paramètres se fait également en LITTLE ENDIAN ALIGNE
-            */
-
-            // On convertit le contenu en LITTLE ENDIAN ALIGNE
-            if (change_endianness(map[i].content, map[i].size, BIG_E, LITTLE_E_ALIGNED) != 0)
-                return 31;
-
-    		map[i].va = next_segment_start;
-
-    		DEBUG_MSG("%s at 0x%08x", map[i].name, map[i].va);
-    		next_segment_start += (map[i].size/4096 + 1) * 4096;
-    	}
+            strcpy(map[j].name, section_name);
+            map[j].va = va;
+            va += 0x1000;
+            map[j].perm = perm;
+            j++;
+        }
     }
     free(ehdr);
 
     return 0;
 }
+
+
+
+
+
+int load_section(byte *in, char name[NAME_SIZE_MAX], vaddr32 *start, uint size, int perm, Segment *out)
+{
+    int i;
+
+
+
+    if(size == 0 || in == NULL)
+        return 1;
+
+    /*
+    * ============ ENDIANNESS ============
+    * Quelque soit l'endianness réelle du contenu des sections,
+    * On fixe ici que l'on est face à du BIG ENDIAN !
+    * Les masks sont en LITTLE ENDIAN ALIGNE
+    * Le parsing des paramètres se fait également en LITTLE ENDIAN ALIGNE
+    */
+
+    // On convertit le contenu en LITTLE ENDIAN ALIGNE
+
+    else if (change_endianness(in, size, BIG_E, LITTLE_E_ALIGNED) != 0)
+        return 31;
+
+    else if( ( out->content = calloc( size, sizeof(byte) ) ) == NULL)
+        return 2;
+
+
+    for (i = 0; i < size; ++i)
+    {
+        *(out->content + i) = *(in + i);
+    }
+
+    out->va = *start;
+
+    *start = ( ( (*start + size) >> 12 ) << 12 ) + 0x1000;
+
+    out->size = size;
+    strcpy(out->name, name);
+    out->perm = perm;
+
+    return 0;
+}
+
+
+

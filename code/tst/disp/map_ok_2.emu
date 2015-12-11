@@ -1,0 +1,7 @@
+#-------
+#TEST_RETURN_CODE=PASS           
+#TEST_COMMENT="Teste fonctionnement memoire"
+#-------
+
+load pile.o 0x4000
+disp mem map

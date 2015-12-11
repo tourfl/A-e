@@ -29,6 +29,8 @@ int step_cmd(Emulator *emul);
 
 int load_elf_in_mem(FILE *fo, Segment map[NB_SEC], unsigned int va);
 
+int load_section(byte *in, char name[NAME_SIZE_MAX], vaddr32 *start, uint size, int perm, Segment *out);
+
 
 // Affichage
 

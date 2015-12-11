@@ -1,6 +1,7 @@
 #include "simul/segment.h" // inclut la mémoire
 #include "inter/notify.h" // messages de contrôle, inclut stdio, stdlib
 #include <string.h> // pour strcpy notamment
+#include "elf/bits.h" // GET_BIT
 #include <math.h> // pow
 
 
@@ -16,6 +17,47 @@ void del_map(Segment map[NB_SEC])
     {
         del_seg(map + i);
     }
+}
+
+
+
+
+
+
+int number_of_loaded_section(Segment map[NB_SEC])
+{
+    int i, n=0;
+
+
+
+
+    for (i = 0; i < NB_SEC; ++i)
+    {
+        if (map[i].size > 0 || strcmp(map[i].name, BSS_SECTION_STR) == 0) // peu importe la taille de bss
+            n++;
+    }
+
+
+    return n;
+}
+
+
+
+
+
+
+void perm_to_str(int perm, char str[4])
+{
+    strcpy(str, "rwx");
+
+    if(GET_BIT(perm, 2) == 0)
+        str[0] = '-';
+
+    if(GET_BIT(perm, 1) == 0)
+        str[1] = '-';
+
+    if(GET_BIT(perm, 0) == 0)
+        str[2] = '-';
 }
 
 
@@ -184,6 +226,11 @@ word get_word(vaddr32 va_1, Segment map[NB_SEC])
 
     return w;
 }
+
+
+
+
+
 
 int set_word(vaddr32 va_1, word value, Segment map[NB_SEC])
 {

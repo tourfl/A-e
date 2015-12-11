@@ -137,12 +137,28 @@ void print_section_raw_content(char* name, unsigned int start, byte* content, un
 
 void disp_map(Segment map[NB_SEC])
 {
-	int i;
+	int i, n = number_of_loaded_section(map);
+	char str_perm[4] = "---";
+
+
+
+
+	if(n <= 1) // rien ou juste .bss
+	{
+		WARNING_MSG("Not any section loaded");
+		return;
+	}
 
 	printf("Virtual memory map (%u segments)\n", NB_SEC);
 
-	for(i = 0; i < NB_SEC; i++)
-		printf("%s\trwx\tVaddr: 0x%08x\tSize: %u bytes\n", map[i].name, map[i].va, map[i].size);
+	for(i = 0; i < n; i++)
+	{
+		perm_to_str(map[i].perm, str_perm);
+
+		printf("%s\t", map[i].name);
+		printf("%s\t", str_perm);
+		printf("Vaddr: 0x%08x\tSize: %u bytes\n", map[i].va, map[i].size);
+	}
 }
 
 void disp_plage (Plage plg, Segment map[NB_SEC]) // on suppose va_1 > va_2
