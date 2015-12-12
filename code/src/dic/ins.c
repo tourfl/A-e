@@ -1135,9 +1135,9 @@ int ldr_lit (Instruction ins, Emulator* emul) {
 	int t;
 	long imm32, base, address, data;
 	int add;
-	t = ins.reg[0].plages->value;
+	t = ins.reg->plages[0].value;
 	
-	imm32 = ins.imm[0].plages->value;
+	imm32 = ins.imm->plages[0].value;
 	
 	if ( ins.encoding == 1 ) {
 		if ( ldr_litt_T1 (ins, &imm32, &add) ) {
@@ -1195,7 +1195,7 @@ int ldr_litt_T1 (Instruction ins,long* imm32, int* add) {
 
 int ldr_litt_T2 (Instruction ins,long* imm32, int* t, int* add) {
 	 
-	if (ins.ext[0].plages->value == 1) {
+	if (ins.ext->plages[0].value == 1) {
 		*add = 1;
 	}
 	
@@ -1224,9 +1224,9 @@ int str_imm (Instruction ins, Emulator* emul) {
 	long imm32;
 	long offset_addr, address;
 	int index, add, wback;
-	t = ins.reg[0].plages->value;
+	t = ins.reg->plages[0].value;
 	
-	imm32 = ins.imm[0].plages->value;
+	imm32 = ins.imm->plages[0].value;
 	
 	if ( ins.encoding == 1 ) {
 		if (str_imm_T1 (ins, &imm32, &index, &add, &wback, &n )) {
@@ -1280,7 +1280,7 @@ int str_imm (Instruction ins, Emulator* emul) {
 
 int str_imm_T1 (Instruction ins, long* imm32, int* index, int* add, int* wback, int* n ){
 
-	*n = ins.reg[1].plages->value;
+	*n = ins.reg->plages[1].value;
 	*imm32 = *imm32 << 2;
 	*index = 1;
 	*add = 1;
@@ -1302,7 +1302,7 @@ int str_imm_T2 (Instruction ins, long* imm32, int* index, int* add, int* wback, 
 
 int str_imm_T3 (Instruction ins, int* index, int* add, int* wback, int* n, int* t ){
 
-	*n = ins.reg[1].plages->value;
+	*n = ins.reg->plages[1].value;
 	if (*n==15) {
 		WARNING_MSG ("Non défini");
 		return 1;
@@ -1322,6 +1322,8 @@ int str_imm_T3 (Instruction ins, int* index, int* add, int* wback, int* n, int* 
 
 
 //---------------------------------------------------------------------------------------------------------//	
+
+
 
 
 
