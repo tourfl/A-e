@@ -22,6 +22,7 @@ struct emulator
 
 	interpreteur inter;
 
+	int it_state;
 };
 
 typedef struct emulator Emulator;

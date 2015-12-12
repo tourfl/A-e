@@ -4,6 +4,7 @@
 #include "inter/notify.h"
 #include "dic/display_ins.h"
 #include "elf/bits.h" // wrd_good_endianness
+#include <string.h> // strcpy
 
 
 
@@ -44,11 +45,11 @@ int disp_dic(Dic *dic)
 	int i;
 
 	for (i = 0; i < dic->sz32; ++i) {
-		display(*(dic->ins32 + i), NOT_DECODED); // instructions 32 bits
+		disp_not_decoded(*(dic->ins32 + i)); // instructions 32 bits
 	}
 
 	for (i = 0; i < dic->sz16; ++i) {
-		display(*(dic->ins16 + i), NOT_DECODED); // instructions 16 bits
+		disp_not_decoded(*(dic->ins16 + i)); // instructions 16 bits
 	}
 
 	return 0;
@@ -76,6 +77,25 @@ int load_dic(Dic *dic)
 	r =  load_from_file(&(dic->ins16), &(dic->sz16), "lib/instructions_16bits.dic");
 
 	qsort(dic->ins16, dic->sz16, sizeof(Instruction), cmp_ins);
+
+
+	// On copie les mnémoniques
+	strcpy(dic->str_cond[0], "EQ");
+	strcpy(dic->str_cond[1], "NE");
+	strcpy(dic->str_cond[2], "HS");
+	strcpy(dic->str_cond[3], "LO");
+	strcpy(dic->str_cond[4], "MI");
+	strcpy(dic->str_cond[5], "PL");
+	strcpy(dic->str_cond[6], "VS");
+	strcpy(dic->str_cond[7], "VC");
+	strcpy(dic->str_cond[8], "HI");
+	strcpy(dic->str_cond[9], "LS");
+	strcpy(dic->str_cond[10], "GE");
+	strcpy(dic->str_cond[11], "LT");
+	strcpy(dic->str_cond[12], "GT");
+	strcpy(dic->str_cond[13], "LE");
+	strcpy(dic->str_cond[14], "AL");
+
 
 	return r;
 }

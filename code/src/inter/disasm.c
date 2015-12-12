@@ -117,7 +117,7 @@ int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 
 			printf("\033[0m");
 
-			display(*ins, DECODED);
+			display(*ins, DECODED, emul);
 
 			/* ne surtout pas supprimer le contenu des instructions (ins, ins_d), sinon on le supprime du dic */
 		}

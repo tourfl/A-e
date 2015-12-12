@@ -7,10 +7,10 @@
 
 
 
-void display(Instruction ins, int flag)
+void display(Instruction ins, int flag, Emulator *emul)
 {
 	if(flag == DECODED)
-		ins.display_decoded(ins); // les instructions ne s'affichent pas toujours de la même manière !
+		ins.display_decoded(ins, emul); // les instructions ne s'affichent pas toujours de la même manière !
 
 	else
 		disp_not_decoded(ins);
@@ -134,7 +134,7 @@ void disp_regs_and_imm(Instruction ins)
 
 // Pour une instruction désassemblée
 
-void disp_default(Instruction ins)
+void disp_default(Instruction ins, Emulator *emul)
 {
 	disp_name(ins);
 
@@ -149,7 +149,7 @@ void disp_default(Instruction ins)
 
 
 
-void disp_sub_sp(Instruction ins)
+void disp_sub_sp(Instruction ins, Emulator *emul)
 {
 	disp_name(ins);
 
@@ -176,7 +176,7 @@ void disp_sub_sp(Instruction ins)
 
 
 
-void disp_pop_push(Instruction ins)
+void disp_pop_push(Instruction ins, Emulator *emul)
 {
 
 	disp_name(ins);
@@ -193,7 +193,7 @@ void disp_pop_push(Instruction ins)
 
 
 
-void disp_ldr(Instruction ins)
+void disp_ldr(Instruction ins, Emulator *emul)
 {
 	disp_name(ins);
 	printf(" ");
@@ -216,7 +216,7 @@ void disp_ldr(Instruction ins)
 
 
 
-void disp_it(Instruction ins)
+void disp_it(Instruction ins, Emulator *emul)
 {
 	char mask = (char) ins.ext->plages[0].value;
 	int i, k, cond = ins.ext->plages[1].value;

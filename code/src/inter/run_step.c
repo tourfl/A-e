@@ -114,7 +114,7 @@ int step(int flag, Emulator *emul)
 			{
 				printf("\033[00;31m");
 			}
-			display(*out, DECODED);
+			display(*out, DECODED, emul);
 			printf("\033[0m");
 		}
 

@@ -24,6 +24,8 @@ struct ins;
  	int sz32;
  	int sz16;
 
+
+	char str_cond[15][3]; // contient les noms des conditions
  };
 
  typedef struct dic Dic;

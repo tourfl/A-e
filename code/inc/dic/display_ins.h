@@ -10,7 +10,7 @@ enum display_mode {NOT_DECODED, DECODED};
 
 
 
-void display(Instruction ins, int flag);
+void display(Instruction ins, int flag, Emulator *emul);
 
 
 
@@ -26,13 +26,13 @@ void disp_not_decoded(Instruction ins);
 
 // Instructions désassemblées
 
-void disp_default(Instruction ins);
+void disp_default(Instruction ins, Emulator *emul);
 
 // affichage customisé
-void disp_sub_sp(Instruction ins);
-void disp_pop_push(Instruction ins);
-void disp_ldr(Instruction ins);
-void disp_it(Instruction ins);
+void disp_sub_sp(Instruction ins, Emulator *emul);
+void disp_pop_push(Instruction ins, Emulator *emul);
+void disp_ldr(Instruction ins, Emulator *emul);
+void disp_it(Instruction ins, Emulator *emul);
 
 
 

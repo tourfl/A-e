@@ -7,13 +7,6 @@
 
 
 
-int InITBlock () {
-	// Est-on dans un bloc IT?
-}
-
-int LastInITBlock () {
-	// Est-ce le dernier élément d'un bloc IT?
-}
 
 
 

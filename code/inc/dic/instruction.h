@@ -34,8 +34,8 @@ struct ins;
 
 // création d'alias du type pointeur de fonction
 typedef int (*Fill_pft)(word, struct ins*);
-typedef int (*Run_pft)(struct ins, struct emulator*); 
-typedef void (*Disp_pft)(struct ins);
+typedef int (*Run_pft)(struct ins, struct emulator*);
+typedef void (*Disp_pft)(struct ins, struct emulator*);
 
 
 struct ins

@@ -1,116 +1,118 @@
 
-PUSH.W 
+PUSH.W
 
-POP.W 
+POP.W
 
-MOV.W 
+MOV.W
 
-MUL 
+MUL
 
-CMP.W 
+POP.W
 
-PUSH.W 
+PUSH.W
 
-POP.W 
+CMP.W
 
-CMP.W 
+CMP.W
 
-LDR.W 
+SUB
 
-ADD 
+ADD
 
-MOV.W 
+MOV.W
 
-ADDW 
+LDR.W
 
-SUB 
+ADDW
 
-SUBW 
+SUBW
 
-MOVW 
+STR.W
 
-LDR.W 
+MOVW
 
-MOVT 
+LDR.W
 
-STR.W 
+MOVT
 
-STR.W 
+STR.W
 
-SUBW 
+SUB.W
 
-SUB.W 
+ADDW
 
-ADDW 
+SUB.W
 
-ADD.W 
+SUBW
 
-ADD.W 
+ADD.W
 
-SUB.W 
+ADD.W
 
-BL 
+SUB.W
 
-B.W 
+BL
 
-B.W 
+B.W
 
-CMP 
+B.W
 
-MOVS 
+CMP
 
-MUL 
+MUL
 
-ADD 
+MOVS
 
-BX 
+SUB
 
-SUB 
+ADD
 
-MOV 
+BX
 
-IT 
+IT
 
-CMP 
+CMP
 
-SVC 
+MOV
 
-ADD 
+ADD
 
-ADD 
+SVC
 
-ADD 
+SUB
 
-SUB 
+POP
 
-STR 
+PUSH
 
-SUB 
+SUB
 
-POP 
+STR
 
-PUSH 
+ADD
 
-ADD 
+ADD
 
-STR 
+LDR
 
-LDR 
+ADD
 
-MOV 
+ADD
 
-LDR 
+LDR
 
-LDR 
+CMP
 
-SUB 
+SUB
 
-ADD 
+STR
 
-STR 
+MOV
 
-CMP 
+LDR
 
-B 
+B
 
-B 
+STR
+
+B
