@@ -1324,6 +1324,451 @@ int str_imm_T3 (Instruction ins, int* index, int* add, int* wback, int* n, int* 
 //---------------------------------------------------------------------------------------------------------//	
 
 
+/**********************************************************************************************************/
+/*******************************************ADD_REG********************************************************/
+/**********************************************************************************************************/
+
+int add_reg (Instruction ins, Emulator* emul) {
+	
+	int n,d,m;
+	int setflags, carry, overflow; 
+	long  result, shifted;
+	
+	
+	n = ins.reg->plages[1].value;
+	d = ins.reg->plages[0].value;
+	m = ins.reg->plages[2].value;
+	shifted = 0;
+	if ( ins.encoding == 1 ) {
+		if ( add_reg_T1 (ins, &setflags)) {
+			return 1;
+		}
+	}
+
+	else if (ins.encoding == 2 ) {
+		if ( add_reg_T2 (ins, &setflags,&n, &d, &m)) {
+			return 1;
+		}
+	}
+
+	else if (ins.encoding == 3 ) {
+		if ( add_reg_T3 (ins, &setflags, &n, &d, &m, &shifted) ) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+	
+
+	shifted = emul->reg[m] + shifted;
+	result = AddWithCarry (emul->reg[n] , shifted, &carry, &overflow, emul);
+	printf("%ld\n" , result);	
+	if (d==15) {
+		BranchWritePC(result, emul);
+	}
+	
+	else {
+		emul->reg[d]=result;
+		if(setflags) {
+
+			emul->reg[16] = emul->reg[16] & 0x7FFFFFFF;
+			if (result & (1u << 31) ){				
+				emul->reg[16] = emul->reg[16] | (1u << 31) ; // APSR.N = 1;
+			}
+
+
+			//APSR.Z = IsZeroBit (result);
+			
+			emul->reg[16] = emul->reg[16] & 0xBFFFFFFF;
+			if (IsZeroBit(result)) { 				 
+				emul->reg[16] = emul->reg[16] | (1u << 30); 
+			}
+
+			//APSR.C = carry;
+			
+			emul->reg[16] = emul->reg[16] & 0xDFFFFFFF;
+			if (carry) {  
+				emul->reg[16] = emul->reg[16] | (1u << 29); 
+			}
+
+			//APSR.V = overflow;
+
+			emul->reg[16] = emul->reg[16] & 0xEFFFFFFF;
+			if (overflow) {  
+				emul->reg[16] = emul->reg[16] | (1u << 28); 
+			}
+		
+		}
+	}
+	return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+
+int add_reg_T1(Instruction ins,  int* setflags ) {
+	*setflags = 0; //!InITBlock();
+	return 0;
+}
+
+
+int add_reg_T2(Instruction ins,  int* setflags, int* n ,int* d ,int* m) {
+
+	long x = 0;
+	if (ins.ext->plages[0].value) {
+			x = x & (1u << 4);
+	}
+	x = x + *d;
+	if ( x == 13 || *m == 13) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	
+	*setflags = 0;
+	
+	if ( *d==15 /*&& InITBlock() && !LastInITBlock()*/ ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	
+	if (*d==15 && *m==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+	  
+}
+
+
+int add_reg_T3(Instruction ins, int* setflags, int* n , int* d, int* m, long* shifted) {
+
+	if ( *d==15 && ins.ext->plages[0].value ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	
+	if ( *n==13 ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	*shifted = ins.imm->plages[0].value;
+	*setflags = 1;
+	
+	if (*d==13 || (*d==15 && ins.ext->plages[0].value == 0) || *n==15 || *m==13 || *m==14 || *m==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+/**********************************************************************************************************/
+/************************************************SUB_REG***************************************************/
+/**********************************************************************************************************/
+
+
+
+int sub_reg (Instruction ins, Emulator* emul ) {
+	
+	int n,d,m;
+	int setflags, carry, overflow;
+	long result, shifted;
+	
+	shifted = 0;
+	n = ins.reg->plages[1].value;
+	d = ins.reg->plages[0].value;
+	m = ins.reg->plages[2].value;
+
+	if ( ins.encoding == 1 ) {
+		if (sub_reg_T1 (ins, &setflags)) {
+			return 1;
+		}
+	}
+
+	else if (ins.encoding == 2 ) {
+		if (sub_reg_T2 (ins, &setflags, &n, &d, &m, &shifted)) {
+			return 1;
+		}
+	}
+
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	shifted = emul->reg[m] + shifted;
+	result = AddWithCarry (emul->reg[n] , ~shifted + 1, &carry, &overflow, emul);
+	if (d==15) {
+		BranchWritePC(result, emul);
+	}
+	else {
+		emul->reg[d]=result;
+		if(setflags) {
+			emul->reg[16] = emul->reg[16] & 0x7FFFFFFF;
+			if (result & (1u << 31) ){
+				emul->reg[16] = emul->reg[16] | (1u << 31); // APSR.N = 1;
+			}
+			
+			//APSR.Z = IsZeroBit (result);
+			
+			emul->reg[16] = emul->reg[16] & 0xBFFFFFFF;
+			if (IsZeroBit(result)) {  
+				emul->reg[16] = emul->reg[16] | (1u << 30); 
+			}
+
+			//APSR.C = carry;
+			
+			emul->reg[16] = emul->reg[16] & 0xDFFFFFFF;
+			if (carry) { 
+				emul->reg[16] = emul->reg[16] | (1u << 29); 
+			}
+
+			//APSR.V = overflow;
+
+			emul->reg[16] = emul->reg[16] & 0xEFFFFFFF;
+			if (overflow) {  
+				emul->reg[16] = emul->reg[16] | (1u << 28); 
+			}
+	
+		}
+	}
+	return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+
+int sub_reg_T1(Instruction ins,  int* setflags) {
+	setflags =0; // !InITBlock();
+	return 0;
+}
+
+
+int sub_reg_T2(Instruction ins,  int* setflags, int* n ,int* d ,int* m, long* shifted) {
+
+	if ( *d == 15 && ins.ext->plages[0].value ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	
+	if (*n==13) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	
+	if (ins.ext->plages[0].value) {
+		*setflags = 1;
+	}
+	
+	*shifted = ins.imm->plages[0].value;
+	if (*d==13 || (*d==15 && !ins.ext->plages[0].value) || *n==15 || (*m==13 || *m==14 || *m==15) ){
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+/**********************************************************************************************************/
+/************************************************CMP_REG***************************************************/
+/**********************************************************************************************************/
+
+
+int cmp_reg (Instruction ins, Emulator* emul) {
+
+	int n,m;
+	long shifted = 0;
+	int carry, overflow, result;
+	n = ins.reg->plages[0].value;
+	m = ins.reg->plages[1].value;
+	
+	 
+	if ( ins.encoding == 1 ) {
+		if (cmp_reg_T1 (ins)) {
+			return 1;
+		}
+	}
+
+	else if ( ins.encoding == 2 ) {
+		if ( cmp_reg_T2 (ins, &n, &m)){
+			return 1;
+		}
+	}
+
+	else if ( ins.encoding == 3 ) {
+		if ( cmp_reg_T3 (ins, &n, &m, &shifted)) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+	
+	shifted = shifted + emul->reg[m];
+	result = AddWithCarry(emul->reg[n] , ~(shifted) + 1 , &carry, &overflow, emul);
+
+	emul->reg[16] = emul->reg[16] & 0x7FFFFFFF;
+	if (result & (1u << 31) ){
+		emul->reg[16] = emul->reg[16] | (1u << 31); // APSR.N = 1;
+	}
+
+	//APSR.Z = IsZeroBit (result);
+	
+	emul->reg[16] = emul->reg[16] & 0xBFFFFFFF; 
+	if (IsZeroBit(result)) { 
+		emul->reg[16] = emul->reg[16] | (1u << 30); 
+	}
+
+	//APSR.C = carry;
+
+	emul->reg[16] = emul->reg[16] & 0xDFFFFFFF; 
+	if (carry) { 
+		emul->reg[16] = emul->reg[16] | (1u << 29); 
+	}
+
+	//APSR.V = overflow;
+
+	emul->reg[16] = emul->reg[16] & 0xEFFFFFFF; 
+	if (overflow) { 
+		emul->reg[16] = emul->reg[16] | (1u << 28); 
+	}
+	return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+int cmp_reg_T1(Instruction ins) {
+	
+	return 0;
+}
+
+
+int cmp_reg_T2(Instruction ins, int* n, int* m) {
+	
+	if (ins.ext->plages[0].value) {
+		*n = *n + 8;
+	}
+	if (*n<8 && *m<8) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	if (*n==15 || *m==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+}
+
+int cmp_reg_T3(Instruction ins, int* n, int* m, long* shifted ) {
+	
+	if (*n==15 || (*m==13 || *m==14 || *m==15) ){
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	*shifted = ins.imm->plages[0].value; 
+	return 0;
+}
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+
+/**********************************************************************************************************/
+/************************************************STR_REG***************************************************/
+/**********************************************************************************************************/
+
+
+int str_reg (Instruction ins, Emulator* emul) {
+	
+
+	int t,n, m;
+	int index, add, wback;
+	long offset , address, data;
+
+	t = ins.reg->plages[0].value;
+	n = ins.reg->plages[1].value;
+	m = ins.reg->plages[2].value;
+	offset = 0;
+	
+	if ( ins.encoding == 1 ) {
+		if (str_reg_T1 (ins, &index, &add, &wback)) {
+			return 1;
+		}
+	}
+
+	else if ( ins.encoding == 2 ) {
+		if (str_reg_T2 (ins, &index, &add, &wback, &t, &n, &m, &offset )) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	offset = offset + emul->reg[m];
+	address = emul->reg[n] + offset;
+	data = emul->reg[t];
+	address = data;
+	return 0;
+}
+
+
+//---------------------------------------------------------------------------------------------------------//	
+
+int str_reg_T1 (Instruction ins,int* index,int* add,int* wback ) {
+
+	*index = 1;
+	*add = 1;
+	*wback = 0;
+	return 0;
+}
+
+int str_reg_T2 (Instruction ins, int* index,int* add, int* wback, int* t, int* n, int* m, long* offset ) {
+
+	if (*n==15) {
+		WARNING_MSG ("Non défini");
+		return 1;
+	}	
+
+	*index = 1;
+	*add = 1;
+	*wback = 0;
+	*offset = ins.imm->plages[0].value;	
+	if (*t==15 || (*m==13 || *m==14 || *m==15) ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
 
 
 
