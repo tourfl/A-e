@@ -9,10 +9,11 @@
 
 
 
-word ZeroExtend_plgtab(Plgtab imm);
+void ZeroExtend_plgtab(Plgtab *imm);
+void SignExtend_plgtab(Plgtab *imm);
+
 long ZeroExtend (int x);
 int BitCount (long a);
-int SignExtend_plgtab(Plgtab imm);
 unsigned long AddWithCarry (unsigned long registre , unsigned long imm32 , int* carry , int* overflow);
 long UInt32 (long x);
 int UInt16 (int x);

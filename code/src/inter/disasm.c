@@ -10,7 +10,7 @@
  #include <math.h> // pow
  #include "dic/display_ins.h" // display
 
-int disasm(Emulator *emul)
+int disasm_cmd(Emulator *emul)
 {
 	char usage[] = "Usage : disasm <plage>+";
 	int p = 1, r = 0;
@@ -79,13 +79,15 @@ int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 		for (j = 0; j < 4; ++j)
 			mot = (mot << 8) + plage[i+j];
 
-		i += ( r = decode(mot, ins, emul->dic) );
+		i += ( r = disasm(mot, ins, emul->dic) );
 
 
 		if(r == UNFOUND)
 		{
 			k++;
 		}
+		else if(r == PARSE_ERROR || r == PREPROCESS_ERROR)
+			return r;
 		else
 		{
 			if(k == 1)

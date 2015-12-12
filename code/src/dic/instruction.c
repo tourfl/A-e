@@ -4,7 +4,7 @@
 #include <string.h> // strtok
 #include "inter/notify.h" // messages de contrôle
 #include "types.h" // plgtab
-#include "dic/fill_params.h" // fill_params_default
+#include "dic/preprocess.h" // preprocess_default
 #include "inter/interpreteur.h" // string_standardise
 
 // Pour les fonctions pointées
@@ -65,7 +65,7 @@ void insclone(Instruction *dest, Instruction *src)
 	dest->ext = plgtabclone(src->ext);
 
 
-	dest->fill_params = src->fill_params;
+	dest->preprocess = src->preprocess;
 	dest->run = src->run;
 	dest->display_decoded = src->display_decoded;
 }
@@ -89,7 +89,7 @@ int load_ins(Instruction *ins, char *chaine)
 
 	init_pft(ins);
 
-	if(ins->fill_params == NULL || ins->display_decoded == NULL)
+	if(ins->preprocess == NULL || ins->display_decoded == NULL)
 		return 13;
 
 
@@ -182,7 +182,7 @@ int load_from_string(Instruction *ins, char *chaine)
 void init_pft(Instruction *ins)
 {
 	ins->display_decoded = disp_default;
-	ins->fill_params = fill_params_default;
+	ins->preprocess = preprocess_default;
 
 
 	if(strcmp(ins->commande, "mov_imm") == 0)
@@ -192,6 +192,7 @@ void init_pft(Instruction *ins)
 	else if (strcmp(ins->commande, "mov_reg") == 0)
 	{
 		ins->run = mov_reg;
+		ins->preprocess = preprocess_add_reg_16;
 	}
 	else if (strcmp(ins->commande, "movt") == 0)
 	{
@@ -200,27 +201,35 @@ void init_pft(Instruction *ins)
 	else if (strcmp(ins->commande, "mul") == 0)
 	{
 		ins->run = mul;
+		ins->preprocess = preprocess_add_reg_16;
 	}
 	else if(strcmp(ins->commande, "b") == 0)
 	{
 		if(ins->encoding == 1 || ins->encoding == 2)
-			ins->fill_params = fill_params_B;
+			ins->preprocess = preprocess_B;
 
 		else
-			ins->fill_params = fill_params_BL;
+			ins->preprocess = preprocess_BL;
 	}
 	else if(strcmp(ins->commande, "bl") == 0)
 	{
-		ins->fill_params = fill_params_BL;
+		ins->preprocess = preprocess_BL;
 	}
 	else if(strcmp(ins->commande, "add_sp") == 0)
 	{
 		ins->display_decoded = disp_sub_sp;
-		ins->fill_params = fill_params_ldr; // f_p_add_sp = f_p_ldr
+		ins->preprocess = preprocess_ldr; // f_p_add_sp = f_p_ldr
 	}
 	else if(strcmp(ins->commande, "add_reg") == 0)
 	{
-		ins->fill_params = fill_params_add_reg;
+		if (ins->encoding == 1)
+			ins->preprocess = preprocess_add_reg_16;
+		// ins->run = add_reg;
+	}
+	else if(strcmp(ins->commande, "sub_reg") == 0)
+	{
+		if (ins->encoding == 1)
+			ins->preprocess = preprocess_add_reg_16;
 		// ins->run = add_reg;
 	}
 	else if(strcmp(ins->commande, "add_imm") == 0)
@@ -238,35 +247,35 @@ void init_pft(Instruction *ins)
 	else if(strcmp(ins->commande, "sub_sp") == 0)
 	{
 		ins->display_decoded = disp_sub_sp;
-		ins->fill_params = fill_params_sub_sp;
+		ins->preprocess = preprocess_sub_sp;
 	}
 	else if(strcmp(ins->commande, "ldr_litt") == 0)
 	{
-		ins->fill_params = fill_params_sub_sp;
+		ins->preprocess = preprocess_sub_sp;
 	}
 
 
 	else if(strcmp(ins->commande, "pop") == 0)
 	{
 		ins->display_decoded = disp_pop_push;
-		ins->fill_params = fill_params_pop_push;
+		ins->preprocess = preprocess_pop_push;
 		ins->run = pop;
 	}
 	else if (strcmp(ins->commande, "push") == 0)
 	{
 		ins->display_decoded = disp_pop_push;
-		ins->fill_params = fill_params_pop_push;
+		ins->preprocess = preprocess_pop_push;
 		ins->run = push;
 	}
 	else if(strcmp(ins->commande, "ldr_imm") == 0)
 	{
-		ins->fill_params = fill_params_ldr;
+		ins->preprocess = preprocess_ldr;
 		ins->display_decoded = disp_ldr;
 		ins->run = ldr_imm;
 	}
 	else if(strcmp(ins->commande, "str_imm") == 0)
 	{
-		ins->fill_params = fill_params_ldr;
+		ins->preprocess = preprocess_ldr;
 		ins->display_decoded = disp_ldr;
 		// ins->run = str_imm;
 	}
@@ -329,14 +338,10 @@ Instruction* init_instab(int sz)
 
 int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic) // retourne l'instruction en question s'il y a match, NULL sinon;
 {
-	/*
-	 * Problème : les fichiers .o sont codés en little endian aligné (cf 2.4)
-	 * Les masques sont en big endian
-	 *
-	 * ce problème est résolu dans la fonction disasm_plage
-	 */
-
 	int i=0;
+
+
+
 
 	if(in == 0)
 	{

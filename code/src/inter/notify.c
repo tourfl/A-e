@@ -91,6 +91,16 @@ void which_error(int code)
 			DEBUG_MSG("Unable to decode any word");
 			break;
 		}
+		case 15:
+		{
+			WARNING_MSG("Unable to parse");
+			break;
+		}
+		case 16:
+		{
+			WARNING_MSG("Unable to preprocess");
+			break;
+		}
 
 		default:
 		{

@@ -4,7 +4,6 @@
 #include <string.h> // strtok
 #include "inter/notify.h" // messages de contrôle
 #include "types.h" // plgtab
-#include "dic/fill_params.h" // fill_params_default
 #include "inter/interpreteur.h" // string_standardise
 #include "emulator.h"
 // Pour les fonctions pointées

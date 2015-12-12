@@ -3,37 +3,51 @@
 #include <string.h> // strcat
 #include <stdlib.h> // strtoul
 #include <stdio.h>
+#include "inter/notify.h" // messages de contrôle
 
 
 
 
-word ZeroExtend_plgtab (Plgtab imm) {
-	
-	char imm_str[33] = {0};
-	int i;
+// concatène les valeurs et place le résultat à l'index 0
+
+void ZeroExtend_plgtab (Plgtab *imm) 
+{	
+	uint u=0;
+	int prev_size=0;
+
+	if(imm->size == 0)
+		return;
 
 
 
-	for(i = 0; i < imm.size; i++)
-		strcat(imm_str, int_to_bin(imm.plages[i].value, imm.plages[i].end - imm.plages[i].start));
+	for (int i = imm->size -1; i >= 0; i--)
+	{
+		u += imm->plages[i].value << prev_size;
 
-	return strtoul(imm_str, NULL, 2);
+		prev_size = imm->plages[i].end - imm->plages[i].start + 1;
+	}
+
+	free(imm->plages);
+	imm->size = 1;
+
+	imm->plages = calloc(1, sizeof(Plage));
+
+	imm->plages->value = u;
 }
 
 
-
-int SignExtend_plgtab (Plgtab imm) 
+void SignExtend_plgtab (Plgtab *imm) 
 {
-	uint u_imm=0, b=0;
+	uint u=0, b=0;
 	int prev_size=0, size=0;
 
 
 
-	for (int i = imm.size -1; i >= 0; i--)
+	for (int i = imm->size -1; i >= 0; i--)
 	{
-		u_imm += imm.plages[i].value << prev_size;
+		u += imm->plages[i].value << prev_size;
 
-		prev_size = imm.plages[i].end - imm.plages[i].start + 1;
+		prev_size = imm->plages[i].end - imm->plages[i].start + 1;
 
 		size += prev_size;
 	}
@@ -44,13 +58,18 @@ int SignExtend_plgtab (Plgtab imm)
 
 
 
-	// printf("u_imm = %u\t b = %u\n", u_imm, b);
+	free(imm->plages);
+	imm->size = 1;
 
-	if(u_imm > 1 << (size - 1))
-		return -(u_imm ^ b);
+	imm->plages = calloc(1, sizeof(Plage));
+
+	// printf("u = %u\t b = %u\n", u, b);
+
+	if(u > 1 << (size - 1))
+		imm->plages->value = -(u ^ b);
 
 	else
-		return u_imm;
+		imm->plages->value = u;
 }
 
 

@@ -26,6 +26,15 @@ void set_it_state(int *it_state, int mask, int sig, int thn, int els)
 
 
 
+void reset_it_state(int *it_state)
+{
+	*it_state = 0; // tout simplement !
+}
+
+
+
+
+
 
 void get_state(int *it_state, char state[3], char **str_cond)
 {

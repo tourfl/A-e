@@ -19,7 +19,7 @@ int loadcmd(Emulator *emul);
 int dispcmd (Emulator *emul);
 int setcmd (Emulator *emul);
 int assert(Emulator *emul);
-int disasm(Emulator *emul);
+int disasm_cmd(Emulator *emul);
 int run_cmd(Emulator *emul);
 int step_cmd(Emulator *emul);
 

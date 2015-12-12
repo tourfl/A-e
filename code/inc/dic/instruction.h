@@ -20,7 +20,9 @@
 typedef enum decodage {
 	FOUND_16=2,
 	FOUND_32=4,
-	UNFOUND=1
+	UNFOUND=1,
+	PARSE_ERROR=15,
+	PREPROCESS_ERROR=16
 } Decodage;
 
 
@@ -33,7 +35,7 @@ struct ins;
 
 
 // création d'alias du type pointeur de fonction
-typedef int (*Fill_pft)(word, struct ins*);
+typedef int (*Prep_pft)(struct ins*);
 typedef int (*Run_pft)(struct ins, struct emulator*);
 typedef void (*Disp_pft)(struct ins, struct emulator*);
 
@@ -56,7 +58,7 @@ struct ins
 	
 	// Pointeurs de fonction :
 
-	Fill_pft fill_params;
+	Prep_pft preprocess;
 	Disp_pft display_decoded;
 	Run_pft run;
 };

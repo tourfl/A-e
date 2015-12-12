@@ -53,7 +53,7 @@ int execute_cmd(Emulator *emul) {
     }
     else if(strcmp(token, "disasm") == 0)
     {
-        return disasm(emul);
+        return disasm_cmd(emul);
     }
     else if(strcmp(token, "dic") == 0)
     {

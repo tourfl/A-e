@@ -85,11 +85,11 @@ POP
 
 PUSH
 
+ADD
+
 SUB
 
 STR
-
-ADD
 
 ADD
 
@@ -105,13 +105,13 @@ CMP
 
 SUB
 
+B
+
 STR
 
 MOV
 
 LDR
-
-B
 
 STR
 

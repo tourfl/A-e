@@ -3,6 +3,8 @@
 #include <stdlib.h> // calloc
 #include "inter/notify.h"
 #include "dic/display_ins.h"
+#include "dic/parse_params.h"
+#include "dic/preprocess.h"
 #include "elf/bits.h" // wrd_good_endianness
 #include <string.h> // strcpy
 
@@ -80,21 +82,21 @@ int load_dic(Dic *dic)
 
 
 	// On copie les mnémoniques
-	strcpy(dic->str_cond[0], "EQ");
-	strcpy(dic->str_cond[1], "NE");
-	strcpy(dic->str_cond[2], "HS");
-	strcpy(dic->str_cond[3], "LO");
-	strcpy(dic->str_cond[4], "MI");
-	strcpy(dic->str_cond[5], "PL");
-	strcpy(dic->str_cond[6], "VS");
-	strcpy(dic->str_cond[7], "VC");
-	strcpy(dic->str_cond[8], "HI");
-	strcpy(dic->str_cond[9], "LS");
-	strcpy(dic->str_cond[10], "GE");
-	strcpy(dic->str_cond[11], "LT");
-	strcpy(dic->str_cond[12], "GT");
-	strcpy(dic->str_cond[13], "LE");
-	strcpy(dic->str_cond[14], "AL");
+	strcpy(dic->states_tab[0], "EQ");
+	strcpy(dic->states_tab[1], "NE");
+	strcpy(dic->states_tab[2], "HS");
+	strcpy(dic->states_tab[3], "LO");
+	strcpy(dic->states_tab[4], "MI");
+	strcpy(dic->states_tab[5], "PL");
+	strcpy(dic->states_tab[6], "VS");
+	strcpy(dic->states_tab[7], "VC");
+	strcpy(dic->states_tab[8], "HI");
+	strcpy(dic->states_tab[9], "LS");
+	strcpy(dic->states_tab[10], "GE");
+	strcpy(dic->states_tab[11], "LT");
+	strcpy(dic->states_tab[12], "GT");
+	strcpy(dic->states_tab[13], "LE");
+	strcpy(dic->states_tab[14], "AL");
 
 
 	return r;
@@ -232,36 +234,32 @@ int get_nb_ins(FILE *fd)
 	valeurs de retour :
 	1 : introuvable
 	2 ou 4 : offset pour le prochain mot
-	3 : problème lors du décodage
+	15 : problème lors du parsing
+	16 : problème lors du preprocessing
 
 */
 
 
-int decode(word in, Instruction *out, Dic *dic)
+int disasm(word in, Instruction *out, Dic *dic)
 {
 	int r=1;
 
 
 
-	//V2
+	//V3
 
-	r = get_ins32(in, out, dic);
+	r = find(in, out, dic);
 
-	if(r == 0)
+	if(r == 2 || r == 4) // instruction 32 ou 16 bits trouvées
 	{
-		out->fill_params(in, out);
-		return 4;
-	}		
+		if(r == 2)
+			in = in >> 16;
 
+		if (parse(in, out) != 0)
+			return 15; // cf inter/notify.c
 
-	in = in >> 16;
-
-	r = get_ins16(in, out, dic);
-
-	if(r == 0)
-	{
-		out->fill_params(in, out);
-		return 2;
+		if (out->preprocess(out) != 0)
+			return 16; // idem
 	}
 
 	return r;
@@ -271,11 +269,27 @@ int decode(word in, Instruction *out, Dic *dic)
 
 
 
+int find(word in, struct ins *out, Dic *dic)
+{
+	if(find_32(in, out, dic) == 0)
+		return 4;
 
-int get_ins32(word in, Instruction *out, Dic *dic) {
+	in = in >> 16;
+
+	if(find_16(in, out, dic) == 0)
+		return 2;
+
+	return 1;
+}
+
+
+
+
+
+int find_32(word in, Instruction *out, Dic *dic) {
 	return get_ins(in, out, dic->ins32, dic->sz32);
 }
-int get_ins16(word in, Instruction *out, Dic *dic) {
+int find_16(word in, Instruction *out, Dic *dic) {
 	return get_ins(in, out, dic->ins16, dic->sz16);
 }
 

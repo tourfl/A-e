@@ -25,7 +25,7 @@ struct ins;
  	int sz16;
 
 
-	char str_cond[15][3]; // contient les noms des conditions
+	char states_tab[15][3]; // contient les noms des conditions
  };
 
  typedef struct dic Dic;
@@ -46,11 +46,12 @@ int load_from_file(struct ins **p_instab, int *nb_ins, char* filename);
 int load_instab(struct ins *instab, int nb_ins, FILE *fd);
 int get_nb_ins(FILE *fd);
 
-int decode(word in, struct ins *out, Dic *dic);
+int disasm(word in, struct ins *out, Dic *dic);
 
+int find(word in, struct ins *out, Dic *dic);
 
-int get_ins32(word in, struct ins *out, Dic *dic);
-int get_ins16(word in, struct ins *out, Dic *dic);
+int find_32(word in, struct ins *out, Dic *dic);
+int find_16(word in, struct ins *out, Dic *dic);
 
 
 #endif
