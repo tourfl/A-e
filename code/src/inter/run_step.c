@@ -12,6 +12,7 @@
 */
 
 
+
 int run_cmd(Emulator *emul) 
 {
 	int r = 1, s = 0;
@@ -88,7 +89,6 @@ int step(int flag, Emulator *emul)
 	int r = 0;
 	word in = get_word(emul->reg[15], emul->map);
 	Instruction *out = init_ins();
-
 
 
 

@@ -8,6 +8,7 @@
 
 
 
+
 // concatène les valeurs et place le résultat à l'index 0
 
 void ZeroExtend_plgtab (Plgtab *imm) 

@@ -113,32 +113,17 @@ void disp_plg(Plage p);
 word plg_to_mask(Plage p);
 
 
-
-
-
-
-
  Plgtab* init_plgtab();
  void del_plgtab(Plgtab *t);
 
  Plgtab* plgtabclone(Plgtab *src);
 
+ void plgtabdup(Plgtab *dest, Plgtab *src);
+
  void disp_plgtab(Plgtab t);
 
 
-
-
- Strlist* init_strlist();
- void del_strlist(Strlist *l);
-
- void disp_strlist(Strlist l);
-
- int prepend_2slash(char **str); // ajoute "2/" au début de la chaîne
-
-
  int to_wrdtab(char *chaine, word tab[]);
-
- int to_strlist(char *chaine, Strlist *liste); // fonction ultra sécurisée !
 
 int to_plgtab(char *chaine, Plgtab *plgt);
 

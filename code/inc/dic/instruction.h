@@ -27,6 +27,14 @@ typedef enum decodage {
 
 
 
+
+
+typedef enum it_flag {
+	IN, OUT
+} It_flag;
+
+
+
 // pour le problème d'inclusions circulaires
 struct emulator;
 
@@ -52,9 +60,11 @@ struct ins
  
 
 	// Paramètres :
-	Plgtab *reg; // cf types.h
-	Plgtab *imm;
-	Plgtab *ext;
+	Plgtab reg; // cf types.h
+	Plgtab imm;
+	Plgtab ext;
+
+	It_flag it_flag;
 	
 	// Pointeurs de fonction :
 
@@ -87,6 +97,8 @@ int load_from_string(Instruction *ins, char *chaine);
 void init_pft(Instruction *ins);
 
 Instruction* init_instab(int sz);
+
+void del_instab(Instruction *tab, int size);
 
 
 int get_ins(word in, Instruction *out, Instruction dic[], int sz_dic);

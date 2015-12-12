@@ -15,8 +15,6 @@
 
 
 
-
-
 int parse(word in, Instruction *out)
 {
 	int r=0, r1, r2, r3;
@@ -90,17 +88,17 @@ int parse_param(word mot, Plage p)
 
 int parse_reg(word in, Instruction *out)
 {
-	return parse_params(in, out->reg);
+	return parse_params(in, &out->reg);
 }
 
 int parse_imm(word in, Instruction *out)
 {
-	return parse_params(in, out->imm);
+	return parse_params(in, &out->imm);
 }
 
 int parse_ext(word in, Instruction *out)
 {
-	return parse_params(in, out->ext);
+	return parse_params(in, &out->ext);
 }
 
 

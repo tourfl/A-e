@@ -25,15 +25,11 @@ Dic* init_dic()
 
 void del_dic(Dic *dic)
 {
-	int i;
+	if(dic == NULL)
+		return;
 
-	for (i = 0; i < dic->sz32; ++i) {
-		del_ins(dic->ins32 + i); // instructions 32 bits
-	}
-
-	for (i = 0; i < dic->sz16; ++i) {
-		del_ins(dic->ins16 + i); // instructions 16 bits
-	}
+	del_instab(dic->ins16, dic->sz16);
+	del_instab(dic->ins32, dic->sz32);
 }
 
 

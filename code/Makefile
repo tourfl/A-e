@@ -19,7 +19,7 @@ endif
 
 #options du leakfinder
 
-LEAKFLAGS=--leak-check=yes
+LEAKFLAGS=--leak-check=full --show-leak-kinds=all
 
 # definition des repertoires de source/destination
 SRCDIR=src

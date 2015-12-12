@@ -32,14 +32,14 @@ void disp_not_decoded(Instruction ins)
 	printf("\n");
 	disp_name(ins);
 	printf("\n");
-	// printf("  name_in: %s\tname_out: %s\n", ins.name_in, ins.name_out);
-	// printf("  mask: %8x\topcode: %8x\n", ins.mask, ins.opcode);
-	// printf("\n  reg ");
-	// disp_plgtab(*(ins.reg));
-	// printf("\n  imm ");
-	// disp_plgtab(*(ins.imm));
-	// printf("\n  ext ");
-	// disp_plgtab(*(ins.ext));
+	printf("  name_in: %s\tname_out: %s\n", ins.name_in, ins.name_out);
+	printf("  mask: %8x\topcode: %8x\n", ins.mask, ins.opcode);
+	printf("\n  reg ");
+	disp_plgtab(ins.reg);
+	printf("\n  imm ");
+	disp_plgtab(ins.imm);
+	printf("\n  ext ");
+	disp_plgtab(ins.ext);
 }
 
 
@@ -117,14 +117,14 @@ void disp_imm(Plgtab imm)
 
 void disp_regs_and_imm(Instruction ins)
 {
-	if(ins.reg->size > 0)
-		disp_regs(*(ins.reg));
+	if(ins.reg.size > 0)
+		disp_regs(ins.reg);
 
-	if(ins.reg->size > 0 && ins.imm->size > 0)
+	if(ins.reg.size > 0 && ins.imm.size > 0)
 		printf(", ");
 
-	if(ins.imm->size > 0)
-		disp_imm(*(ins.imm));
+	if(ins.imm.size > 0)
+		disp_imm(ins.imm);
 }
 
 
@@ -156,18 +156,18 @@ void disp_sub_sp(Instruction ins, Emulator *emul)
 	printf(" ");
 
 
-	if(ins.reg->size > 0)
-		disp_regs(*(ins.reg));
+	if(ins.reg.size > 0)
+		disp_regs(ins.reg);
 	else
 		printf("sp");
 
 
 	printf(", sp");
 
-	if(ins.imm->size > 0)
+	if(ins.imm.size > 0)
 	{
 		printf(", ");
-		disp_imm(*(ins.imm));
+		disp_imm(ins.imm);
 	}
 }
 
@@ -184,8 +184,8 @@ void disp_pop_push(Instruction ins, Emulator *emul)
 
 	printf("{");
 
-	if(ins.reg->size > 0)
-		disp_regs(*(ins.reg));
+	if(ins.reg.size > 0)
+		disp_regs(ins.reg);
 
 	printf("}");
 }
@@ -198,15 +198,15 @@ void disp_ldr(Instruction ins, Emulator *emul)
 	disp_name(ins);
 	printf(" ");
 
-	disp_reg_name(ins.reg->plages[0]);
+	disp_reg_name(ins.reg.plages[0]);
 
 	printf(", [");
-	disp_reg_name(ins.reg->plages[1]);
+	disp_reg_name(ins.reg.plages[1]);
 
-	if(ins.imm->size > 0 && ins.imm->plages->value > 0)
+	if(ins.imm.size > 0 && ins.imm.plages->value > 0)
 	{
 		printf(", ");
-		disp_imm(*(ins.imm));
+		disp_imm(ins.imm);
 	}
 
 	printf("]");
@@ -218,8 +218,8 @@ void disp_ldr(Instruction ins, Emulator *emul)
 
 void disp_it(Instruction ins, Emulator *emul)
 {
-	char mask = (char) ins.ext->plages[0].value;
-	int i, k, cond = ins.ext->plages[1].value;
+	char mask = (char) ins.ext.plages[0].value;
+	int i, k, cond = ins.ext.plages[1].value;
 	char cond0 = GET_BIT(cond, 0);
 	char str_cond[15][3] = {{0}};
 

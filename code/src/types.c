@@ -102,6 +102,10 @@ int set_plgtab(Plgtab *plgt, int size)
 
 
  void del_plgtab(Plgtab *t) {
+
+    if(t == NULL)
+        return;
+
     free(t->plages);
     free(t);
  }
@@ -143,6 +147,26 @@ Plgtab* plgtabclone(Plgtab *src)
 
 
 
+
+void plgtabdup(Plgtab *dest, Plgtab *src)
+{
+    int i;
+
+
+    dest->size = src->size;
+
+    if ( ( dest->plages = calloc(dest->size, sizeof(Plage)) ) == NULL )
+        return;
+
+    for(i = 0; i < dest->size; i++)
+    {
+        dest->plages[i] = src->plages[i];
+    }
+}
+
+
+
+
  void disp_plgtab(Plgtab t) {
     int i;
 
@@ -155,40 +179,6 @@ Plgtab* plgtabclone(Plgtab *src)
         disp_plg(t.plages[i]);
         printf("\n");
     }
- }
-
-
-
-
-
-
- int prepend_2slash(char **str)
- {
-
-    char *new_chaine =  NULL;
-
-
-
-
-
-    if(str == NULL)
-        return 1;
-
-    new_chaine = calloc((strlen(*str) + 2), sizeof(char));
-
-    if(new_chaine == NULL)
-        return 2;
-
-    new_chaine[0] = '2';
-    new_chaine[1] = '/';
-
-    if(strcat(new_chaine, *str) == NULL) {
-        return 6;
-    }
-
-    *str = new_chaine;
-
-    return 0;
  }
 
 
@@ -231,8 +221,6 @@ int to_plgtab(char *chaine, Plgtab *plgt)
     char *token, *str = NULL, *saveptr = NULL;
     int i, s = 0; // au moins un token, celui de la taille
 
-
-
     // 2 niveaux de parsing
 
     if(plgt == NULL)
@@ -244,7 +232,7 @@ int to_plgtab(char *chaine, Plgtab *plgt)
         token = strtok_r(str, "/", &saveptr);
 
 
-        // DISP_TOKEN(i, token);
+        DISP_TOKEN(i, token);
 
 
         if(token == NULL) // Comprend le cas chaine == NULL

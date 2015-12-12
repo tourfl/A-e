@@ -21,11 +21,7 @@ Instruction* init_ins() // pour éviter les bugs lors de la désallocation
 	if(ins == NULL)
 		return NULL;
 
-	// Paramètres :
-
-	ins->reg = init_plgtab();
-	ins->imm = init_plgtab();
-	ins->ext = init_plgtab();
+	ins->it_flag = OUT;
 
 	return ins;
 }
@@ -35,15 +31,15 @@ Instruction* init_ins() // pour éviter les bugs lors de la désallocation
 
 
 
-void del_ins(Instruction *ins) // Les éléments alloués sont libérés
+void del_ins(Instruction *ins)
 {
-	// Paramètres :
+	if(ins == NULL)
+		return;
 
-	// del_plgtab(ins->reg);
-	// del_plgtab(ins->imm);
-	// del_plgtab(ins->ext);
+	free(ins->imm.plages);
+	free(ins->reg.plages);
+	free(ins->ext.plages);
 }
-
 
 
 
@@ -60,9 +56,11 @@ void insclone(Instruction *dest, Instruction *src)
 	dest->mask = src->mask;
 	dest->opcode = src->opcode;
 
-	dest->reg = plgtabclone(src->reg);
-	dest->imm = plgtabclone(src->imm);
-	dest->ext = plgtabclone(src->ext);
+	plgtabdup(&dest->reg, &src->reg);
+	plgtabdup(&dest->imm, &src->imm);
+	plgtabdup(&dest->ext, &src->ext);
+
+	dest->it_flag = src->it_flag;
 
 
 	dest->preprocess = src->preprocess;
@@ -156,20 +154,18 @@ int load_from_string(Instruction *ins, char *chaine)
 			}
 			
 			case 3 :
-			r = to_plgtab(token, ins->reg);
+			r = to_plgtab(token, &ins->reg);
 			break;
 			
 			case 4 :
-			r = to_plgtab(token, ins->imm);
+			r = to_plgtab(token, &ins->imm);
 			break;
 			
 			case 5 :
-			r = to_plgtab(token, ins->ext);
+			r = to_plgtab(token, &ins->ext);
 			break;
 		}
 	}
-
-	// display(*ins, NOT_DECODED);
 
 	return r;
 }
@@ -314,17 +310,36 @@ Instruction* init_instab(int sz)
 	if(instab == NULL)
 		return NULL;
 
-
-
 	for (i = 0; i < sz; ++i)
 	{
-		instab[i].reg = init_plgtab();
-		instab[i].imm = init_plgtab();
-		instab[i].ext = init_plgtab();
+		instab[i].it_flag = OUT;
 	}
 
 
 	return instab;
+}
+
+
+
+
+
+
+
+
+void del_instab(Instruction *tab, int size)
+{
+	int i;
+
+
+	if(tab == NULL)
+		return;
+
+	for (i = 0; i < size; ++i)
+	{
+		del_ins(tab + i);
+	}
+
+	free(tab);
 }
 
 
