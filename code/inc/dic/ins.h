@@ -55,6 +55,14 @@ int push_T1 (Instruction ins, long* registers);
 int push_T2 (Instruction ins, long* registers);
 int push_T3 (Instruction ins, long* registers , int* t);
 
+int ldr_lit (Instruction ins, Emulator* emul);
+int ldr_litt_T1 (Instruction ins,long* imm32, int* add);
+int ldr_litt_T2 (Instruction ins,long* imm32, int* t, int* add);
+
+int str_imm (Instruction ins, Emulator* emul);
+int str_imm_T1 (Instruction ins, long* imm32, int* index, int* add, int* wback, int* n );
+int str_imm_T2 (Instruction ins, long* imm32, int* index, int* add, int* wback, int* n );
+int str_imm_T3 (Instruction ins, int* index, int* add, int* wback, int* n, int* t );
 
 
 
