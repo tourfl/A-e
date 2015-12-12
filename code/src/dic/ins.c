@@ -1123,3 +1123,206 @@ int push_T3 (Instruction ins , long* registers , int* t){
 	
 //---------------------------------------------------------------------------------------------------------//						 
 
+
+	
+/**********************************************************************************************************/
+/************************************************LDR_LIT***************************************************/
+/**********************************************************************************************************/
+	
+int ldr_lit (Instruction ins, Emulator* emul) {
+	
+
+	int t;
+	long imm32, base, address, data;
+	int add;
+	t = ins.reg[0].plages->value;
+	
+	imm32 = ins.imm[0].plages->value;
+	
+	if ( ins.encoding == 1 ) {
+		if ( ldr_litt_T1 (ins, &imm32, &add) ) {
+			return 1;
+		}
+	}
+
+	else if ( ins.encoding == 2 ) {
+		if (ldr_litt_T2 (ins, &imm32, &t, &add)) {
+			return 1;
+		}
+	}
+
+	
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	base = emul->reg[15];
+	if (add) {
+		address = base + imm32;
+	}
+	else {
+		address = base - imm32;
+	}
+	data = address;
+	if (t==15) {
+		if ((address & (1u << 0)) && (address & (1u << 1))) {
+			WARNING_MSG ("Erreur");
+			return 1;
+		}
+		else {
+			BranchWritePC (data , emul);
+		}
+	}
+	else {
+		emul->reg[t] = data;
+	} 			
+	
+	return 0;
+}	
+
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+int ldr_litt_T1 (Instruction ins,long* imm32, int* add) {
+
+	*imm32	= *imm32 << 2;
+	*add = 1;
+	return 0;
+
+}
+
+int ldr_litt_T2 (Instruction ins,long* imm32, int* t, int* add) {
+	 
+	if (ins.ext[0].plages->value == 1) {
+		*add = 1;
+	}
+	
+	if (*t==15 /*&& InITBlock() && !LastInITBlock()*/) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+
+}
+	
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+/**********************************************************************************************************/
+/************************************************STR_IMM***************************************************/
+/**********************************************************************************************************/
+
+
+int str_imm (Instruction ins, Emulator* emul) {
+	
+
+	int t,n;
+	long imm32;
+	long offset_addr, address;
+	int index, add, wback;
+	t = ins.reg[0].plages->value;
+	
+	imm32 = ins.imm[0].plages->value;
+	
+	if ( ins.encoding == 1 ) {
+		if (str_imm_T1 (ins, &imm32, &index, &add, &wback, &n )) {
+			return 1;
+		}
+	}
+
+	else if ( ins.encoding == 2 ) {
+		if ( str_imm_T2 (ins, &imm32, &index, &add, &wback, &n )) {
+			return 1;
+		}
+	}
+
+	else if ( ins.encoding == 3 ) {
+		if (str_imm_T3 (ins, &index, &add, &wback, &n, &t )) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	if (add) {
+		offset_addr = emul->reg[n] + imm32;
+	}
+	else {
+		offset_addr = emul->reg[n] - imm32;
+	}
+	
+	if (index) {
+		address = offset_addr;
+	}
+	else {
+		address = emul->reg[n];
+	}
+
+	address = emul->reg[t];
+
+	if (wback) {
+		emul->reg[n] = offset_addr;
+	}
+
+	return 0;
+}
+
+
+
+//---------------------------------------------------------------------------------------------------------//	
+
+int str_imm_T1 (Instruction ins, long* imm32, int* index, int* add, int* wback, int* n ){
+
+	*n = ins.reg[1].plages->value;
+	*imm32 = *imm32 << 2;
+	*index = 1;
+	*add = 1;
+	*wback = 0;
+	return 0;
+
+}
+
+int str_imm_T2 (Instruction ins, long* imm32, int* index, int* add, int* wback, int* n ){
+
+	*n = 13;
+	*imm32 = *imm32 << 2;
+	*index = 1;
+	*add = 1;
+	*wback = 0;
+	return 0;
+
+}
+
+int str_imm_T3 (Instruction ins, int* index, int* add, int* wback, int* n, int* t ){
+
+	*n = ins.reg[1].plages->value;
+	if (*n==15) {
+		WARNING_MSG ("Non défini");
+		return 1;
+	}
+
+	*index = 1;
+	*add = 1;
+	*wback = 0;
+	return 0;
+	if (*t==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	return 0;
+	
+}
+
+
+//---------------------------------------------------------------------------------------------------------//	
+
+
+
+
