@@ -192,7 +192,6 @@ void init_pft(Instruction *ins)
 	else if (strcmp(ins->commande, "mov_reg") == 0)
 	{
 		ins->run = mov_reg;
-		ins->preprocess = preprocess_add_reg_16;
 	}
 	else if (strcmp(ins->commande, "movt") == 0)
 	{
@@ -201,36 +200,28 @@ void init_pft(Instruction *ins)
 	else if (strcmp(ins->commande, "mul") == 0)
 	{
 		ins->run = mul;
-		ins->preprocess = preprocess_add_reg_16;
 	}
 	else if(strcmp(ins->commande, "b") == 0)
 	{
 		if(ins->encoding == 1 || ins->encoding == 2)
-			ins->preprocess = preprocess_B;
+			ins->fill_params = fill_params_B;
 
 		else
-			ins->preprocess = preprocess_BL;
+			ins->fill_params = fill_params_BL;
 	}
 	else if(strcmp(ins->commande, "bl") == 0)
 	{
-		ins->preprocess = preprocess_BL;
+		ins->fill_params = fill_params_BL;
 	}
 	else if(strcmp(ins->commande, "add_sp") == 0)
 	{
 		ins->display_decoded = disp_sub_sp;
-		ins->preprocess = preprocess_ldr; // f_p_add_sp = f_p_ldr
+		ins->fill_params = fill_params_ldr; // f_p_add_sp = f_p_ldr
 	}
 	else if(strcmp(ins->commande, "add_reg") == 0)
 	{
-		if (ins->encoding == 1)
-			ins->preprocess = preprocess_add_reg_16;
-		// ins->run = add_reg;
-	}
-	else if(strcmp(ins->commande, "sub_reg") == 0)
-	{
-		if (ins->encoding == 1)
-			ins->preprocess = preprocess_add_reg_16;
-		// ins->run = add_reg;
+		ins->fill_params = fill_params_add_reg;
+		ins->run = add_reg;
 	}
 	else if(strcmp(ins->commande, "add_imm") == 0)
 	{
@@ -247,42 +238,54 @@ void init_pft(Instruction *ins)
 	else if(strcmp(ins->commande, "sub_sp") == 0)
 	{
 		ins->display_decoded = disp_sub_sp;
-		ins->preprocess = preprocess_sub_sp;
+		ins->fill_params = fill_params_sub_sp;
 	}
 	else if(strcmp(ins->commande, "ldr_litt") == 0)
 	{
-		ins->preprocess = preprocess_sub_sp;
+		ins->fill_params = fill_params_sub_sp;
+		ins->run = ldr_litt;
 	}
 
 
 	else if(strcmp(ins->commande, "pop") == 0)
 	{
 		ins->display_decoded = disp_pop_push;
-		ins->preprocess = preprocess_pop_push;
+		ins->fill_params = fill_params_pop_push;
 		ins->run = pop;
 	}
 	else if (strcmp(ins->commande, "push") == 0)
 	{
 		ins->display_decoded = disp_pop_push;
-		ins->preprocess = preprocess_pop_push;
+		ins->fill_params = fill_params_pop_push;
 		ins->run = push;
 	}
 	else if(strcmp(ins->commande, "ldr_imm") == 0)
 	{
-		ins->preprocess = preprocess_ldr;
+		ins->fill_params = fill_params_ldr;
 		ins->display_decoded = disp_ldr;
 		ins->run = ldr_imm;
 	}
 	else if(strcmp(ins->commande, "str_imm") == 0)
 	{
-		ins->preprocess = preprocess_ldr;
+		ins->fill_params = fill_params_ldr;
 		ins->display_decoded = disp_ldr;
-		// ins->run = str_imm;
+		ins->run = str_imm;
+	}
+
+	else if(strcmp(ins->commande, "str_reg") == 0)
+	{
+		ins->fill_params = fill_params_ldr;
+		ins->display_decoded = disp_ldr;
+		ins->run = str_reg;
 	}
 	else if(strcmp(ins->commande, "it") == 0)
 	{
 		ins->display_decoded = disp_it;
 	}
+	else if (strcmp(ins->commande, "cmp_reg") == 0)
+	{
+		ins->run = cmp_reg;
+	}	
 
 
 }
