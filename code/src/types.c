@@ -232,7 +232,7 @@ int to_plgtab(char *chaine, Plgtab *plgt)
         token = strtok_r(str, "/", &saveptr);
 
 
-        DISP_TOKEN(i, token);
+        // DISP_TOKEN(i, token);
 
 
         if(token == NULL) // Comprend le cas chaine == NULL

@@ -142,7 +142,14 @@ int load_from_string(Instruction *ins, char *chaine)
 				string_standardise(token, token_s); // Pour utiliser sscanf avec des chaînes
 				r = sscanf(token_s, "%s / %s", ins->name_in, ins->name_out);
 
-				if(r == 1 || r == 2) r = 0;
+				if(r == 1)
+				{
+					strcpy(ins->name_out, ins->name_in);
+					r = 0;
+				}
+				else if(r == 2)
+					r = 0;
+
 				break;
 			}
 			
@@ -154,17 +161,24 @@ int load_from_string(Instruction *ins, char *chaine)
 			}
 			
 			case 3 :
-			r = to_plgtab(token, &ins->reg);
-			break;
+			{
+				r = to_plgtab(token, &ins->reg);
+				break;
+			}
 			
 			case 4 :
-			r = to_plgtab(token, &ins->imm);
-			break;
+			{
+				r = to_plgtab(token, &ins->imm);
+				break;
+			}
 			
 			case 5 :
-			r = to_plgtab(token, &ins->ext);
-			break;
+			{
+				r = to_plgtab(token, &ins->ext);
+				break;
+			}
 		}
+
 	}
 
 	return r;
@@ -188,6 +202,7 @@ void init_pft(Instruction *ins)
 	else if (strcmp(ins->commande, "mov_reg") == 0)
 	{
 		ins->run = mov_reg;
+		ins->preprocess = preprocess_add_reg_16;
 	}
 	else if (strcmp(ins->commande, "movt") == 0)
 	{
@@ -196,28 +211,36 @@ void init_pft(Instruction *ins)
 	else if (strcmp(ins->commande, "mul") == 0)
 	{
 		ins->run = mul;
+		ins->preprocess = preprocess_add_reg_16;
 	}
 	else if(strcmp(ins->commande, "b") == 0)
 	{
 		if(ins->encoding == 1 || ins->encoding == 2)
-			ins->fill_params = fill_params_B;
+			ins->preprocess = preprocess_B;
 
 		else
-			ins->fill_params = fill_params_BL;
+			ins->preprocess = preprocess_BL;
 	}
 	else if(strcmp(ins->commande, "bl") == 0)
 	{
-		ins->fill_params = fill_params_BL;
+		ins->preprocess = preprocess_BL;
 	}
 	else if(strcmp(ins->commande, "add_sp") == 0)
 	{
 		ins->display_decoded = disp_sub_sp;
-		ins->fill_params = fill_params_ldr; // f_p_add_sp = f_p_ldr
+		ins->preprocess = preprocess_ldr; // f_p_add_sp = f_p_ldr
 	}
 	else if(strcmp(ins->commande, "add_reg") == 0)
 	{
-		ins->fill_params = fill_params_add_reg;
-		ins->run = add_reg;
+		if (ins->encoding == 1)
+			ins->preprocess = preprocess_add_reg_16;
+		// ins->run = add_reg;
+	}
+	else if(strcmp(ins->commande, "sub_reg") == 0)
+	{
+		if (ins->encoding == 1)
+			ins->preprocess = preprocess_add_reg_16;
+		// ins->run = add_reg;
 	}
 	else if(strcmp(ins->commande, "add_imm") == 0)
 	{
@@ -234,54 +257,53 @@ void init_pft(Instruction *ins)
 	else if(strcmp(ins->commande, "sub_sp") == 0)
 	{
 		ins->display_decoded = disp_sub_sp;
-		ins->fill_params = fill_params_sub_sp;
+		ins->preprocess = preprocess_sub_sp;
 	}
 	else if(strcmp(ins->commande, "ldr_litt") == 0)
 	{
-		ins->fill_params = fill_params_sub_sp;
-		ins->run = ldr_litt;
+		ins->preprocess = preprocess_sub_sp;
 	}
 
 
 	else if(strcmp(ins->commande, "pop") == 0)
 	{
 		ins->display_decoded = disp_pop_push;
-		ins->fill_params = fill_params_pop_push;
+		ins->preprocess = preprocess_pop_push;
 		ins->run = pop;
 	}
 	else if (strcmp(ins->commande, "push") == 0)
 	{
 		ins->display_decoded = disp_pop_push;
-		ins->fill_params = fill_params_pop_push;
+		ins->preprocess = preprocess_pop_push;
 		ins->run = push;
 	}
 	else if(strcmp(ins->commande, "ldr_imm") == 0)
 	{
-		ins->fill_params = fill_params_ldr;
+		ins->preprocess = preprocess_ldr;
 		ins->display_decoded = disp_ldr;
 		ins->run = ldr_imm;
 	}
 	else if(strcmp(ins->commande, "str_imm") == 0)
 	{
-		ins->fill_params = fill_params_ldr;
+		ins->preprocess = preprocess_ldr;
 		ins->display_decoded = disp_ldr;
 		ins->run = str_imm;
 	}
 
 	else if(strcmp(ins->commande, "str_reg") == 0)
 	{
-		ins->fill_params = fill_params_ldr;
+		ins->preprocess = preprocess_ldr;
 		ins->display_decoded = disp_ldr;
 		ins->run = str_reg;
 	}
 	else if(strcmp(ins->commande, "it") == 0)
 	{
-		ins->display_decoded = disp_it;
+		ins->preprocess = preprocess_it;
 	}
 	else if (strcmp(ins->commande, "cmp_reg") == 0)
 	{
 		ins->run = cmp_reg;
-	}	
+	}
 
 
 }

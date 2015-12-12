@@ -14,6 +14,7 @@
 
 // pour le problème d'inclusions circulaires
 struct ins;
+struct emulator;
 
 
 
@@ -46,7 +47,7 @@ int load_from_file(struct ins **p_instab, int *nb_ins, char* filename);
 int load_instab(struct ins *instab, int nb_ins, FILE *fd);
 int get_nb_ins(FILE *fd);
 
-int disasm(word in, struct ins *out, Dic *dic);
+int disasm(word in, struct ins *out, struct emulator *emul);
 
 int find(word in, struct ins *out, Dic *dic);
 

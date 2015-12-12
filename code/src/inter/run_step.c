@@ -95,7 +95,7 @@ int step(int flag, Emulator *emul)
 
 	if(flag == INTO)
 	{
-		r = disasm(in, out, emul->dic); // retourne l'offset (2 : instruction 16 bits, 4 : 32 bits)
+		r = disasm(in, out, emul); // retourne l'offset (2 : instruction 16 bits, 4 : 32 bits)
 
 		if (r == 3)
 			return r;

@@ -79,7 +79,7 @@ int disasm_plage(Plage plg, Emulator *emul) // On suppose va_1 < va_2
 		for (j = 0; j < 4; ++j)
 			mot = (mot << 8) + plage[i+j];
 
-		i += ( r = disasm(mot, ins, emul->dic) );
+		i += ( r = disasm(mot, ins, emul) );
 
 
 		if(r == UNFOUND)

@@ -236,7 +236,7 @@ int get_nb_ins(FILE *fd)
 */
 
 
-int disasm(word in, Instruction *out, Dic *dic)
+int disasm(word in, Instruction *out, struct emulator *emul)
 {
 	int r=1;
 
@@ -244,7 +244,7 @@ int disasm(word in, Instruction *out, Dic *dic)
 
 	//V3
 
-	r = find(in, out, dic);
+	r = find(in, out, emul->dic);
 
 	if(r == 2 || r == 4) // instruction 32 ou 16 bits trouvées
 	{
@@ -254,7 +254,7 @@ int disasm(word in, Instruction *out, Dic *dic)
 		if (parse(in, out) != 0)
 			return 15; // cf inter/notify.c
 
-		if (out->preprocess(out) != 0)
+		if (out->preprocess(out, emul) != 0)
 			return 16; // idem
 	}
 

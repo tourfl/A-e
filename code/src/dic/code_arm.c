@@ -146,7 +146,8 @@ long UInt32 (long x) {
 	return result;
 }
 
-unsigned long AddWithCarry (unsigned long registre , unsigned long imm32 , int* carry , int* overflow) {
+unsigned long AddWithCarry (unsigned long registre , unsigned long imm32 , int* carry , int* overflow)
+{
 
 
 	unsigned long unsigned_sum;

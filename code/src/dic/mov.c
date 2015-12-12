@@ -21,7 +21,7 @@ int mov_imm_2 (Instruction ins, Emulator *emul) {
 
 
 	
-	imm32 = ZeroExtend_plgtab(*(ins.imm));
+	ZeroExtend_plgtab(&ins.imm);
 
 	// if (strcmp (ins.encoding, 'T1') == 0 ) {
 	// 	if ( mov_imm_T1 (ins, reg, &setflags, &imm32 , &carry) ) {
@@ -46,12 +46,6 @@ int mov_imm_2 (Instruction ins, Emulator *emul) {
 	// 	return 1;
 	// }
 
-	
-
-
-    sprintf(reg_label, "r%i", ins.reg->plages[0].value);
-
-	set_reg(reg_label, imm32, emul->reg);	
 	// if (setflags) {
 	// 	if (result & (1u << 31) ){
 	// 		APSR.N = 1;

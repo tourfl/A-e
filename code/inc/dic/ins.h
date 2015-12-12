@@ -1,4 +1,4 @@
-#ifndef  INS_H
+#ifndef INS_H
 #define INS_H
 
 #include "emulator.h"

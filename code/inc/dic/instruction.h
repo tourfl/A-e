@@ -43,7 +43,7 @@ struct ins;
 
 
 // création d'alias du type pointeur de fonction
-typedef int (*Prep_pft)(struct ins*);
+typedef int (*Prep_pft)(struct ins*, struct emulator*);
 typedef int (*Run_pft)(struct ins, struct emulator*);
 typedef void (*Disp_pft)(struct ins, struct emulator*);
 
@@ -53,8 +53,8 @@ struct ins
 	// Général:
 	char commande[MAX_CHAR];
 	int encoding;
-	char name_in[MAX_CHAR];
 	char name_out[MAX_CHAR];
+	char name_in[MAX_CHAR];
 	unsigned int mask;
 	unsigned int opcode;
  
