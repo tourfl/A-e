@@ -82,4 +82,15 @@ int str_reg (Instruction ins, Emulator* emul);
 int str_reg_T1 (Instruction ins,int* index,int* add,int* wback );
 int str_reg_T2 (Instruction ins, int* index,int* add, int* wback, int* t, int* n, int* m, long* offset );
 
+int b (Instruction ins, Emulator *mem);
+int b_T1(Instruction ins, int* cond , long* imm32);
+int b_T2(Instruction ins,  long* imm32);
+int b_T4(Instruction ins,  long* imm32);
+
+int bl (Instruction ins, Emulator* emul);
+int bl_T1(Instruction ins, long* imm32); 
+
+int bx (Instruction ins, Emulator* emul);
+int bx_T1(Instruction ins, int* m) ;
+
 #endif
