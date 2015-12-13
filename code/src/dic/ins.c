@@ -563,7 +563,7 @@ int mov_imm (Instruction ins, Emulator* emul) {
 	int carry;
 	long result;
 	int setflags;
-	int imm32;
+	long imm32;
 	d = ins.reg.plages[0].value;
 	imm32 = ins.imm.plages[0].value;
 
@@ -903,7 +903,8 @@ int pop_T3 (Instruction ins , long* registers , int* t){
 int ldr_imm (Instruction ins, Emulator* emul) {
 	
 
-	int t,n, imm32;
+	int t,n;
+	long imm32;
 	long offset_addr, address, data;
 	int index, wback, add;
 	imm32 = ins.imm.plages[0].value;
@@ -1779,8 +1780,8 @@ int b (Instruction ins, Emulator * emul) {
 
 	long imm32; int cond;	
 	
-	imm32 = ins.imm->plages[0].value;
-	cond = ins.ext->plages[0].value;
+	imm32 = ins.imm.plages[0].value;
+	cond = ins.ext.plages[0].value;
 
 	printf ("encoding : %d\n" , ins.encoding); 
 
@@ -1905,7 +1906,7 @@ int bl (Instruction ins, Emulator* emul) {
 	long next_instr_addr;
 	//int targetInstrSet = CurrentInstrSet();
 	long imm32;
-	imm32 = ins.imm->plages[0].value;
+	imm32 = ins.imm.plages[0].value;
 
 	if ( ins.encoding == 1 ) {
 		if ( bl_T1 (ins, &imm32) ) {
@@ -1973,7 +1974,7 @@ int bl_T1(Instruction ins, long* imm32) {
 
 int bx (Instruction ins, Emulator* emul) {
 
-	int m = ins.reg->plages[0].value;
+	int m = ins.reg.plages[0].value;
 
 	if ( ins.encoding == 1 ) {
 		if ( bx_T1 (ins, &m) ) {
@@ -2012,7 +2013,6 @@ int bx_T1(Instruction ins, int* m) {
 
 
 //---------------------------------------------------------------------------------------------------------//
-
 
 
 
