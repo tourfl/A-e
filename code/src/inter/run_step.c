@@ -111,7 +111,8 @@ int step(int flag, Emulator *emul)
 		{
 			printf("\033[00;31m");
 		}
-		display(*out, DECODED, emul);
+		if( breakpoint_exist( emul->breaklist, emul->reg[15] ) )
+			display(*out, DECODED, emul);
 		printf("\033[0m");
 	}
 	
