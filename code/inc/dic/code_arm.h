@@ -17,7 +17,7 @@ int BitCount (long a);
 long AddWithCarry (long registre , long imm32 , int* carry , int* overflow);
 int condition (int cond, Emulator* emul);
 void BXWritePC (vaddr32 a, Emulator* emul);
-void BranchWritePC (vaddr32 adresse, Emulator* emul);
+void BranchWritePC (long adresse, Emulator* emul);
 int IsZeroBit(long x);
 
 
