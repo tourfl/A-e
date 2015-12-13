@@ -1029,7 +1029,7 @@ int push (Instruction ins, Emulator* emul) {
 	int i;
 	long registers;
 	long address;
-
+	
 
 	if (ins.encoding == 1 ) {
 		if (push_T1 (ins, &registers)) {
@@ -1076,9 +1076,11 @@ int push (Instruction ins, Emulator* emul) {
 int push_T1 (Instruction ins, long* registers) {
 
 	*registers = ins.imm.plages[0].value;
+	
 	if (ins.ext.plages[0].value) {
 		*registers = *registers | (1u << 16) ;
 	} 	
+	
 	if (BitCount(*registers)<1){
 		WARNING_MSG ("Accès non autorisé");
 		return 1;
@@ -1130,7 +1132,7 @@ int push_T3 (Instruction ins , long* registers , int* t){
 /************************************************LDR_LIT***************************************************/
 /**********************************************************************************************************/
 	
-int ldr_lit (Instruction ins, Emulator* emul) {
+int ldr_litt (Instruction ins, Emulator* emul) {
 	
 
 	int t;
@@ -1366,7 +1368,7 @@ int add_reg (Instruction ins, Emulator* emul) {
 
 	shifted = emul->reg[m] + shifted;
 	result = AddWithCarry (emul->reg[n] , shifted, &carry, &overflow);
-	printf("%ld\n" , result);	
+		
 	if (d==15) {
 		BranchWritePC(result, emul);
 	}
@@ -1783,8 +1785,7 @@ int b (Instruction ins, Emulator * emul) {
 	imm32 = ins.imm.plages[0].value;
 	cond = ins.ext.plages[0].value;
 
-	printf ("encoding : %d\n" , ins.encoding); 
-
+	
 	if ( ins.encoding == 1 ) {
 		if ( b_T1 (ins, &cond, &imm32)) {
 			return 1;
@@ -1812,7 +1813,8 @@ int b (Instruction ins, Emulator * emul) {
 		return 1;
 	}
 
-	//printf("cond : %d\n " , cond);
+	
+	
 	if (condition (cond, emul)) { 
 		BranchWritePC(emul->reg[15] + imm32, emul);
 		}
@@ -1919,12 +1921,12 @@ int bl (Instruction ins, Emulator* emul) {
 		return 1;
 	}
 	
-	printf ("%lx\n" , emul->reg[15]);
+	printf ("pc avant : %lx\n" , emul->reg[15]);
 	next_instr_addr = emul->reg[15];
 	next_instr_addr = next_instr_addr & 0xFFFFFFFE;
 	emul->reg[14] = next_instr_addr | 0x00000001;
 	
-	printf("pc : %lx\t imm32 : %lx\n " , emul->reg[15], imm32); 
+	printf("pc : %lx\t pc + imm32 : %lx\n " , emul->reg[15], emul->reg[15]+imm32); 
 	BranchWritePC (emul->reg[15]+imm32, emul);
 	return 0;
 
@@ -1937,13 +1939,13 @@ int bl_T1(Instruction ins, long* imm32) {
 	
 	/*int I1 = 0; 
 	int I2 = 0;
-	if(!(ins.ext->plages[1].value ^ ins.ext->plages[2].value)) {
+	if(!(ins.ext.plages[1].value ^ ins.ext.plages[2].value)) {
 		I1 = 1;
 	} 
-	if(!(ins.ext->plages[0].value ^ ins.ext->plages[2].value)) {
+	if(!(ins.ext.plages[0].value ^ ins.ext.plages[2].value)) {
 		I2 = 1 ;
 	}
-	
+	printf ("%d\n", ins.ext.plages[0].value ^ ins.ext.plages[2].value);
 	
 	// *imm32 = ins.ext[0].value:I2:I1:*imm32:'0';
 	
@@ -1957,15 +1959,16 @@ int bl_T1(Instruction ins, long* imm32) {
 		*imm32 = *imm32 + (1u << 18);
 	}
 
-	if (ins.ext->plages[0].value) {	
+	if (ins.ext.plages[0].value) {	
 		*imm32 = *imm32 + (1u << 19);
 	}
 	*/
-
 	return 0;
 }
 
-//-----------------------
+//---------------------------------------------------------------------------------------------------------//
+
+
 /**********************************************************************************************************/
 /************************************************BX********************************************************/
 /**********************************************************************************************************/
@@ -2014,7 +2017,8 @@ int bx_T1(Instruction ins, int* m) {
 
 //---------------------------------------------------------------------------------------------------------//
 
+	
 
-
+	
 
 
