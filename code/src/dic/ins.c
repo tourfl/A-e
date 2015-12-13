@@ -1770,6 +1770,251 @@ int str_reg_T2 (Instruction ins, int* index,int* add, int* wback, int* t, int* n
 
 
 
+/**********************************************************************************************************/
+/*******************************************B**************************************************************/
+/**********************************************************************************************************/
+
+int b (Instruction ins, Emulator * emul) {
+
+
+	long imm32; int cond;	
+	
+	imm32 = ins.imm->plages[0].value;
+	cond = ins.ext->plages[0].value;
+
+	printf ("encoding : %d\n" , ins.encoding); 
+
+	if ( ins.encoding == 1 ) {
+		if ( b_T1 (ins, &cond, &imm32)) {
+			return 1;
+		}
+	}
+
+	else if ( ins.encoding == 2 ) {
+		if (b_T2 (ins, &imm32)) {
+			return 1;
+		}
+	}
+
+	else if ( ins.encoding == 3 ) { 
+	
+	}
+
+	else if (ins.encoding == 4 ) {
+		if( b_T4 (ins, &imm32)) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	//printf("cond : %d\n " , cond);
+	if (condition (cond, emul)) { 
+		BranchWritePC(emul->reg[15] + imm32, emul);
+		}
+	return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+int b_T1(Instruction ins, int* cond , long* imm32) {
+
+	if (*cond==14) {
+		WARNING_MSG ("Non défini");
+		return 1;
+	}
+
+	if (*cond==15) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+
+	*imm32 = *imm32 ;//<< 1;
+	
+	/*if (InITBlock()) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}
+	*/
+	return 0;
+}
+
+
+int b_T2(Instruction ins,  long* imm32) {
+
+	*imm32 = *imm32 ;//<< 1;
+	/*if (InITBlock() && !LastInITBlock()) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}*/
+	return 0;
+}
+
+int b_T4(Instruction ins,  long* imm32) {
+	
+	/*int I1,I2;
+	I1 = 0 ;	
+	I2 = 0 ;
+	if (ins.ext->plages[1].value ^ ins.ext->plages[0].value) {
+		I1 = 1 ;
+	} 
+	if (ins.ext->plages[2].value ^ ins.ext->plages[0].value) {
+		I2 = 1 ;
+	}
+	
+	// *imm32 = ins.ext[0].value:I2:I1:*imm32:'0';
+	
+	//*imm32 =*imm32 << 1;
+
+	if (I1) {
+		*imm32 = *imm32 + (1u << 17);
+	}
+
+	if (I2) {
+		*imm32 = *imm32 + (1u << 18);
+	}
+
+	if (ins.ext->plages[0].value) {	
+		*imm32 = *imm32 + (1u << 19);
+	}*/
+
+	/*if(InITBlock() && !LastInITBlock()) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}*/
+
+	return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+/**********************************************************************************************************/
+/*******************************************BL*************************************************************/
+/**********************************************************************************************************/
+
+
+int bl (Instruction ins, Emulator* emul) {
+
+	long next_instr_addr;
+	//int targetInstrSet = CurrentInstrSet();
+	long imm32;
+	imm32 = ins.imm->plages[0].value;
+
+	if ( ins.encoding == 1 ) {
+		if ( bl_T1 (ins, &imm32) ) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+	
+	printf ("%lx\n" , emul->reg[15]);
+	next_instr_addr = emul->reg[15];
+	next_instr_addr = next_instr_addr & 0xFFFFFFFE;
+	emul->reg[14] = next_instr_addr | 0x00000001;
+	
+	printf("pc : %lx\t imm32 : %lx\n " , emul->reg[15], imm32); 
+	BranchWritePC (emul->reg[15]+imm32, emul);
+	return 0;
+
+}
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+int bl_T1(Instruction ins, long* imm32) {
+	
+	/*int I1 = 0; 
+	int I2 = 0;
+	if(!(ins.ext->plages[1].value ^ ins.ext->plages[2].value)) {
+		I1 = 1;
+	} 
+	if(!(ins.ext->plages[0].value ^ ins.ext->plages[2].value)) {
+		I2 = 1 ;
+	}
+	
+	
+	// *imm32 = ins.ext[0].value:I2:I1:*imm32:'0';
+	
+	//*imm32 =*imm32 << 1;
+
+	if (I1) {
+		*imm32 = *imm32 + (1u << 17);
+	}
+
+	if (I2) {
+		*imm32 = *imm32 + (1u << 18);
+	}
+
+	if (ins.ext->plages[0].value) {	
+		*imm32 = *imm32 + (1u << 19);
+	}
+	*/
+
+	return 0;
+}
+
+//-----------------------
+/**********************************************************************************************************/
+/************************************************BX********************************************************/
+/**********************************************************************************************************/
+
+
+
+int bx (Instruction ins, Emulator* emul) {
+
+	int m = ins.reg->plages[0].value;
+
+	if ( ins.encoding == 1 ) {
+		if ( bx_T1 (ins, &m) ) {
+			return 1;
+		}
+	}
+
+	else {
+		WARNING_MSG ("Cet encodage n'est pas dans le dictionnaire");
+		return 1;
+	}
+
+	
+	BXWritePC (emul->reg[m], emul);
+	return 0;
+
+}
+
+
+
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
+int bx_T1(Instruction ins, int* m) {
+
+	/*if(InITBlock() && !LastInITBlock() ) {
+		WARNING_MSG ("Accès non autorisé");
+		return 1;
+	}*/
+	return 0;
+}
+
+
+
+//---------------------------------------------------------------------------------------------------------//
+
+
+
 
 
 
