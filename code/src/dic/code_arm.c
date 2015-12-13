@@ -75,19 +75,17 @@ void SignExtend_plgtab (Plgtab *imm)
 
 
 
-void BranchWritePC (vaddr32 adresse, Emulator *emul) {
+void BranchWritePC (long adresse, Emulator *emul) {
 	
 	//adresse = adresse & ~(1u << 0) ;
 	if(adresse & (1u << 1) ) {
-		emul->reg[15] = adresse  ;
+		emul->reg[15] = adresse - 4 ;
 	}
 	
 	else {
 		emul->reg[15]= adresse - 2;
 	}
-	printf ("pc après branchement : %lx\n" , emul->reg[15]);
 }
-
 
 	
 void BXWritePC (vaddr32 a, Emulator *emul) {
