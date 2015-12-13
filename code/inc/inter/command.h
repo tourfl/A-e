@@ -22,6 +22,7 @@ int assert(Emulator *emul);
 int disasm_cmd(Emulator *emul);
 int run_cmd(Emulator *emul);
 int step_cmd(Emulator *emul);
+int break_cmd(Emulator *emul);
 
 
 

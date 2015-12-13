@@ -6,6 +6,7 @@
 #include "simul/registre.h"
 #include "dic/dic.h"
 #include "inter/interpreteur.h"
+#include "simul/breakpoints.h"
 
 
 
@@ -23,6 +24,8 @@ struct emulator
 	interpreteur inter;
 
 	int it_state;
+
+	Breakpoint *breaklist;
 };
 
 typedef struct emulator Emulator;

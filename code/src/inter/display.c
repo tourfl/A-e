@@ -3,12 +3,7 @@
 #include "inter/notify.h" // messages de contrôle, inclut stdlib (printf)
 #include <string.h> // pour strcmp
 
-// fonction affichant les octets d'un segment sur la sortie standard
-// parametres :
-//   name           : nom de la section dont le contenue est affichée
-//   start          : adresse virtuelle d'implantation du contenu de la section dans la memoire 
-//   content        : le contenu de la section à afficher
-//   taille         : taille en octet de la section à afficher
+
 
 
 

@@ -1,0 +1,7 @@
+#-------
+#TEST_RETURN_CODE=PASS       
+#TEST_COMMENT="Teste break"
+#-------
+
+
+break add 0x1005

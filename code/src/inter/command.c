@@ -67,6 +67,10 @@ int execute_cmd(Emulator *emul) {
     {
         return step_cmd(emul);
     }
+    else if(strcmp(token, "break") == 0)
+    {
+        return break_cmd(emul);
+    }
     else if(strcmp(token, "debug") == 0)
         return CMD_DEBUG_RETURN_VALUE;
 

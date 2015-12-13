@@ -93,39 +93,31 @@ int step(int flag, Emulator *emul)
 
 
 
-	if(flag == INTO)
-	{
-		r = disasm(in, out, emul); // retourne l'offset (2 : instruction 16 bits, 4 : 32 bits)
+	
+	r = disasm(in, out, emul); // retourne l'offset (2 : instruction 16 bits, 4 : 32 bits)
 
-		if (r == 3)
-			return r;
-
-		else if (r == 2 || r == 4)
-		{
-			printf("\n");
-
-			if(out->run != NULL)
-			{
-				out->run(*out, emul);
-				printf("\033[00;32m");
-			}
-
-			else
-			{
-				printf("\033[00;31m");
-			}
-			display(*out, DECODED, emul);
-			printf("\033[0m");
-		}
-
-		emul->reg[15] += r;
-
+	if (r == 3)
 		return r;
-	}
-	else
+
+	else if (r == 2 || r == 4)
 	{
-		return 2;
+		printf("\n");
+		if(out->run != NULL)
+		{
+			out->run(*out, emul);
+			printf("\033[00;32m");
+		}
+		else
+		{
+			printf("\033[00;31m");
+		}
+		display(*out, DECODED, emul);
+		printf("\033[0m");
 	}
+	
+	emul->reg[15] += r;
+	
+	return r;
 }
 
 
